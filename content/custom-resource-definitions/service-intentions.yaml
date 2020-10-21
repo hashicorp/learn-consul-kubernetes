@@ -35,8 +35,8 @@ spec:
       http:
         pathExact: "/health"
     # This permission now defines the conditions that should be allowed
-    # Allo traffic to all paths for the GET, PUT, POST, DELETE verbs as long as an
-    # api-token header is present
+    # Allow traffic to all paths for the GET, PUT, POST, DELETE verbs as long as an
+    # Authorization header is present
     - action: allow
       http:
         pathPrefix: "/"
@@ -46,7 +46,7 @@ spec:
         - POST
         - DELETE
         header:
-        - name: "api-token"
+        - name: "Authorization"
           present: true
     # Define a deny intention for all other traffic
     - action: deny
