@@ -1,0 +1,10 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceSplitter
+metadata:
+  name: frontend
+spec:
+  splits:
+    - weight: 97
+      serviceSubset: v1
+    - weight: 3
+      serviceSubset: v2
