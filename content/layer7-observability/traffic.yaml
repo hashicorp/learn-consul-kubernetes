@@ -32,7 +32,7 @@ data:
 ---
 
 apiVersion: apps/v1
-kind: Job
+kind: Deployment
 metadata:
   name: traffic
   labels:
