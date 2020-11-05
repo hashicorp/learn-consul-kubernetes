@@ -6,7 +6,10 @@ spec:
   routes:
 match:
   http:
-    pathPrefix: “/admin”
+    queryParam:
+      - name: "canary"
+        exact: 1
 destination:
-  service: “admin”
+  service: “public-api"
+  serviceSubset: "canary"
 
