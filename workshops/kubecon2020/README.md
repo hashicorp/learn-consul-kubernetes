@@ -112,6 +112,10 @@ $ curl -X OPTIONS -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d
 
 ## Add a coffee service to break apart the monolith
 
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+```
+
 ## Add service router to siphon off coffee service traffic
 
 ```shell-session
@@ -165,3 +169,11 @@ $ kubectl get serviceresolvers
 ## Deploy service to multiple Cloud Providers by toggling Waypoint.hcl && kubeconfig
 
 ## Test each deployment
+
+## SUPER BONUS MATERIAL
+
+## Federate those different deployments with Primary DC
+
+## Update service splitter to distribute evenly across different DCs or maybe failover and kill pod in primary?
+
+## Show Jaeger Spans of distributed traces
