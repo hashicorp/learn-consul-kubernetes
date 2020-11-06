@@ -1,15 +1,11 @@
 apiVersion: config.consul.io/v1alpha1
 kind: ServiceRouter
 metadata:
-  name: app
+  name: product-api # Is this the name of the service who's route I'm hijacking? If not, where do I specify that?
 spec:
   routes:
 match:
   http:
-    queryParam:
-      - name: "canary"
-        exact: 1
+    pathPrefix: “/coffees”
 destination:
-  service: “public-api"
-  serviceSubset: "canary"
-
+  service: “coffee-service”

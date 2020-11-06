@@ -4,7 +4,6 @@ All commands in this file assume that you have cloned this repository and are
 issuing the commands from the directory that contains this README file. If you
 are in a differerent directory, you will have to adjust your paths accordingly.
 
-
 ## Create a test cluster
 
 ```shell-session
@@ -17,7 +16,7 @@ $ kind create cluster --name crds
 $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
 ```
 
-## Install the Jaeger using the Jaeger Operator
+## Install the Jaeger operator using the Jaeger Operator Helm chart
 
 ```shell-session
 $ helm install jaeger jaegertracing/jaeger-operator --version "2.17.0" --wait
@@ -111,30 +110,58 @@ Send and unsupported HTTP method
 $ curl -X OPTIONS -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" http://localhost:8080/api -d
 ```
 
-## Deploy canary release of public and product APIs
+## Add a coffee service to break apart the monolith
+
+## Add service router to siphon off coffee service traffic
 
 ```shell-session
 $ kubectl apply -f ./canary
 ```
 
-## Create service resolver subset entry for Canary
+## View in Consul
+
+## View latency in Jaeger UI
+
+## Add V2 DB instrumentation to coffee-service
+
+Shout out to jmoiron/sqlx
+
+## Deploy V2 Service
+
+```shell-session
+$ kubectl apply -f ../../content/custom-resource-definitions/service-splitter.yaml
+```
+
+## Create service splitter entry for Canary rollout
+
+```shell-session
+$ kubectl apply -f ../../content/custom-resource-definitions/service-splitter.yaml
+```
+
+## Create service resolver subset entry for Canary rollout
 
 ```shell-session
 $ kubectl apply -f ../../content/custom-resource-definitions/service-resolver.yaml
 ```
 
-## Test manually using service router
+## Inspect the service splitter and service resolver CRDs
 
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-router.yaml
+$ kubectl get servicesplitters
 ```
-
-
-
-###
-
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/jaeger
+$ kubectl get serviceresolvers
 ```
 
+## View network topology of services in Consul UI
+
+## View traffic in Jeager UI to see how much traffic is routed to V2 and to inspect DB queries
+
+## BONUS MATERIAL
+
+## Deploy v3 with Waypoint (in memory DB version)
+
+## Deploy service to multiple Cloud Providers by toggling Waypoint.hcl && kubeconfig
+
+## Test each deployment

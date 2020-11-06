@@ -1,25 +1,31 @@
----
-# Service to expose web frontend
+# apiVersion: consul.hashicorp.com/v1alpha1
+# kind: ServiceDefaults
+# metadata:
+#   name: coffee-service
+# spec:
+#   protocol: "http"
+# ---
+# # Service to expose web frontend
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: product-api
-spec:
-  selector:
-    app: product-api
-  ports:
-    - name: http
-      protocol: TCP
-      port: 9090
-      targetPort: 9090
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: coffee-service
+# spec:
+#   selector:
+#     app: coffee-service
+#   ports:
+#     - name: http
+#       protocol: TCP
+#       port: 9090
+#       targetPort: 9090
 
----
+# ---
 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: product-api
+  name: coffee-service
 automountServiceAccountToken: true
 
 ---
@@ -41,25 +47,26 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product-api
+  name: coffee-service
+  version: v2
   labels:
-    app: product-api
+    app: coffee-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: product-api
+      app: coffee-service
   template:
     metadata:
       labels:
-        app: product-api
+        app: coffee-service
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
-      serviceAccountName: product-api
+      serviceAccountName: coffee-service
       volumes:
       - name: config
         configMap:
@@ -68,14 +75,16 @@ spec:
           - key: config
             path: conf.json
       containers:
-        - name: product-api
-          image: hashicorpdemoapp/product-api:v0.0.12
+        - name: coffee-service
+          image: hashicorpdemoapp/coffee-service:v0.0.1
           ports:
             - containerPort: 9090
             - containerPort: 9103
           env:
             - name: "CONFIG_FILE"
               value: "/config/conf.json"
+            - name: "API_VERSION"
+              value: "v2"
           livenessProbe:
             httpGet:
               path: /health
