@@ -123,7 +123,8 @@ $ curl -X OPTIONS \
 ## Add a coffee service to break apart the monolith
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service.yaml && \
+    kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
 ```
 
 ## Manually test the coffee service with cURL
