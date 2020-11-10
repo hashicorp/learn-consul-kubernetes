@@ -1,79 +1,52 @@
-# apiVersion: consul.hashicorp.com/v1alpha1
-# kind: ServiceDefaults
-# metadata:
-#   name: coffee-service
-# spec:
-#   protocol: "http"
-# ---
-# # Service to expose coffee-service
-
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: coffee-service
-# spec:
-#   selector:
-#     app: coffee-service
-#   ports:
-#     - name: http
-#       protocol: TCP
-#       port: 9090
-#       targetPort: 9090
-
-# ---
-
-# apiVersion: v1
-# kind: ServiceAccount
-# metadata:
-#   name: coffee-service
-# automountServiceAccountToken: true
-
-# ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceSplitter
 metadata:
-  name: db-configmap
-data:
-  config: |
-    {
-      "db_connection": "host=localhost port=5432 user=postgres password=password dbname=products sslmode=disable",
-      "bind_address": ":9090",
-      "metrics_address": ":9103"
-    }
-
+  name: coffee-service
+spec:
+  splits:
+    - weight: 90
+      serviceSubset: v1
+    - weight: 10
+      serviceSubset: v2
 ---
-# Coffee service
-
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceResolver
+metadata:
+  name: coffee-service
+spec:
+  defaultSubset: v1
+  subsets:
+    v1:
+      filter: "Service.Meta.version == v1"
+    v2:
+      filter: "Service.Meta.version == v2"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coffee-service
-  version: v2
+  name: coffee-service-v2
   labels:
     app: coffee-service
+    version: v2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: coffee-service
+      version: v2
   template:
     metadata:
       labels:
         app: coffee-service
+        version: v2
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
+        consul.hashicorp.com/service-meta-version: v2
     spec:
       serviceAccountName: coffee-service
-      volumes:
-      - name: config
-        configMap:
-          name: db-configmap
-          items:
-          - key: config
-            path: conf.json
       containers:
         - name: coffee-service
           image: hashicorpdemoapp/coffee-service:v0.0.1
@@ -81,9 +54,21 @@ spec:
             - containerPort: 9090
             - containerPort: 9103
           env:
-            - name: "CONFIG_FILE"
-              value: "/config/conf.json"
-            - name: "API_VERSION"
+            - name: "USERNAME"
+              value: "postgres"
+            - name: "PASSWORD"
+              value: "password"
+            - name: "LOG_FORMAT"
+              value: "text"
+            - name: "LOG_LEVEL"
+              value: "INFO"
+            - name: "BIND_ADDRESS"
+              value: "localhost:9090"
+            - name: "METRICS_ADDRESS"
+              value: "localhost:9103"
+            - name: "DB_TRACE_ENABLED"
+              value: "true"
+            - name: "VERSION"
               value: "v2"
           livenessProbe:
             httpGet:
@@ -93,7 +78,3 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 10
             failureThreshold: 30
-          volumeMounts:
-            - name: config
-              mountPath: /config
-              readOnly: true

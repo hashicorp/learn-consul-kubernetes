@@ -16,7 +16,13 @@ $ kind create cluster --name hashicups
 $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
 ```
 
-## Enable Jaeger tracing by registering a ProxyDefaults config entry
+## Install the Prometheus Operator
+
+```shell-session
+$ helm install -f ../../content/layer7-observability/helm/prometheus-values.yaml prometheus prometheus-community/prometheus --version "11.7.0" --wait
+```
+
+## Enable Prometheus by registering a ProxyDefaults config entry
 
 ```shell-session
 $ kubectl apply -f ../../content/custom-resource-definitions/proxy-defaults.yaml
@@ -28,18 +34,6 @@ $ kubectl get proxydefaults
 
 ```shell-session
 $ kubectl describe proxydefaults
-```
-
-## Install the Jaeger operator using the Jaeger Operator Helm chart
-
-```shell-session
-$ helm install jaeger jaegertracing/jaeger-operator --version "2.17.0" --wait
-```
-
-## Register Jaeger CRD - TODO Validate this is required
-
-```shell-session
-$ kubectl apply -f ../../content/layer7-observability/jaeger/jaeger.yaml
 ```
 
 ## Deploy V1 of the workload
@@ -54,11 +48,6 @@ $ kubectl apply -f ../../workloads/hashicups
 $ kubectl port-forward consul-server-0 8500:8500
 ```
 
-## Expose the Jaeger UI
-
-```shell-session
-$ kubectl port-forward deploy/jaeger 16686:16686
-```
 
 ## Generate traffic
 
@@ -67,8 +56,6 @@ $ kubectl apply -f ../../content/layer7-observability/traffic.yaml
 ```
 
 ## View traffic in Consul
-
-## View tracing in Jaeger
 
 ## Add a service intention with service defaults
 
@@ -141,7 +128,13 @@ $ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
 
 ## Manually test the coffee service with cURL
 
-TODO
+```shell-session
+$ kubectl port-forward deploy/coffee-service 9090:9090
+```
+
+```shell-session
+$ curl http://localhost:9090/coffees
+```
 
 ## Add service router to siphon off coffee service traffic
 
