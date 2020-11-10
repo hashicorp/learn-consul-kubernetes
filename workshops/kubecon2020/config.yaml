@@ -26,5 +26,7 @@ ui:
 connectInject:
   enabled: true
   default: true
+  centralConfig:
+    enabled: true
 controller:
   enabled: true

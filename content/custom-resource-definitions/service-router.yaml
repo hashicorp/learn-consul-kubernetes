@@ -1,11 +1,22 @@
-apiVersion: config.consul.io/v1alpha1
+apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceRouter
 metadata:
-  name: product-api # Is this the name of the service who's route I'm hijacking? If not, where do I specify that?
+  name: product-api
 spec:
   routes:
-match:
-  http:
-    pathPrefix: “/coffees”
-destination:
-  service: “coffee-service”
+    - match:
+        http:
+          pathPrefix: “/coffees”
+          destination:
+            service: “coffee-service”
+
+# ---
+# apiVersion: consul.hashicorp.com/v1alpha1
+# kind: ServiceRouter
+# metadata:
+#   name: router
+# spec:
+#   routes:
+#     - match:
+#         http:
+#           pathPrefix: "/foo"

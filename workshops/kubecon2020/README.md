@@ -7,13 +7,27 @@ are in a differerent directory, you will have to adjust your paths accordingly.
 ## Create a test cluster
 
 ```shell-session
-$ kind create cluster --name crds
+$ kind create cluster --name hashicups
 ```
 
 ## Install Consul on Kubernetes using the official Helm chart
 
 ```shell-session
 $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
+```
+
+## Enable Jaeger tracing by registering a ProxyDefaults config entry
+
+```shell-session
+$ kubectl apply -f ../../content/custom-resource-definitions/proxy-defaults.yaml
+```
+
+```shell-session
+$ kubectl get proxydefaults
+```
+
+```shell-session
+$ kubectl describe proxydefaults
 ```
 
 ## Install the Jaeger operator using the Jaeger Operator Helm chart
@@ -28,16 +42,10 @@ $ helm install jaeger jaegertracing/jaeger-operator --version "2.17.0" --wait
 $ kubectl apply -f ../../content/layer7-observability/jaeger/jaeger.yaml
 ```
 
-## Enable Jaeger tracing by registering a ProxyDefaults config entry
-
-```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/proxy-defaults.yaml
-```
-
 ## Deploy V1 of the workload
 
 ```shell-session
-$ kubectl apply -f ./hashicups
+$ kubectl apply -f ../../workloads/hashicups
 ```
 
 ## Expose the Consul UI
@@ -89,25 +97,40 @@ $ kubectl port-forward deploy/public-api 8080:8080
 Send a valid request
 
 ```shell-session
-$ curl -X POST -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" http://localhost:8080/api -d
+$ curl -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
+    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
+    http://localhost:8080/api
 ```
 
 Send the wrong header
 
 ```shell-session
-$ curl -X POST -H "api-token: 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" http://localhost:8080/api -d
+$ curl -X POST \
+    -H "Content-Type: application/json" \
+    -H "api-token: 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
+    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
+    http://localhost:8080/api
 ```
 
 Send no header
 
 ```shell-session
-$ curl -X POST http://localhost:8080/api -d
+$ curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
+    http://localhost:8080/api
 ```
 
 Send and unsupported HTTP method
 
 ```shell-session
-$ curl -X OPTIONS -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" http://localhost:8080/api -d
+$ curl -X OPTIONS \
+    -H "Content-Type: application/json" \
+    -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
+    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
+    http://localhost:8080/api
 ```
 
 ## Add a coffee service to break apart the monolith
@@ -116,10 +139,14 @@ $ curl -X OPTIONS -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d
 $ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
 ```
 
+## Manually test the coffee service with cURL
+
+TODO
+
 ## Add service router to siphon off coffee service traffic
 
 ```shell-session
-$ kubectl apply -f ./canary
+$ kubectl apply -f ../../content/custom-resource-definitions/service-router.yaml
 ```
 
 ## View in Consul
@@ -161,6 +188,8 @@ $ kubectl get serviceresolvers
 ## View network topology of services in Consul UI
 
 ## View traffic in Jeager UI to see how much traffic is routed to V2 and to inspect DB queries
+
+
 
 ## BONUS MATERIAL
 

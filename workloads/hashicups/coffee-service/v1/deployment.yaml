@@ -29,28 +29,15 @@ metadata:
 automountServiceAccountToken: true
 
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: db-configmap
-data:
-  config: |
-    {
-      "db_connection": "host=localhost port=5432 user=postgres password=password dbname=products sslmode=disable",
-      "bind_address": ":9090",
-      "metrics_address": ":9103"
-    }
-
----
 # Coffee Service
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coffee-service
-  version: v1
   labels:
     app: coffee-service
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -67,13 +54,6 @@ spec:
         consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
       serviceAccountName: coffee-service
-      volumes:
-      - name: config
-        configMap:
-          name: db-configmap
-          items:
-          - key: config
-            path: conf.json
       containers:
         - name: coffee-service
           image: hashicorpdemoapp/coffee-service:v0.0.1
@@ -81,8 +61,20 @@ spec:
             - containerPort: 9090
             - containerPort: 9103
           env:
-            - name: "CONFIG_FILE"
-              value: "/config/conf.json"
+            - name: "USERNAME"
+              value: "postgres"
+            - name: "PASSWORD"
+              value: "password"
+            - name: "LOG_FORMAT"
+              value: "text"
+            - name: "LOG_LEVEL"
+              value: "INFO"
+            - name: "BIND_ADDRESS"
+              value: "localhost:9090"
+            - name: "METRICS_ADDRESS"
+              value: "localhost:9103"
+            - name: "VERSION"
+              value: "v1"
           livenessProbe:
             httpGet:
               path: /health
@@ -91,7 +83,3 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 10
             failureThreshold: 30
-          volumeMounts:
-            - name: config
-              mountPath: /config
-              readOnly: true
