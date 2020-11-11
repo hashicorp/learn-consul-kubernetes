@@ -1,4 +1,4 @@
-# Managing Consul Config Entries as Kubernetes CRDs
+# KubeCon 2020 - Managing Consul Config Entries as Kubernetes CRDs
 
 All commands in this file assume that you have cloned this repository and are
 issuing the commands from the directory that contains this README file. If you
@@ -11,6 +11,8 @@ $ kind create cluster --name hashicups
 ```
 
 ## Install Consul on Kubernetes using the official Helm chart
+
+RB-NOTE see this config.yaml for my envoy overrides.  I left it on 1.16.0
 
 ```shell-session
 $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
@@ -27,6 +29,8 @@ $ helm install -f ../../content/layer7-observability/helm/prometheus-values.yaml
 ```shell-session
 $ kubectl apply -f ../../workloads/hashicups/coffee-service/proxy-defaults.yaml
 ```
+
+## Inspect registered crd with kubectl
 
 ```shell-session
 $ kubectl get proxydefaults
@@ -56,7 +60,7 @@ $ kubectl apply -f ../../content/layer7-observability/traffic.yaml
 
 ## View traffic in Consul
 
-STALL - Takes time to collect metrics
+STALL - Takes time to collect metrics before they show up in Consul UI
 
 ## Add a coffee service to break apart the monolith
 
@@ -79,15 +83,12 @@ $ kubectl port-forward deploy/coffee-service 9090:9090
 $ curl http://localhost:9090/coffees
 ```
 
-## Add service router to siphon off coffee service traffic
+## Start watching traffic
 
-```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
-```
-
-## View Product API routing in Consul
-
-STALL - It's going to take a while to re-route traffic
+RB-NOTE - I setup these two watches in side by side terminals. My goal for the demo
+is to have them running, then apply the service-router, and see the traffic switch
+from one watch to another. This is actually how I discovered the weirdness I'm experiencing.
+In other words, you don't need to go past this.
 
 ```shell-session
 $ kubectl logs deploy/product-api product-api -f
@@ -96,6 +97,16 @@ $ kubectl logs deploy/product-api product-api -f
 ```shell-session
 $ kubectl logs deploy/coffee-service coffee-service -f
 ```
+
+## Add service router to siphon off coffee service traffic
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
+```
+
+## View Product API routing in Consul
+
+STALL - It's taking a while to re-route traffic
 
 ## Create service resolver & splitter entry for Canary rollout
 
