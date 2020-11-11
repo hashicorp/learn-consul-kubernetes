@@ -25,7 +25,7 @@ $ helm install -f ../../content/layer7-observability/helm/prometheus-values.yaml
 ## Enable Prometheus by registering a ProxyDefaults config entry
 
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/proxy-defaults.yaml
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/proxy-defaults.yaml
 ```
 
 ```shell-session
@@ -45,9 +45,8 @@ $ kubectl apply -f ../../workloads/hashicups
 ## Expose the Consul UI
 
 ```shell-session
-$ kubectl port-forward consul-server-0 8500:8500
+$ kubectl port-forward svc/consul-ui 8080:80
 ```
-
 
 ## Generate traffic
 
@@ -57,68 +56,7 @@ $ kubectl apply -f ../../content/layer7-observability/traffic.yaml
 
 ## View traffic in Consul
 
-## Add a service intention with service defaults
-
-```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-intentions.yaml
-```
-
-## Inspect the service intention and service defaults CRDs
-
-```shell-session
-$ kubectl get serviceintentions
-```
-
-```shell-session
-$ kubectl get servicedefaults
-```
-
-## Test the intention
-
-Forward the port
-
-```shell-session
-$ kubectl port-forward deploy/public-api 8080:8080
-```
-
-Send a valid request
-
-```shell-session
-$ curl -X POST \
-    -H "Content-Type: application/json" \
-    -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
-    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
-    http://localhost:8080/api
-```
-
-Send the wrong header
-
-```shell-session
-$ curl -X POST \
-    -H "Content-Type: application/json" \
-    -H "api-token: 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
-    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
-    http://localhost:8080/api
-```
-
-Send no header
-
-```shell-session
-$ curl -X POST \
-    -H "Content-Type: application/json" \
-    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
-    http://localhost:8080/api
-```
-
-Send and unsupported HTTP method
-
-```shell-session
-$ curl -X OPTIONS \
-    -H "Content-Type: application/json" \
-    -H "Authorization: bearer 3d2c7d1d-a360-4cb2-b275-fc47acc8985d" \
-    -d '{"operationName":null,"variables":{},"query":"{\n  coffees {\n    id\n    name\n    image\n    price\n    __typename\n  }\n}\n"}' \
-    http://localhost:8080/api
-```
+STALL - Takes time to collect metrics
 
 ## Add a coffee service to break apart the monolith
 
@@ -126,6 +64,10 @@ $ curl -X OPTIONS \
 $ kubectl apply -f ../../workloads/hashicups/coffee-service/service.yaml && \
     kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
 ```
+
+## View the Coffee Service in the UI
+
+View Protocol? & Meta.version
 
 ## Manually test the coffee service with cURL
 
@@ -140,33 +82,29 @@ $ curl http://localhost:9090/coffees
 ## Add service router to siphon off coffee service traffic
 
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-router.yaml
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
 ```
 
-## View in Consul
+## View Product API routing in Consul
 
-## View latency in Jaeger UI
-
-## Add V2 DB instrumentation to coffee-service
-
-Shout out to jmoiron/sqlx
-
-## Deploy V2 Service
+STALL - It's going to take a while to re-route traffic
 
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-splitter.yaml
+$ kubectl logs deploy/product-api product-api -f
 ```
 
-## Create service splitter entry for Canary rollout
-
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-splitter.yaml
+$ kubectl logs deploy/coffee-service coffee-service -f
 ```
 
-## Create service resolver subset entry for Canary rollout
+## Create service resolver & splitter entry for Canary rollout
 
 ```shell-session
-$ kubectl apply -f ../../content/custom-resource-definitions/service-resolver.yaml
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
+```
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
 ```
 
 ## Inspect the service splitter and service resolver CRDs
@@ -176,13 +114,60 @@ $ kubectl get servicesplitters
 ```
 
 ```shell-session
+$ kubectl describe servicesplitter coffee-service
+````
+
+```shell-session
 $ kubectl get serviceresolvers
 ```
 
+```shell-session
+$ kubectl describe serviceresolver coffee-service
+```
+
+## Deploy V2 Service
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/v2/deployment.yaml
+```
+
+```shell-session
+$ kubectl logs deploy/coffee-service-v2 coffee-service -f
+```
+
+## View coffee-service routing in Consul UI
+
 ## View network topology of services in Consul UI
 
-## View traffic in Jeager UI to see how much traffic is routed to V2 and to inspect DB queries
+## Update the Split to 50/50
 
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+```
+
+## View routing percentages in the Consul UI
+
+## Update the Split to 0/100
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+```
+
+## Delete the V1 Service
+
+```shell-service
+$ kubectl delete -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+```
+
+## Delete v1 from the Splitter and Resolver
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+```
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
+```
 
 
 ## BONUS MATERIAL

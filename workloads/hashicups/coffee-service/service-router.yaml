@@ -23,14 +23,3 @@ spec:
           pathPrefix: "/coffees"
       destination:
         service: "coffee-service"
-
-# ---
-# apiVersion: consul.hashicorp.com/v1alpha1
-# kind: ServiceRouter
-# metadata:
-#   name: router
-# spec:
-#   routes:
-#     - match:
-#         http:
-#           pathPrefix: "/foo"

@@ -16,10 +16,3 @@ kind: ServiceAccount
 metadata:
   name: coffee-service
 automountServiceAccountToken: true
----
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: coffee-service
-spec:
-  protocol: "http"
