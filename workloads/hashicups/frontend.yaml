@@ -13,13 +13,18 @@ spec:
   selector:
     app: frontend
 ---
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: frontend
 automountServiceAccountToken: true
-
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: frontend
+spec:
+  protocol: "http"
 ---
 apiVersion: v1
 kind: ConfigMap

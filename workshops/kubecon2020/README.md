@@ -65,8 +65,11 @@ STALL - Takes time to collect metrics before they show up in Consul UI
 ## Add a coffee service to break apart the monolith
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service.yaml && \
-    kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service.yaml
+```
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
 ```
 
 ## View the Coffee Service in the UI
@@ -105,8 +108,6 @@ $ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
 ```
 
 ## View Product API routing in Consul
-
-STALL - It's taking a while to re-route traffic
 
 ## Create service resolver & splitter entry for Canary rollout
 
@@ -158,10 +159,14 @@ $ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yam
 
 ## View routing percentages in the Consul UI
 
-## Update the Split to 0/100
+## Update the Split to 0/100 and the Default Subset to v2
 
 ```shell-session
 $ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+```
+
+```shell-session
+$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
 ```
 
 ## Delete the V1 Service

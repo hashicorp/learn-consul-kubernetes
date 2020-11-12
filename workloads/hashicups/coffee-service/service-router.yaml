@@ -1,18 +1,4 @@
 apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: product-api
-spec:
-  protocol: "http"
----
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: coffee-service
-spec:
-  protocol: "http"
----
-apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceRouter
 metadata:
   name: product-api
