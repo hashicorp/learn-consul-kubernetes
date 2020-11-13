@@ -21,13 +21,13 @@ $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wa
 ## Install the Prometheus Operator
 
 ```shell-session
-$ helm install -f ../../content/layer7-observability/helm/prometheus-values.yaml prometheus prometheus-community/prometheus --version "11.7.0" --wait
+$ helm install -f ./prometheus-values.yaml prometheus prometheus-community/prometheus --version "11.7.0" --wait
 ```
 
 ## Enable Prometheus by registering a ProxyDefaults config entry
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/proxy-defaults.yaml
+$ kubectl apply -f ./proxy-defaults.yaml
 ```
 
 ## Inspect registered crd with kubectl
@@ -43,7 +43,7 @@ $ kubectl describe proxydefaults
 ## Deploy V1 of the workload
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups
+$ kubectl apply -f ./monolith
 ```
 
 ## Expose the Consul UI
@@ -55,21 +55,19 @@ $ kubectl port-forward svc/consul-ui 8080:80
 ## Generate traffic
 
 ```shell-session
-$ kubectl apply -f ../../content/layer7-observability/traffic.yaml
+$ kubectl apply -f ./traffic.yaml
 ```
 
 ## View traffic in Consul
 
-STALL - Takes time to collect metrics before they show up in Consul UI
-
 ## Add a coffee service to break apart the monolith
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service.yaml
+$ kubectl apply -f ./coffee-service/service.yaml
 ```
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+$ kubectl apply -f ./coffee-service/v1/deployment.yaml
 ```
 
 ## View the Coffee Service in the UI
@@ -104,7 +102,7 @@ $ kubectl logs deploy/coffee-service coffee-service -f
 ## Add service router to siphon off coffee service traffic
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
+$ kubectl apply -f ./service-router.yaml
 ```
 
 ## View Product API routing in Consul
@@ -112,11 +110,11 @@ $ kubectl apply -f ../../workloads/hashicups/coffee-service/service-router.yaml
 ## Create service resolver & splitter entry for Canary rollout
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
+$ kubectl apply -f ./service-resolver.yaml
 ```
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+$ kubectl apply -f ./service-splitter.yaml
 ```
 
 ## Inspect the service splitter and service resolver CRDs
@@ -140,7 +138,7 @@ $ kubectl describe serviceresolver coffee-service
 ## Deploy V2 Service
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/v2/deployment.yaml
+$ kubectl apply -f ./coffee-service/v2/deployment.yaml
 ```
 
 ```shell-session
@@ -154,7 +152,7 @@ $ kubectl logs deploy/coffee-service-v2 coffee-service -f
 ## Update the Split to 50/50
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+$ kubectl apply -f ./service-splitter.yaml
 ```
 
 ## View routing percentages in the Consul UI
@@ -162,42 +160,25 @@ $ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yam
 ## Update the Split to 0/100 and the Default Subset to v2
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+$ kubectl apply -f ./service-splitter.yaml
 ```
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
+$ kubectl apply -f ./service-resolver.yaml
 ```
 
 ## Delete the V1 Service
 
 ```shell-service
-$ kubectl delete -f ../../workloads/hashicups/coffee-service/v1/deployment.yaml
+$ kubectl delete -f ./coffee-service/v1/deployment.yaml
 ```
 
 ## Delete v1 from the Splitter and Resolver
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-splitter.yaml
+$ kubectl apply -f ./coffee-service/service-splitter.yaml
 ```
 
 ```shell-session
-$ kubectl apply -f ../../workloads/hashicups/coffee-service/service-resolver.yaml
+$ kubectl apply -f ./coffee-service/service-resolver.yaml
 ```
-
-
-## BONUS MATERIAL
-
-## Deploy v3 with Waypoint (in memory DB version)
-
-## Deploy service to multiple Cloud Providers by toggling Waypoint.hcl && kubeconfig
-
-## Test each deployment
-
-## SUPER BONUS MATERIAL
-
-## Federate those different deployments with Primary DC
-
-## Update service splitter to distribute evenly across different DCs or maybe failover and kill pod in primary?
-
-## Show Jaeger Spans of distributed traces

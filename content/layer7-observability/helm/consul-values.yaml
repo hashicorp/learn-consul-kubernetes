@@ -2,7 +2,7 @@
 global:
   name: consul
   datacenter: l7
-  image: consul:1.9.0-beta1
+  image: consul:1.9.0-beta3
 
 server:
   # use 1 server
@@ -46,3 +46,6 @@ connectInject:
       {
         "envoy_prometheus_bind_addr": "0.0.0.0:9102"
       }
+
+controller:
+  enabled: true
