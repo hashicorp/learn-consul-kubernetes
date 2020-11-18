@@ -12,8 +12,6 @@ $ kind create cluster --name hashicups
 
 ## Install Consul on Kubernetes using the official Helm chart
 
-RB-NOTE see this config.yaml for my envoy overrides.  I left it on 1.16.0
-
 ```shell-session
 $ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
 ```
@@ -43,7 +41,7 @@ $ kubectl describe proxydefaults
 ## Deploy V1 of the workload
 
 ```shell-session
-$ kubectl apply -f ./monolith
+$ kubectl apply -f ./hashicups
 ```
 
 ## Expose the Consul UI
@@ -85,11 +83,6 @@ $ curl http://localhost:9090/coffees
 ```
 
 ## Start watching traffic
-
-RB-NOTE - I setup these two watches in side by side terminals. My goal for the demo
-is to have them running, then apply the service-router, and see the traffic switch
-from one watch to another. This is actually how I discovered the weirdness I'm experiencing.
-In other words, you don't need to go past this.
 
 ```shell-session
 $ kubectl logs deploy/product-api product-api -f

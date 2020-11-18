@@ -13,6 +13,9 @@ server:
     maxUnavailable: 0
   extraConfig: |
     {
+      "telemetry": {
+        "prometheus_retention_time": "10s"
+      },
       "ui_config": {
         "enabled": true,
         "metrics_provider": "prometheus",
