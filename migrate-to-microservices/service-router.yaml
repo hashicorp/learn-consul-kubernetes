@@ -1,0 +1,11 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: product-api
+spec:
+  routes:
+    - match:
+        http:
+          pathPrefix: "/coffees"
+      destination:
+        service: "coffee-service"

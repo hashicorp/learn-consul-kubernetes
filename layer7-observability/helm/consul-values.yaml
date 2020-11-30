@@ -2,7 +2,6 @@
 global:
   name: consul
   datacenter: l7
-  image: consul:1.9.0-beta1
 
 server:
   # use 1 server
@@ -13,6 +12,9 @@ server:
     maxUnavailable: 0
   extraConfig: |
     {
+      "telemetry": {
+        "prometheus_retention_time": "10s"
+      },
       "ui_config": {
         "enabled": true,
         "metrics_provider": "prometheus",
@@ -46,3 +48,6 @@ connectInject:
       {
         "envoy_prometheus_bind_addr": "0.0.0.0:9102"
       }
+
+controller:
+  enabled: true

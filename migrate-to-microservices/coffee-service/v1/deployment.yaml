@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coffee-service
+  labels:
+    app: coffee-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coffee-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: coffee-service
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
+        consul.hashicorp.com/service-meta-version: v1
+    spec:
+      serviceAccountName: coffee-service
+      containers:
+        - name: coffee-service
+          image: hashicorpdemoapp/coffee-service:v0.0.1
+          ports:
+            - containerPort: 9090
+            - containerPort: 9103
+          env:
+            - name: "USERNAME"
+              value: "postgres"
+            - name: "PASSWORD"
+              value: "password"
+            - name: "LOG_FORMAT"
+              value: "text"
+            - name: "LOG_LEVEL"
+              value: "INFO"
+            - name: "BIND_ADDRESS"
+              value: "localhost:9090"
+            - name: "METRICS_ADDRESS"
+              value: "localhost:9103"
+            - name: "VERSION"
+              value: "v1"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9090
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 30

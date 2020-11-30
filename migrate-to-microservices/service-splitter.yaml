@@ -1,10 +1,10 @@
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceSplitter
 metadata:
-  name: frontend
+  name: coffee-service
 spec:
   splits:
-    - weight: 97
+    - weight: 90
       serviceSubset: v1
-    - weight: 3
+    - weight: 10
       serviceSubset: v2
