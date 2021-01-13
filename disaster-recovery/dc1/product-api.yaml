@@ -60,12 +60,12 @@ spec:
     spec:
       serviceAccountName: product-api
       volumes:
-      - name: config
-        configMap:
-          name: db-configmap
-          items:
-          - key: config
-            path: conf.json
+        - name: config
+          configMap:
+            name: db-configmap
+            items:
+              - key: config
+                path: conf.json
       containers:
         - name: product-api
           image: hashicorpdemoapp/product-api:v0.0.12

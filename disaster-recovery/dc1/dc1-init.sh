@@ -4,7 +4,7 @@ VAULT_TOKEN=$2
 mkdir -p dc1/backup
 mkdir -p dc1/secrets
 
-kubectl config use-context dc1
+kubectl config use-context eks_dc1
 
 cat <<EOF > ca-config.json
 {

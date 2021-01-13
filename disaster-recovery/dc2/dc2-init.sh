@@ -1,11 +1,11 @@
 VAULT_ADDR=$1
 VAULT_TOKEN=$2
 
-kubectl config use-context dc1
+kubectl config use-context eks_dc1
 
 kubectl get secret consul-federation -o yaml > consul-federation-secret.yaml
 
-kubectl config use-context dc2
+kubectl config use-context eks_dc2
 
 kubectl apply -f dc2/consul-federation-secret.yaml
 
