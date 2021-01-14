@@ -17,7 +17,7 @@ global:
 
   acls:
     manageSystemACLs: false # note false
-    createReplicationToken: false
+    createReplicationToken: false # note false
     bootstrapToken:
       secretName: consul-bootstrap-acl-token
       secretKey: token
