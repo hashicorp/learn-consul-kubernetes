@@ -1,0 +1,15 @@
+{
+  "connect": [
+    {
+      "ca_config": [
+        {
+          "address": "http://9d5dddce299a.ngrok.io",
+          "intermediate_pki_path": "dc2/connect-intermediate",
+          "root_pki_path": "connect-root",
+          "token": "education"
+        }
+      ],
+      "ca_provider": "vault"
+    }
+  ]
+}

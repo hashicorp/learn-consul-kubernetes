@@ -16,8 +16,8 @@ global:
     createFederationSecret: true
 
   acls:
-    manageSystemACLs: false # note false
-    createReplicationToken: false # note false
+    manageSystemACLs: true # note true
+    createReplicationToken: true # note true
     bootstrapToken:
       secretName: consul-bootstrap-acl-token
       secretKey: token
@@ -29,8 +29,12 @@ global:
 connectInject:
   enabled: true
 
+controller:
+  enabled: true
+
 meshGateway:
   enabled: true
+  replicas: 1
 
 server:
   extraVolumes:
