@@ -2,13 +2,8 @@ VAULT_ADDR=$1
 VAULT_TOKEN=$2
 
 mkdir -p dc1/backup
-mkdir -p dc1/secrets
 
 helm repo update
-
-# ensure rename occurred for all scenarios
-kubectl config rename-context kind-dc1 dc1
-kubectl config rename-context eks_dc1 dc1
 
 kubectl config use-context dc1
 

@@ -1,7 +1,6 @@
 VAULT_ADDR=$1
 VAULT_TOKEN=$2
 
-kubectl config rename-context kind-dc2 dc2
 kubectl config rename-context eks_dc2 dc2
 
 kubectl config use-context dc1
