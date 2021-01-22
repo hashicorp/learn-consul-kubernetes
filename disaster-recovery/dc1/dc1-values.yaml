@@ -1,0 +1,37 @@
+global:
+  name: consul
+  datacenter: dc1
+
+  tls:
+    enabled: true
+
+  federation:
+    enabled: true
+    createFederationSecret: true
+
+  acls:
+    manageSystemACLs: true
+    createReplicationToken: true
+
+  gossipEncryption:
+    secretName: consul-gossip-encryption-key
+    secretKey: key
+
+connectInject:
+  enabled: true
+
+meshGateway:
+  enabled: true
+  replicas: 1
+
+controller:
+  enabled: true
+
+server:
+  extraVolumes:
+    - type: secret
+      name: vault-config
+      load: true
+      items:
+        - key: config
+          path: vault-config.json
