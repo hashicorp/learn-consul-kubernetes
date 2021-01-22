@@ -20,12 +20,12 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.datacenter_name}-public-subnet" = "shared"
-    "kubernetes.io/role/elb"                                                = "1"
+    "kubernetes.io/role/elb"                                     = "1"
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.datacenter_name}-private-subnet" = "shared"
-    "kubernetes.io/role/internal-elb"                                       = "1"
+    "kubernetes.io/role/internal-elb"                             = "1"
   }
 }
 
@@ -33,7 +33,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "13.2.1"
 
-  cluster_name    = "${var.datacenter_name}"
+  cluster_name    = var.datacenter_name
   cluster_version = "1.17"
   subnets         = module.vpc.public_subnets
 
@@ -55,17 +55,16 @@ module "eks" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name  = module.eks.cluster_id
+  name = module.eks.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name  = module.eks.cluster_id
+  name = module.eks.cluster_id
 }
 
 provider "kubernetes" {
+  load_config_file       = false
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
-  version                = "~> 1.10"
 }
