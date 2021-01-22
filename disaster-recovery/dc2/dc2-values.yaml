@@ -29,8 +29,11 @@ global:
     secretKey: gossipEncryptionKey
 connectInject:
   enabled: true
+controller:
+  enabled: true
 meshGateway:
   enabled: true
+  replicas: 1
 server:
   # Here we're including the server config exported from the primary
   # via the federation secret. This config includes the addresses of

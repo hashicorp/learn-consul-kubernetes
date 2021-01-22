@@ -17,7 +17,7 @@ global:
 
   acls:
     manageSystemACLs: false # note false
-    createReplicationToken: false
+    createReplicationToken: false # note false
     bootstrapToken:
       secretName: consul-bootstrap-acl-token
       secretKey: token
@@ -29,8 +29,13 @@ global:
 connectInject:
   enabled: true
 
+
+controller:
+  enabled: true
+
 meshGateway:
   enabled: true
+  replicas: 1
 
 server:
   extraVolumes:

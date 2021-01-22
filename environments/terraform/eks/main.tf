@@ -1,12 +1,13 @@
 provider "aws" {
-  region = var.region
+  version = ">= 3.23.0"
+  region  = var.region
 }
 
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.66.0"
+  version = "2.65.0"
 
   name                 = "${var.datacenter_name}-vpc"
   cidr                 = "10.0.0.0/16"
@@ -30,11 +31,11 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "12.2.0"
+  version = "13.2.1"
 
   cluster_name    = var.datacenter_name
   cluster_version = "1.17"
-  subnets         = module.vpc.private_subnets
+  subnets         = module.vpc.public_subnets
 
   vpc_id = module.vpc.vpc_id
 

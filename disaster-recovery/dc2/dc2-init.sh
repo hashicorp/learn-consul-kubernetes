@@ -3,13 +3,13 @@ VAULT_TOKEN=$2
 
 kubectl config use-context eks_dc1
 
-kubectl get secret consul-federation -o yaml > consul-federation-secret.yaml
+kubectl get secret consul-federation -o yaml > ./dc2/consul-federation-secret.yaml
 
 kubectl config use-context eks_dc2
 
-kubectl apply -f dc2/consul-federation-secret.yaml
+kubectl apply -f ./dc2/consul-federation-secret.yaml
 
-cat <<EOF > ca-config.json
+cat <<EOF > ./dc2/ca-config.json
 {
   "connect": [
     {
@@ -27,11 +27,6 @@ cat <<EOF > ca-config.json
 }
 EOF
 
-kubectl create secret generic vault-config --from-file=config=ca-config.json
+kubectl create secret generic vault-config --from-file=config=./dc2/ca-config.json
 
-helm install consul hashicorp/consul -f dc2-values.yaml --wait
-
-kubectl apply -f public-api.yaml
-
-kubeclt apply -f frontend.yaml
-
+helm install consul hashicorp/consul -f ./dc2/dc2-values.yaml --wait
