@@ -5,7 +5,7 @@ mkdir -p dc1/backup
 
 helm repo update
 
-kubectl config use-context eks_dc1
+kubectl config use-context dc1
 
 cat <<EOF > ./dc1/ca-config.json
 {
