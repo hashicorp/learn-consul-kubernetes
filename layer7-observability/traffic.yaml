@@ -67,7 +67,7 @@ spec:
         command:
           - k6
           - run
-          - k6/script.js
+          - /k6/script.js
         env:
         - name: BASE_URI
           value: http://127.0.0.1:80/api
