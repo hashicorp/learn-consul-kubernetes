@@ -15,6 +15,13 @@ spec:
 
 ---
 
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: postgres
+spec:
+  protocol: 'tcp'
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -22,6 +29,7 @@ metadata:
 automountServiceAccountToken: true
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,12 +49,11 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-protocol: "tcp"
     spec:
       serviceAccountName: postgres
       containers:
         - name: postgres
-          image: hashicorpdemoapp/product-api-db:v0.0.11
+          image: hashicorpdemoapp/product-api-db:v0.0.13
           ports:
             - containerPort: 5432
           env:
