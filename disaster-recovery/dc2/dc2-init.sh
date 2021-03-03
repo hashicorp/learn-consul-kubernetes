@@ -29,4 +29,4 @@ EOF
 
 kubectl create secret generic vault-config --from-file=config=./dc2/ca-config.json
 
-helm install consul hashicorp/consul -f ./dc2/dc2-values.yaml --wait
+helm install consul hashicorp/consul -f ./dc2/dc2-values.yaml --version "0.30.0" --wait
