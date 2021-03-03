@@ -6,6 +6,8 @@ kind create cluster --name hashicups-jaeger
 
 helm install -f ./helm/consul.yaml consul hashicorp/consul --version "0.28.0" --wait
 
+kubectl apply -f proxy-defaults.yaml
+
 helm install jaeger jaegertracing/jaeger-operator --wait
 
 kubectl apply -f ./helm/jaeger.yaml --wait
