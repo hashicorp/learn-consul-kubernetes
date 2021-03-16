@@ -13,7 +13,7 @@ $ kind create cluster --name hashicups
 ## Install Consul on Kubernetes using the official Helm chart
 
 ```shell-session
-$ helm install -f ./config.yaml consul hashicorp/consul  --version "0.25.0" --wait
+$ helm install -f ./config.yaml consul hashicorp/consul  --version "0.30.0" --wait
 ```
 
 ## Install the Prometheus Operator

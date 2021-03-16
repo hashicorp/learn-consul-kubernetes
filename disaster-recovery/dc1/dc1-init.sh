@@ -29,6 +29,6 @@ kubectl create secret generic vault-config --from-file=config=./dc1/ca-config.js
 
 kubectl create secret generic consul-gossip-encryption-key --from-literal=key=$(consul keygen)
 
-helm install consul hashicorp/consul -f ./dc1/dc1-values.yaml --version "0.29.0" --wait
+helm install consul hashicorp/consul -f ./dc1/dc1-values.yaml --version "0.30.0" --wait
 
 

@@ -29,7 +29,6 @@ global:
 connectInject:
   enabled: true
 
-
 controller:
   enabled: true
 

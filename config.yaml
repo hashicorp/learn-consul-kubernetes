@@ -5,16 +5,13 @@ global:
 server:
   # use 1 server
   replicas: 1
-  bootstrapExpect: 1
-  disruptionBudget:
-    enabled: true
-    maxUnavailable: 0
 
 connectInject:
   enabled: true
   # inject an envoy sidecar into every new pod,
   # except for those with annotations that prevent injection
   default: true
+
 # enable CRDs
 controller:
   enabled: true
