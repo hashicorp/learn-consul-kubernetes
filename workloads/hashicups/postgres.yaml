@@ -22,6 +22,14 @@ metadata:
 automountServiceAccountToken: true
 
 ---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: postgres
+spec:
+  protocol: tcp
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,7 +49,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-protocol: "tcp"
     spec:
       serviceAccountName: postgres
       containers:

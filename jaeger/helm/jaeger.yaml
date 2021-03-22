@@ -1,4 +1,9 @@
+#apiVersion: jaegertracing.io/v1
+#kind: Jaeger
+#metadata:
+#  name: jaeger
+
 apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
-  name: jaeger
+  name: simplest
