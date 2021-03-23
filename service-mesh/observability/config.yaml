@@ -5,32 +5,18 @@ global:
   metrics:
     enabled: true
     enableAgentMetrics: true
-  extraConfig: |
-    {
-     "ui_config": {
-       "dashboard_url_templates": {
-        "service": "https://grafana.example.com?{{ printf "{{Service.Name}}" }}&{{ printf "{{Datacenter}}" }}"
-       }
-      }
-    }
-
 server:
   replicas: 1
-
 ui:
   enabled: true
-
 connectInject:
   enabled: true
   default: true
   metrics:
     defaultEnableMerging: true
-
 controller:
   enabled: true
-
 prometheus:
   enabled: true
-
 grafana:
   enabled: true
