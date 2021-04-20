@@ -11,6 +11,7 @@ ui:
   enabled: true
 connectInject:
   enabled: true
+  default: true
 controller:
   enabled: true
 prometheus:
