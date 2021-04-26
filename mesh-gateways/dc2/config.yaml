@@ -1,0 +1,29 @@
+global:
+  name: consul
+  datacenter: dc2
+  tls:
+    enabled: true
+    caCert:
+      secretName: consul-federation
+      secretKey: caCert
+    caKey:
+      secretName: consul-federation
+      secretKey: caKey
+  federation:
+    enabled: true
+server:
+  replicas: 1
+  extraVolumes:
+    - type: secret
+      name: consul-federation
+      items:
+        - key: serverConfigJSON
+          path: config.json
+      load: true
+connectInject:
+  enabled: true
+controller:
+  enabled: true
+meshGateway:
+  enabled: true
+  replicas: 1

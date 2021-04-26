@@ -1,0 +1,19 @@
+global:
+  name: consul
+  datacenter: dc1
+  federation:
+    enabled: true
+    createFederationSecret: true
+  tls:
+    enabled: true
+server:
+  replicas: 1
+ui:
+  enabled: true
+meshGateway:
+  enabled: true
+  replicas: 1
+connectInject:
+  enabled: true
+controller:
+  enabled: true
