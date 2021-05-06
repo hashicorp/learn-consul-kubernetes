@@ -4,8 +4,28 @@ global:
   scrape_timeout: 3s
 
 server:
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 655
   persistentVolume:
     enabled: false
-
+serviceAccounts:
+  alertmanager:
+    create: true
+    name:
+    annotations: {}
+  nodeExporter:
+    create: true
+    name:
+    annotations: {}
+  pushgateway:
+    create: true
+    name:
+    annotations: {}
+  server:
+    create: true
+    name:
+    annotations: {}
 alertmanager:
   enabled: false

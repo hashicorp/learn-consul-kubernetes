@@ -1,14 +1,14 @@
 global:
+  enabled: true
   name: consul
   datacenter: dc1
+  imageK8S: hashicorpdev/consul-k8s:latest
   metrics:
     enabled: true
     enableAgentMetrics: true
     agentMetricsRetentionTime: "1m"
 server:
   replicas: 1
-ui:
-  enabled: true
 connectInject:
   enabled: true
   default: true
