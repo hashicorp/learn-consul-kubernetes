@@ -57,6 +57,7 @@ module "eks" {
   manage_aws_auth    = false
   write_kubeconfig   = true
   config_output_path = pathexpand("${var.output_dir}/${var.datacenter_name}")
+
 }
 
 data "aws_eks_cluster" "cluster" {

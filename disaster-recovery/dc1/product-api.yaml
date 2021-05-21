@@ -53,8 +53,6 @@ spec:
       labels:
         app: product-api
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:

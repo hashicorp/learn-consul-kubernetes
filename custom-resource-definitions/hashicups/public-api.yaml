@@ -19,13 +19,6 @@ metadata:
   name: public-api
 automountServiceAccountToken: true
 ---
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: public-api
-spec:
-  protocol: "http"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,8 +35,6 @@ spec:
         service: public-api
         app: public-api
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "product-api:9090"
     spec:

@@ -19,13 +19,6 @@ metadata:
   name: frontend
 automountServiceAccountToken: true
 ---
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: frontend
-spec:
-  protocol: "http"
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -78,8 +71,6 @@ spec:
         service: frontend
         app: frontend
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:

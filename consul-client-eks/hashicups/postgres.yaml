@@ -12,9 +12,7 @@ spec:
       targetPort: 5432
   selector:
     app: postgres
-
 ---
-
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
@@ -27,9 +25,7 @@ kind: ServiceAccount
 metadata:
   name: postgres
 automountServiceAccountToken: true
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:

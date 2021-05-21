@@ -12,15 +12,12 @@ spec:
       targetPort: 5432
   selector:
     app: postgres
-
 ---
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: postgres
 automountServiceAccountToken: true
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,10 +34,6 @@ spec:
       labels:
         service: postgres
         app: postgres
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9102"
-        consul.hashicorp.com/connect-inject: "true"
     spec:
       serviceAccountName: postgres
       containers:
@@ -63,9 +56,7 @@ spec:
       volumes:
         - name: pgdata
           emptyDir: {}
-
 ---
-
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
