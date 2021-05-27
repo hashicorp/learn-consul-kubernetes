@@ -29,13 +29,12 @@ spec:
     metadata:
       annotations:
         consul.hashicorp.com/connect-inject: 'true'
-        consul.hashicorp.com/connect-service-upstreams: 'static-server:1234:dc2'
       labels:
         app: static-client
     spec:
       containers:
         - name: static-client
-          image: tutum/curl:latest
+          image: curlimages/curl:7.77.0
           ports:
             - containerPort: 4321
           command: ['/bin/sh', '-c', '--']
