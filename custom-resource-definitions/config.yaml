@@ -1,11 +1,6 @@
 global:
-  enabled: true
   name: consul
   datacenter: dc1
-  metrics:
-    enabled: true
-    enableAgentMetrics: true
-    agentMetricsRetentionTime: "1m"
 server:
   replicas: 1
 connectInject:

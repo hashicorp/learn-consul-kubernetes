@@ -30,7 +30,17 @@ data:
     };
 
 ---
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: traffic
+spec:
+  selector:
+    app: traffic
+  ports:
+    - port: 80
+      targetPort: 80
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,7 +58,6 @@ spec:
         app: traffic
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "frontend:80"
     spec:
       volumes:
       - name: k6
@@ -70,8 +79,19 @@ spec:
           - /k6/script.js
         env:
         - name: BASE_URI
-          value: http://127.0.0.1:80/api
+          value: http://frontend/api
         - name: DURATION
           value: "600"
         - name: SHOW_PROGRESS
           value: "false"
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: traffic-to-frontend
+spec:
+  destination:
+    name: frontend
+  sources:
+    - name: traffic
+      action: allow
