@@ -3,7 +3,7 @@ global:
   datacenter: dc1
   image: hashicorp/consul:1.10.1
   imageEnvoy: envoyproxy/envoy:v1.18.3
-  imageK8S: hashicorp/consul:0.26.0
+  imageK8S: hashicorp/consul-k8s:0.26.0
   metrics:
     enabled: true
     enableAgentMetrics: true
