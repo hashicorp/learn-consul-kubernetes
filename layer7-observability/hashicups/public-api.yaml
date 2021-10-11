@@ -41,8 +41,6 @@ spec:
       labels:
         service: public-api
         app: public-api
-      annotations:
-        consul.hashicorp.com/connect-service-upstreams: "product-api:9090"
     spec:
       serviceAccountName: public-api
       containers:

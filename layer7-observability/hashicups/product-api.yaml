@@ -52,8 +52,6 @@ spec:
     metadata:
       labels:
         app: product-api
-      annotations:
-        consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
       serviceAccountName: product-api
       volumes:

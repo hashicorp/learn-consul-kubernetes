@@ -77,8 +77,6 @@ spec:
       labels:
         service: frontend
         app: frontend
-      annotations:
-        consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:
       serviceAccountName: frontend
       volumes:
