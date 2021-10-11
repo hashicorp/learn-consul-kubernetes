@@ -52,4 +52,4 @@ spec:
             - name: BIND_ADDRESS
               value: ":8080"
             - name: PRODUCT_API_URI
-              value: "http://localhost:9090"
+              value: "http://product-api.default.svc.cluster.local:9090"
