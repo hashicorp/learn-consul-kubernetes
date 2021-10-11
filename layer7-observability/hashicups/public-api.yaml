@@ -53,5 +53,5 @@ spec:
           env:
             - name: BIND_ADDRESS
               value: ":8080"
-            - name: PRODUCTS_API_URI
+            - name: PRODUCT_API_URI
               value: "http://localhost:9090"
