@@ -41,8 +41,6 @@ spec:
       labels:
         service: postgres
         app: postgres
-      annotations:
-        consul.hashicorp.com/connect-inject: "true"
     spec:
       serviceAccountName: postgres
       containers:

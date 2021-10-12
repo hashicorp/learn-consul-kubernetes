@@ -48,7 +48,7 @@ data:
         # Proxy pass the api location to save CORS
         # Use location exposed by Consul connect
         location /api {
-            proxy_pass http://127.0.0.1:8080;
+            proxy_pass http://public-api.default.svc.cluster.local:8080;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "Upgrade";
@@ -77,8 +77,6 @@ spec:
       labels:
         service: frontend
         app: frontend
-      annotations:
-        consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:
       serviceAccountName: frontend
       volumes:
@@ -97,3 +95,14 @@ spec:
             - name: config
               mountPath: /etc/nginx/conf.d
               readOnly: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: frontend-to-public-api
+spec:
+  destination:
+    name: public-api
+  sources:
+    - name: frontend
+      action: allow

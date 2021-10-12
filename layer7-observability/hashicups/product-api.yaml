@@ -32,7 +32,7 @@ metadata:
 data:
   config: |
     {
-      "db_connection": "host=localhost port=5432 user=postgres password=password dbname=products sslmode=disable",
+      "db_connection": "host=postgres.default.svc.cluster.local port=5432 user=postgres password=password dbname=products sslmode=disable",
       "bind_address": ":9090",
       "metrics_address": ":9103"
     }
@@ -52,8 +52,6 @@ spec:
     metadata:
       labels:
         app: product-api
-      annotations:
-        consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
       serviceAccountName: product-api
       volumes:
@@ -84,3 +82,14 @@ spec:
             - name: config
               mountPath: /config
               readOnly: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: product-api-to-postgres
+spec:
+  destination:
+    name: postgres
+  sources:
+    - name: product-api
+      action: allow
