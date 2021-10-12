@@ -53,3 +53,14 @@ spec:
               value: ":8080"
             - name: PRODUCT_API_URI
               value: "http://product-api.default.svc.cluster.local:9090"
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: public-api-to-product-api
+spec:
+  destination:
+    name: product-api
+  sources:
+    - name: public-api
+      action: allow

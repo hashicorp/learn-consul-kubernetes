@@ -95,3 +95,14 @@ spec:
             - name: config
               mountPath: /etc/nginx/conf.d
               readOnly: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: frontend-to-public-api
+spec:
+  destination:
+    name: public-api
+  sources:
+    - name: frontend
+      action: allow
