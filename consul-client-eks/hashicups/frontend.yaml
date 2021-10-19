@@ -78,6 +78,7 @@ spec:
         service: frontend
         app: frontend
       annotations:
+        consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
