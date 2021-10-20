@@ -32,7 +32,7 @@ metadata:
 data:
   config: |
     {
-      "db_connection": "host=localhost port=5432 user=postgres password=password dbname=products sslmode=disable",
+      "db_connection": "host=postgres port=5432 user=postgres password=password dbname=products sslmode=disable",
       "bind_address": ":9090",
       "metrics_address": ":9103"
     }
@@ -56,9 +56,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
-        consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
       serviceAccountName: product-api
       volumes:
@@ -70,7 +67,7 @@ spec:
             path: conf.json
       containers:
         - name: product-api
-          image: hashicorpdemoapp/product-api:v0.0.12
+          image: hashicorpdemoapp/product-api:v0.0.17
           ports:
             - containerPort: 9090
             - containerPort: 9103

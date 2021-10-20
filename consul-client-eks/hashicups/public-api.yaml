@@ -45,7 +45,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "product-api:9090"
     spec:
       serviceAccountName: public-api
       containers:
@@ -56,5 +55,5 @@ spec:
           env:
             - name: BIND_ADDRESS
               value: ":8080"
-            - name: PRODUCTS_API_URI
-              value: "http://localhost:9090"
+            - name: PRODUCT_API_URI
+              value: "http://product-api:9090"
