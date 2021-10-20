@@ -48,7 +48,7 @@ data:
         # Proxy pass the api location to save CORS
         # Use location exposed by Consul connect
         location /api {
-            proxy_pass http://127.0.0.1:8080;
+            proxy_pass http://public-api:8080;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "Upgrade";
@@ -92,7 +92,7 @@ spec:
             path: default.conf
       containers:
         - name: frontend
-          image: hashicorpdemoapp/frontend:v0.0.3
+          image: hashicorpdemoapp/frontend:v0.0.5
           ports:
             - containerPort: 80
           volumeMounts:
