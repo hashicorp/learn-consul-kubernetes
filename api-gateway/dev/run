@@ -1,0 +1,187 @@
+#!/bin/bash
+
+enableHelmRepo() {
+  echo "Enabling Hashicorp Helm repo"
+  (helm repo add hashicorp https://helm.releases.hashicorp.com && helm repo update) 2>&1 > /dev/null
+}
+
+destroyCluster() {
+  local exists=$(kind get clusters | grep consul-api-gateway || true)
+  if [[ "$exists" != "consul-api-gateway" ]]; then
+    echo "consul-api-gateway cluster not found"
+    exit 1
+  fi
+  kind delete cluster --name consul-api-gateway
+}
+
+createCluster() {
+  local exists=$(kind get clusters | grep consul-api-gateway || true)
+  if [[ "$exists" == "consul-api-gateway" ]]; then
+    echo "consul-api-gateway cluster already exists"
+    exit 1
+  fi
+  kind create cluster --name consul-api-gateway --config=dev/config/kind/cluster.yaml
+}
+
+installGatewayCRDs() {
+  echo "Installing Gateway CRDs"
+  kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v0.4.0"  2>&1 > /dev/null
+}
+
+createServiceAccountForRBAC() {
+  echo "Creating consul-api-gateway Service Account"
+  kubectl create serviceaccount consul-api-gateway 2>&1 > /dev/null
+  kubectl apply -f dev/config/k8s/rbac.yaml 2>&1 > /dev/null
+}
+
+createNginxIngress() {
+  echo "Creating nginx ingress"
+  kubectl apply -k dev/config/k8s/consul-ui 2>&1 > /dev/null
+  echo "Waiting for ingress pod to start"
+  sleep 10
+  kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+}
+
+installConsul() {
+  echo "Installing consul helm chart"
+  helm install consul hashicorp/consul --version 0.35.0 -f dev/config/helm/consul.yaml 2>&1 > /dev/null
+  echo "Waiting for consul to stabilize"
+  sleep 10
+  kubectl wait --for=condition=ready pod --selector=app=consul,component=server,release=consul --timeout=90s
+  echo "Consul is now accessible at https://localhost"
+}
+
+setupAuthMethod() {
+  echo "Importing Kubernetes Configuration"
+  export K8S_JWT=$(kubectl get secret $(kubectl get serviceaccounts consul-api-gateway -o json | jq '.secrets[0].name' -r) -o json | jq '.data.token' -r | base64 -d)
+  export K8S_HOST=$(kind get kubeconfig --name consul-api-gateway --internal | grep server | tr -s ' '| cut -d' ' -f3)
+  export K8S_CERT=$(kubectl config view -o jsonpath='{.clusters[].cluster.certificate-authority-data}' --raw | base64 -d)
+
+  echo "Bootstrapping ACLs"
+  export CONSUL_HTTP_ADDR="https://localhost"
+  export CONSUL_HTTP_SSL_VERIFY=false
+  export CONSUL_HTTP_TOKEN=$(consul acl bootstrap -format json | jq '.SecretID' -r)
+  export CONSUL_POLICY_ID=$(consul acl policy create -name policy -rules @dev/config/consul/acl-policy.hcl -format json | jq '.ID' -r)
+  consul acl role create -name "consul-api-gateway" -policy-id "${CONSUL_POLICY_ID}" > /dev/null
+
+  echo "Creating ACL Auth Rule Binding"
+  consul acl auth-method create -type "kubernetes" -name "consul-api-gateway" -kubernetes-host "$K8S_HOST" -kubernetes-ca-cert "$K8S_CERT" -kubernetes-service-account-jwt "$K8S_JWT" | grep ServiceAccountJWT | cut -d':' -f 2 | tr -s " " | jq -r > token
+  consul acl binding-rule create -method=consul-api-gateway -bind-type=role -bind-name='consul-api-gateway' -selector='serviceaccount.name=="consul-api-gateway"' > /dev/null
+  echo $CONSUL_HTTP_TOKEN > token
+}
+
+installAPIGatewayCRDs() {
+  kubectl apply -f config/crd/bases/api-gateway.consul.hashicorp.com_gatewayclassconfigs.yaml
+}
+
+buildAPIGateway() {
+  echo "Cross-compiling consul-api-gateway for Linux"
+  GOOS=linux go build 2>&1 > /dev/null
+}
+
+buildDocker() {
+  echo "Building local docker container"
+  docker build . -f Dockerfile.local -t consul-api-gateway:1 2>&1 > /dev/null
+}
+
+loadDockerImage() {
+  echo "Loading docker image into cluster"
+  kind load docker-image consul-api-gateway:1 consul-api-gateway:1 --name consul-api-gateway 2>&1 > /dev/null
+}
+
+main() {
+  local destroy=$1
+  local provision=$2
+  local load=$3
+
+  if [[ "${destroy}" == "TRUE" ]]; then
+    destroyCluster
+  fi
+  if [[ "${provision}" == "TRUE" ]]; then
+    enableHelmRepo
+    createCluster
+    installGatewayCRDs
+    createServiceAccountForRBAC
+    createNginxIngress
+    installConsul
+    setupAuthMethod
+  fi
+  if [[ "${load}" == "TRUE" ]]; then
+    installAPIGatewayCRDs
+    buildAPIGateway
+    buildDocker
+    loadDockerImage
+    echo "To reload the init container after modifications run './dev/run -l'"
+  fi
+  if [[ "${start}" == "TRUE" ]]; then
+    export CONSUL_HTTP_TOKEN=$(cat token)
+    go build
+    ./consul-api-gateway server \
+      -ca-secret consul-ca-cert -consul-address https://localhost:8501 \
+      -sds-server-host host.docker.internal -sds-server-port 9090 \
+      -metrics-port 9091 -pprof-port 9092 -log-level trace
+    echo "To re-run the server run './dev/run -s'"
+  fi
+}
+
+usage() {
+  echo -e "./dev/run [flags]"
+  echo -e ""
+  echo -e "Bootstraps a kind environment with Consul and ACLs enabled."
+  echo -e "When this script is run without flags it creates the"
+  echo -e "environment, cross-compiles consul-api-gateway, loads it into the kind"
+  echo -e "environment to use for gateway deployments, and builds"
+  echo -e "and runs a local consul-api-gateway controller instance. Subsequent"
+  echo -e "runs after the kind environment is already bootstrapped"
+  echo -e "should leverage the -l and -s flags."
+  echo -e ""
+  echo -e "Dependencies:"
+  echo -e "\tkubectl, kind, consul, jq, docker, go, helm, kustomize"
+  echo -e "Flags:"
+  echo -e "  -l\tRebuild and load docker container into cluster"
+  echo -e "  -d\tDestroy cluster"
+  echo -e "  -r\tDestroy and then remake cluster"
+  echo -e "  -h\tShow usage"
+  echo -e "  -s\tStart consul-api-gateway"
+}
+
+destroy=FALSE
+provision=TRUE
+load=TRUE
+start=TRUE
+
+while getopts drhls flag
+do
+    case "${flag}" in
+        d)
+          destroy=TRUE
+          provision=FALSE
+          load=FALSE
+          start=FALSE
+          ;;
+        r)
+          destroy=TRUE
+          provision=TRUE
+          load=TRUE
+          start=TRUE
+          ;;
+        h)
+          usage
+          exit 0
+          ;;
+        l)
+          load=TRUE
+          destroy=FALSE
+          provision=FALSE
+          start=FALSE
+          ;;
+        s)
+          load=FALSE
+          destroy=FALSE
+          provision=FALSE
+          start=TRUE
+          ;;
+    esac
+done
+
+main $destroy $provision $load $start
