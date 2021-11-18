@@ -2,16 +2,16 @@
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: frontend
+  name: frontend-v2
 spec:
   protocol: "http"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: frontend-v2
   labels:
-    app: frontend
+    app: frontend-v2
 spec:
   type: ClusterIP
   ports:
@@ -20,12 +20,12 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    app: frontend
+    app: frontend-v2
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: frontend
+  name: frontend-v2
 automountServiceAccountToken: true
 ---
 apiVersion: v1
@@ -41,11 +41,25 @@ data:
 
         #charset koi8-r;
         #access_log  /var/log/nginx/host.access.log  main;
+        root   /usr/share/nginx/html;
+        index  index.html index.htm; 
+        
+        #set $proxy_upstream_name "-";
 
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
+        location / {}
+
+        location ^~ /hashicups {
+            alias   /usr/share/nginx/html;
+            #rewrite ^/hashicups(.*)$ $1 last; 
         }
+
+        #location /hashicups/ {
+        #    alias   /usr/share/nginx/html/;
+        #    index  index.html index.htm;
+        #    try_files $uri $uri/ /index.html;
+        #    alias /usr/share/nginx/html/;
+        #    try_files /usr/share/nginx/html/ $uri @fallback;
+        #}
 
         # Proxy pass the api location to save CORS
         # Use location exposed by Consul connect
@@ -67,26 +81,26 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: frontend-v2
   labels:
-    app: frontend
+    app: frontend-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: frontend
-      app: frontend
+      service: frontend-v2
+      app: frontend-v2
   template:
     metadata:
       labels:
-        service: frontend
-        app: frontend
+        service: frontend-v2
+        app: frontend-v2
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
     spec:
-      serviceAccountName: frontend
+      serviceAccountName: frontend-v2
       volumes:
       - name: config
         configMap:
@@ -95,7 +109,7 @@ spec:
           - key: config
             path: default.conf
       containers:
-        - name: frontend
+        - name: frontend-v2
           image: hashicorpdemoapp/frontend:v0.0.5
           ports:
             - containerPort: 80

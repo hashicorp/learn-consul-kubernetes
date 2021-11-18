@@ -53,17 +53,39 @@ spec:
   rules:
   - matches:
     - path:
-        type: PathPrefix
-        value: /hashicups
+        type: RegularExpression
+        value: ^/hashicups.*
     backendRefs:
     - kind: Service
-      name: frontend
+      name: frontend-v2
       port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: HTTPRoute
+metadata:
+  name: test-route-2
+spec:
+  parentRefs:
+  - name: test-gateway
+  rules:
   - matches:
     - path:
-        type: PathPrefix
-        value: /echo
+        type: RegularExpression
+        value: ^/echo.*
     backendRefs:
     - kind: Service
       name: echo
       port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: HTTPRoute
+metadata:
+  name: test-route-3
+spec:
+  parentRefs:
+  - name: test-gateway
+  rules:
+  - backendRefs:
+    - kind: Service
+      name: frontend-v1
+      port: 80
