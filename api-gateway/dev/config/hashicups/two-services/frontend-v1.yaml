@@ -41,10 +41,14 @@ data:
 
         #charset koi8-r;
         #access_log  /var/log/nginx/host.access.log  main;
+        root   /usr/share/nginx/html;
+        index  index.html index.htm; 
 
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
+        location / { }
+
+        location ^~ /hashicups {
+            #alias /usr/share/nginx/html/;
+            rewrite ^/hashicups(.*)$ /$1 last; 
         }
 
         # Proxy pass the api location to save CORS

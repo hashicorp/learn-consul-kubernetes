@@ -31,7 +31,7 @@ automountServiceAccountToken: true
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-configmap
+  name: nginx-configmap-v2
 data:
   config: |
     # /etc/nginx/conf.d/default.conf
@@ -44,22 +44,12 @@ data:
         root   /usr/share/nginx/html;
         index  index.html index.htm; 
         
-        #set $proxy_upstream_name "-";
-
-        location / {}
+        location / { }
 
         location ^~ /hashicups {
-            alias   /usr/share/nginx/html;
-            #rewrite ^/hashicups(.*)$ $1 last; 
+            #alias /usr/share/nginx/html/;
+            rewrite ^/hashicups(.*)$ /$1 last; 
         }
-
-        #location /hashicups/ {
-        #    alias   /usr/share/nginx/html/;
-        #    index  index.html index.htm;
-        #    try_files $uri $uri/ /index.html;
-        #    alias /usr/share/nginx/html/;
-        #    try_files /usr/share/nginx/html/ $uri @fallback;
-        #}
 
         # Proxy pass the api location to save CORS
         # Use location exposed by Consul connect
@@ -104,13 +94,13 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: nginx-configmap
+          name: nginx-configmap-v2
           items:
           - key: config
             path: default.conf
       containers:
         - name: frontend-v2
-          image: hashicorpdemoapp/frontend:v0.0.5
+          image: hashicorpdemoapp/frontend:v0.0.7
           ports:
             - containerPort: 80
           volumeMounts:
