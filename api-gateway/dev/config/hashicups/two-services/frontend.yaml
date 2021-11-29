@@ -2,16 +2,16 @@
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: frontend-v1
+  name: frontend
 spec:
   protocol: "http"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-v1
+  name: frontend
   labels:
-    app: frontend-v1
+    app: frontend
 spec:
   type: ClusterIP
   ports:
@@ -20,18 +20,18 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    app: frontend-v1
+    app: frontend
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: frontend-v1
+  name: frontend
 automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-configmap-v1
+  name: nginx-configmap
 data:
   config: |
     # /etc/nginx/conf.d/default.conf
@@ -43,7 +43,7 @@ data:
         #access_log  /var/log/nginx/host.access.log  main;
         root   /usr/share/nginx/html;
         index  index.html index.htm; 
-
+        
         location / { }
 
         location ^~ /hashicups {
@@ -62,45 +62,42 @@ data:
         }
 
         error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
     }
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-v1
+  name: frontend
   labels:
-    app: frontend-v1
+    app: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: frontend-v1
-      app: frontend-v1
+      service: frontend
+      app: frontend
   template:
     metadata:
       labels:
-        service: frontend-v1
-        app: frontend-v1
+        service: frontend
+        app: frontend
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
     spec:
-      serviceAccountName: frontend-v1
+      serviceAccountName: frontend
       volumes:
       - name: config
         configMap:
-          name: nginx-configmap-v1
+          name: nginx-configmap
           items:
           - key: config
             path: default.conf
       containers:
-        - name: frontend-v1
-          image: hashicorpdemoapp/frontend:v0.0.2
+        - name: frontend
+          image: hashicorpdemoapp/frontend:v0.0.7
           ports:
             - containerPort: 80
           volumeMounts:
