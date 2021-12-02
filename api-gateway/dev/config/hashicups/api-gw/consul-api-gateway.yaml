@@ -57,8 +57,13 @@ spec:
         value: ^/echo.*
     backendRefs:
     - kind: Service
-      name: echo
+      name: echo-1
       port: 8080
+      weight: 50
+    - kind: Service
+      name: echo-2
+      port: 8090
+      weight: 50
 ---
 apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: HTTPRoute
