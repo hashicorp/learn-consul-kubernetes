@@ -1,0 +1,85 @@
+apiVersion: api-gateway.consul.hashicorp.com/v1alpha1
+kind: GatewayClassConfig
+metadata:
+  name: test-gateway-class-config
+spec:
+  #serviceType: NodePort
+  #serviceType: ClusterIP
+  useHostPorts: true
+  logLevel: trace
+  consul:
+    scheme: https
+    caSecret: consul-ca-cert
+    ports:
+      http: 8501
+      grpc: 8502
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: GatewayClass
+metadata:
+  name: test-gateway-class
+spec:
+  controllerName: "hashicorp.com/consul-api-gateway-controller"
+  parametersRef:
+    group: api-gateway.consul.hashicorp.com
+    kind: GatewayClassConfig
+    name: test-gateway-class-config
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: Gateway
+metadata:
+  name: test-gateway
+spec:
+  gatewayClassName: test-gateway-class
+  listeners:
+  - protocol: HTTPS
+    #hostname: localhost
+    port: 8443
+    name: https
+    allowedRoutes:
+      namespaces:
+        from: Same
+    tls:
+      certificateRefs:
+        - name: consul-server-cert
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: HTTPRoute
+metadata:
+  name: test-route-1
+spec:
+  parentRefs:
+  - name: test-gateway
+  rules:
+  - matches:
+    - path:
+        type: RegularExpression
+        value: ^/echo.*
+    backendRefs:
+    - kind: Service
+      name: echo-1
+      port: 8080
+      weight: 50
+    - kind: Service
+      name: echo-2
+      port: 8090
+      weight: 50
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: HTTPRoute
+metadata:
+  name: test-route-2
+spec:
+  parentRefs:
+  - name: test-gateway
+  rules:
+  - matches:
+    - path:
+        value: "/hashicups"
+    #- path:
+        #type: PathPrefix
+        #value: /hashicups
+    backendRefs:
+    - kind: Service
+      name: frontend
+      port: 80
