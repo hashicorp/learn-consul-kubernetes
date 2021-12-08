@@ -34,7 +34,7 @@ spec:
   listeners:
   - protocol: HTTPS
     #hostname: localhost
-    port: 8443
+    port: 8444
     name: https
     allowedRoutes:
       namespaces:
@@ -75,10 +75,8 @@ spec:
   rules:
   - matches:
     - path:
-        value: "/hashicups"
-    #- path:
-        #type: PathPrefix
-        #value: /hashicups
+        type: PathPrefix
+        value: /hashicups
     backendRefs:
     - kind: Service
       name: frontend
