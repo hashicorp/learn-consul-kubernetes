@@ -34,7 +34,7 @@ spec:
   listeners:
   - protocol: HTTPS
     #hostname: localhost
-    port: 8444
+    port: 8443
     name: https
     allowedRoutes:
       namespaces:
