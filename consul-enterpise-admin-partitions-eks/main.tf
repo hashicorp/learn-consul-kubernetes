@@ -29,7 +29,7 @@ module "ufp_k8s" {
   eks_vpc_cidr_block           = var.eks_cluster_primary_ips_ufp
   eks_vpc_cidr_block_starfleet = var.eks_cluster_secondary_ips_starfleet
   eks_vpc_cidr_block_ufp       = var.eks_cluster_primary_ips_ufp #{
-  eks_primary_cluster = var.eks_cluster_name
+  eks_primary_cluster          = var.eks_cluster_name
 }
 module "starfleet_k8s" {
   source = "./k8s"
@@ -38,8 +38,8 @@ module "starfleet_k8s" {
   eks_vpc_cidr_block           = var.eks_cluster_secondary_ips_starfleet
   eks_vpc_cidr_block_ufp       = var.eks_cluster_primary_ips_ufp
   eks_vpc_cidr_block_starfleet = var.eks_cluster_secondary_ips_starfleet #{
-  eks_primary_cluster = var.eks_cluster_name
-  depends_on          = [module.ufp_k8s]
+  eks_primary_cluster          = var.eks_cluster_name
+  depends_on                   = [module.ufp_k8s]
 }
 
 module "create_peering_starfleet_to_ufp" {
@@ -52,10 +52,10 @@ module "post_route_starfleet_to_ufp" {
   # Creates the route for the peering connection from Starfleet's perspective
   vpc_peering_connection_id = module.create_peering_starfleet_to_ufp.vpc_peering_connection_id
   routing_table_id          = module.starfleet_k8s.route_table_id
-  vpc_id             = module.starfleet_k8s.vpc_id
-  cidr_block_transit = var.eks_cluster_primary_ips_ufp.vpc
-  main_route_table    = module.starfleet_k8s.main_route_table_id
-  private_route_table = module.starfleet_k8s.route_table_id
+  vpc_id                    = module.starfleet_k8s.vpc_id
+  cidr_block_transit        = var.eks_cluster_primary_ips_ufp.vpc
+  main_route_table          = module.starfleet_k8s.main_route_table_id
+  private_route_table       = module.starfleet_k8s.route_table_id
 }
 
 # Sets up routing for VPC Peering. Runs after VPCs have been created.
@@ -65,8 +65,8 @@ module "post_route_ufp_to_starfleet" {
   routing_table_id          = module.ufp_k8s.route_table_id
   vpc_id                    = module.ufp_k8s.vpc_id
   cidr_block_transit        = var.eks_cluster_secondary_ips_starfleet.vpc
-  main_route_table    = module.ufp_k8s.main_route_table_id
-  private_route_table = module.ufp_k8s.route_table_id
+  main_route_table          = module.ufp_k8s.main_route_table_id
+  private_route_table       = module.ufp_k8s.route_table_id
 }
 
 module "install_consul_enterprise" {

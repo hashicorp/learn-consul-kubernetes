@@ -3,8 +3,20 @@ variable "eks_cluster_name" {}
 variable "deploy_type" {}
 variable "eks_cluster_primary" {}
 
+variable "license_content_path " {
+  type        = string
+  description = "The Consul enterprise licence file."
+  default     = "consul.hclic"
+
+  validation {
+    condition     = can(fileexists("${path.module}/${var.license_content_path}"))
+    error_message = "No license file available, please add a license file."
+  }
+}
+
+
 locals {
-  license_content = file("${path.module}/consul.hclic")
+  license_content = file(var.license_content_path)
 }
 
 resource "null_resource" "install_consul_enterprise" {
@@ -13,7 +25,7 @@ resource "null_resource" "install_consul_enterprise" {
   }
   # Install the k8s dashboard and EKS Service Accounts
   provisioner "local-exec" {
-    command     = "kubectl apply -f eks-admin-service-account.yaml"
+    command = "kubectl apply -f eks-admin-service-account.yaml"
   }
   # Store consul enterprise license in Kubernetes, any cluster as part of this terraform code will need to upload the license.
   provisioner "local-exec" {
@@ -34,10 +46,10 @@ resource "null_resource" "install_consul_enterprise" {
     # This solves an issue where k8s deploys an AWS resource (ELB) that terraform can't control and will error out the destroy command
     command = "kubectl get services --all-namespaces | grep -vi kube | grep -i LoadBalancer | awk {'print $1'} | sed -n '1d;p' | xargs kubectl delete services"
   }
-#  provisioner "local-exec" {
-#    when = destroy
-#    # This solves an issue where k8s deploys an AWS resource (ELB) that terraform can't control and will error out the destroy command
-#    command = "kubectl get deployments --all-namespaces | grep -v consul  | grep -v kube-system| awk {'print $1'} | sed -n '1d;p' | xargs kubectl delete deployments"
-#  }
+  #  provisioner "local-exec" {
+  #    when = destroy
+  #    # This solves an issue where k8s deploys an AWS resource (ELB) that terraform can't control and will error out the destroy command
+  #    command = "kubectl get deployments --all-namespaces | grep -v consul  | grep -v kube-system| awk {'print $1'} | sed -n '1d;p' | xargs kubectl delete deployments"
+  #  }
 
 }

@@ -34,7 +34,8 @@ client:
     # - a261f0cb9442e49ecb66f522aa5b3b38-442907875.us-east-1.elb.amazonaws.com
 
 externalServers:
-  k8sAuthMethodHost: https://84918D846565242A7F75FC66692E96F9.gr7.us-east-1.eks.amazonaws.com
+  k8sAuthMethodHost: [YOUR_EKS_CONTROL_PLANE_IP]
+  # k8sAuthMethodHost: Example: https://84918D846565242A7F75FC66692E96F9.gr7.us-east-1.eks.amazonaws.com ( Use kubectl cluster-info to get this value)
   enabled: true
   hosts:
     # - [REPLACE_WITH_YOUR_ALB_ADDRESS]
