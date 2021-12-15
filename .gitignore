@@ -20,3 +20,10 @@ terraform.tfstate.backup
 .terraform.tfstate.lock.info
 .terraform/
 *.tfvars
+
+# certificate artifacts
+*.csr
+*.key
+
+# Licenses
+*.hclic
