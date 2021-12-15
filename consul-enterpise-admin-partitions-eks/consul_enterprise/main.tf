@@ -14,7 +14,6 @@ variable "license_content_path" {
   }
 }
 
-
 locals {
   license_content = file(var.license_content_path)
 }
@@ -34,7 +33,7 @@ resource "null_resource" "install_consul_enterprise" {
   }
   provisioner "local-exec" {
     working_dir = path.module
-    command     = "export CONSUL_PRIMARY=${var.eks_cluster_primary}; export CURRENT_KUBE_CONTEXT=${var.eks_cluster_name}; export CONSUL_DEPLOY_TYPE=${var.deploy_type}; bash /Users/webdog/github/consul-k8s-admin-partitions/consul_enterprise/install_consul.sh"
+    command     = "export CONSUL_PRIMARY=${var.eks_cluster_primary}; export CURRENT_KUBE_CONTEXT=${var.eks_cluster_name}; export CONSUL_DEPLOY_TYPE=${var.deploy_type}; bash ./install_consul.sh"
   }
 
   provisioner "local-exec" {
