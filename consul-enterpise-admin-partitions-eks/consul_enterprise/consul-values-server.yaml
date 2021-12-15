@@ -1,0 +1,45 @@
+# name your datacenter
+global:
+  acls:
+    manageSystemACLs: true
+  enterpriseLicense:
+    secretName: 'consul-ent-license'
+    secretKey: 'key'
+  name: consul
+  image: 'hashicorp/consul-enterprise:1.11.0-ent-rc'
+  datacenter: dc1
+  logLevel: "debug"
+  tls:
+    enabled: true
+    verify: false
+    serverAdditionalDNSSANs: ["*.us-east-1.elb.amazonaws.com"]
+  adminPartitions:
+    enabled: true
+    service:
+      annotations: |
+        "service.beta.kubernetes.io/aws-load-balancer-scheme": "internal"
+  enableConsulNamespaces: true
+server:
+  exposeGossipAndRpcPorts: true
+  replicas: 1
+ui:
+  enabled: true
+connectInject:
+  consulNamepaces:
+    mirroringK8S: true
+  transparentProxy:
+    defaultEnabled: false
+  # inject an envoy sidecar into every new pod, except for those with annotations that prevent injection
+  enabled: true
+  # these settings enable L7 metrics collection and are new in 1.5
+  centralConfig:
+    enabled: true
+    # proxyDefaults is a raw json string that will be applied to all Connect
+    # proxy sidecar pods that can include any valid configuration for the
+    # configured proxy.
+    # proxyDefaults: |
+    #   {
+    #     "envoy_prometheus_bind_addr": "0.0.0.0:9102"
+    #   }
+controller:
+  enabled: true

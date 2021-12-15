@@ -1,0 +1,12 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  destination:
+    name: postgres
+  sources:
+  - name: product-api
+    action: allow
+    partition: starfleet

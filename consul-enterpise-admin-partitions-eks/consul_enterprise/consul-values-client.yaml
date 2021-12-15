@@ -1,0 +1,60 @@
+# name your datacenter
+global:
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-bootstrap-acl-token
+      secretKey: token
+  enterpriseLicense:
+    secretName: 'consul-ent-license'
+    secretKey: 'key'
+  name: consul
+  image: 'hashicorp/consul-enterprise:1.11.0-ent-rc'
+  datacenter: dc1
+  logLevel: "debug"
+  enabled: false
+  tls:
+    enabled: true
+    caCert:
+      secretName: "consul-ca-cert"
+      secretyKey: "tls.crt"
+    caKey:
+      secretName: "consul-ca-key"
+      secretKey: "tls.key"
+  adminPartitions:
+    enabled: true
+    name: "starfleet"
+  enableConsulNamespaces: true
+# server:
+# enterpriseLicense:
+#   secretName: 'consul-ent-license'
+#   secretKey: 'key'
+client:
+  enabled: true
+  exposeGossipPorts: true
+  join:
+    - a261f0cb9442e49ecb66f522aa5b3b38-442907875.us-east-1.elb.amazonaws.com
+externalServers:
+  k8sAuthMethodHost: https://84918D846565242A7F75FC66692E96F9.gr7.us-east-1.eks.amazonaws.com
+  enabled: true
+  hosts:
+    - a261f0cb9442e49ecb66f522aa5b3b38-442907875.us-east-1.elb.amazonaws.com
+connectInject:
+  consulNamespaces:
+    mirrroringK8S: true
+  transparentProxy:
+    defaultEnabled: false
+  # inject an envoy sidecar into every new pod, except for those with annotations that prevent injection
+  enabled: true
+  # these settings enable L7 metrics collection and are new in 1.5
+  centralConfig:
+    enabled: true
+    # proxyDefaults is a raw json string that will be applied to all Connect
+    # proxy sidecar pods that can include any valid configuration for the
+    # configured proxy.
+    # proxyDefaults: |
+    #   {
+    #     "envoy_prometheus_bind_addr": "0.0.0.0:9102"
+    #   }
+controller:
+  enabled: true
