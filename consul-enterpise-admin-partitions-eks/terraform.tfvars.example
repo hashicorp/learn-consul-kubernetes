@@ -1,0 +1,17 @@
+eks_cluster_name   = "united_federation_of_planets"
+eks_cluster_name_1 = "starfleet"
+eks_cluster_name_2 = "terek_nor"
+author             = "webdog"
+team               = "education"
+eks_cluster_primary_ips_ufp = {
+  vpc      = "10.100.0.0/16"
+  private  = "10.100.1.0/24"
+  public   = "10.100.2.0/24"
+  internet = "0.0.0.0/0"
+}
+eks_cluster_secondary_ips_starfleet = {
+  vpc      = "172.30.0.0/16"
+  private  = "172.30.1.0/24"
+  public   = "172.30.2.0/24"
+  internet = "0.0.0.0/0"
+}
