@@ -3,13 +3,13 @@ variable "eks_cluster_name" {}
 variable "deploy_type" {}
 variable "eks_cluster_primary" {}
 
-variable "license_content_path " {
+variable "license_content_path" {
   type        = string
   description = "The Consul enterprise licence file."
-  default     = "consul.hclic"
+  default     = "./consul.hclic"
 
   validation {
-    condition     = can(fileexists("${path.module}/${var.license_content_path}"))
+    condition     = can(fileexists(var.license_content_path))
     error_message = "No license file available, please add a license file."
   }
 }
