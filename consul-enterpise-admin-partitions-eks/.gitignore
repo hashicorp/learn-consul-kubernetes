@@ -1,0 +1,7 @@
+# No licenses in repo
+*.hclic
+
+# No encryption key artifacts
+*.csr
+*.key
+*.swp
