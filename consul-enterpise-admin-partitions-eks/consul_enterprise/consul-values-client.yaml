@@ -1,10 +1,10 @@
 # name your datacenter
 global:
-  acls:
-    manageSystemACLs: true
-    bootstrapToken:
-      secretName: consul-bootstrap-acl-token
-      secretKey: token
+  #  acls:
+  #    manageSystemACLs: true
+  #    bootstrapToken:
+  #      secretName: consul-bootstrap-acl-token
+  #      secretKey: token
   enterpriseLicense:
     secretName: 'consul-ent-license'
     secretKey: 'key'
@@ -14,13 +14,14 @@ global:
   logLevel: "debug"
   enabled: false
   tls:
+    enableAutoEncrypt: true
     enabled: true
     caCert:
       secretName: "consul-ca-cert"
       secretyKey: "tls.crt"
-    caKey:
-      secretName: "consul-ca-key"
-      secretKey: "tls.key"
+      #    caKey:
+      #      secretName: "consul-ca-key"
+      #      secretKey: "tls.key"
   adminPartitions:
     enabled: true
     name: "starfleet"
@@ -29,18 +30,13 @@ client:
   enabled: true
   exposeGossipPorts: true
   join:
-    - [REPLACE_WITH_YOUR_ALB_ADDRESS]
-    # Example value:
-    # - a261f0cb9442e49ecb66f522aa5b3b38-442907875.us-east-1.elb.amazonaws.com
-
+    - ae91429ab8249498fb7f2d19d18c813d-382674885.us-east-1.elb.amazonaws.com
 externalServers:
-  k8sAuthMethodHost: [YOUR_EKS_CONTROL_PLANE_IP]
+  k8sAuthMethodHost: "https://C545C7EBD855BB802070194D3F83DB0A.gr7.us-east-1.eks.amazonaws.com"
   # k8sAuthMethodHost: Example: https://84918D846565242A7F75FC66692E96F9.gr7.us-east-1.eks.amazonaws.com ( Use kubectl cluster-info to get this value)
   enabled: true
   hosts:
-    # - [REPLACE_WITH_YOUR_ALB_ADDRESS]
-    # Example value:
-    # - a261f0cb9442e49ecb66f522aa5b3b38-442907875.us-east-1.elb.amazonaws.com
+    - ae91429ab8249498fb7f2d19d18c813d-382674885.us-east-1.elb.amazonaws.com
 connectInject:
   consulNamespaces:
     mirrroringK8S: true

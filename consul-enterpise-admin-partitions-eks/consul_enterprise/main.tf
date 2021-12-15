@@ -6,7 +6,7 @@ variable "eks_cluster_primary" {}
 variable "license_content_path" {
   type        = string
   description = "The Consul enterprise licence file."
-  default     = "./consul.hclic"
+  default     = "./consul_enterprise/consul.hclic"
 
   validation {
     condition     = can(fileexists(var.license_content_path))

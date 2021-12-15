@@ -1,7 +1,8 @@
 # name your datacenter
 global:
-  acls:
-    manageSystemACLs: true
+  # Disable this to re-test
+#  acls:
+#    manageSystemACLs: true
   enterpriseLicense:
     secretName: 'consul-ent-license'
     secretKey: 'key'
@@ -10,6 +11,7 @@ global:
   datacenter: dc1
   logLevel: "debug"
   tls:
+    enableAutoEncrypt: true
     enabled: true
     verify: false
     serverAdditionalDNSSANs: ["*.us-east-1.elb.amazonaws.com"]
