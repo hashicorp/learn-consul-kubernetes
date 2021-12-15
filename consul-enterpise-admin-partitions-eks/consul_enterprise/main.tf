@@ -2,20 +2,10 @@ data "aws_region" "current" {}
 variable "eks_cluster_name" {}
 variable "deploy_type" {}
 variable "eks_cluster_primary" {}
-
-variable "license_content_path" {
-  type        = string
-  description = "The Consul enterprise licence file."
-  default     = "./consul.hclic"
-
-  validation {
-    condition     = can(fileexists(var.license_content_path))
-    error_message = "No license file available, please add a license file."
-  }
-}
+variable "license_content_path" {}
 
 locals {
-  license_content = file(var.license_content_path)
+  license_content = file("${path.root}/${var.license_content_path}")
 }
 
 resource "null_resource" "install_consul_enterprise" {

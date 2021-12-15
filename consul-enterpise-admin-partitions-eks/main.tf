@@ -70,16 +70,19 @@ module "post_route_ufp_to_starfleet" {
 }
 
 module "install_consul_enterprise" {
-  source              = "./consul_enterprise"
-  eks_cluster_name    = var.eks_cluster_name
-  eks_cluster_primary = var.eks_cluster_name
-  deploy_type         = "server"
-  depends_on          = [module.ufp_k8s]
+  source               = "./consul_enterprise"
+  eks_cluster_name     = var.eks_cluster_name
+  eks_cluster_primary  = var.eks_cluster_name
+  deploy_type          = "server"
+  license_content_path = var.license_file_path
+  depends_on           = [module.ufp_k8s]
+
 }
 module "install_consul_enterprise_secondary" {
-  source              = "./consul_enterprise"
-  eks_cluster_name    = var.eks_cluster_name_2
-  eks_cluster_primary = var.eks_cluster_name
-  deploy_type         = "client"
-  depends_on          = [module.starfleet_k8s]
+  source               = "./consul_enterprise"
+  eks_cluster_name     = var.eks_cluster_name_2
+  eks_cluster_primary  = var.eks_cluster_name
+  deploy_type          = "client"
+  license_content_path = var.license_file_path
+  depends_on           = [module.starfleet_k8s]
 }
