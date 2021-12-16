@@ -1,0 +1,47 @@
+# name your datacenter
+global:
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-bootstrap-acl-token
+      secretKey: token
+  enterpriseLicense:
+    secretName: 'consul-ent-license'
+    secretKey: 'key'
+  name: consul
+  image: 'hashicorp/consul-enterprise:1.11.0-ent-rc'
+  datacenter: dc1
+  logLevel: "debug"
+  enabled: false
+  tls:
+    enableAutoEncrypt: true
+    enabled: true
+    caCert:
+      secretName: "consul-ca-cert"
+      secretyKey: "tls.crt"
+  adminPartitions:
+    enabled: true
+    name: "starfleet"
+  enableConsulNamespaces: true
+client:
+  enabled: true
+  exposeGossipPorts: true
+  join:
+    - ae91429ab8249498fb7f2d19d18c813d-382674885.us-east-1.elb.amazonaws.com
+externalServers:
+  k8sAuthMethodHost: "https://C545C7EBD855BB802070194D3F83DB0A.gr7.us-east-1.eks.amazonaws.com"
+  enabled: true
+  hosts:
+    - ae91429ab8249498fb7f2d19d18c813d-382674885.us-east-1.elb.amazonaws.com
+connectInject:
+  consulNamespaces:
+    mirrroringK8S: true
+  transparentProxy:
+    defaultEnabled: false
+  # inject an envoy sidecar into every new pod, except for those with annotations that prevent injection
+  enabled: true
+  # these settings enable L7 metrics collection and are new in 1.5
+  centralConfig:
+    enabled: true
+controller:
+  enabled: true
