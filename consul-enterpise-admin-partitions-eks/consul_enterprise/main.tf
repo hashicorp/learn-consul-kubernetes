@@ -6,7 +6,7 @@ variable "eks_cluster_primary" {}
 variable "license_content_path" {}
 
 locals {
-  license_content = file("${path.root}/${var.license_content_path}")
+  license_content = file("${path.root}/${path.module}/${var.license_content_path}")
 }
 
 resource "null_resource" "install_consul_enterprise" {
