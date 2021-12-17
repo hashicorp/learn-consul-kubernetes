@@ -11,7 +11,7 @@ if [ "${CONSUL_DEPLOY_TYPE}" = "server" ]; then
 else
   kubectl config use-context "${PRIMARY}"
 
-  #kubectl get secret consul-bootstrap-acl-token --context "${PRIMARY}" -o yaml | kubectl apply --context "${SECONDARY}" -f -
+  kubectl get secret consul-bootstrap-acl-token --context "${PRIMARY}" -o yaml | kubectl apply --context "${SECONDARY}" -f -
   #kubectl get secret consul-ca-key --context "${PRIMARY}" -o yaml | kubectl apply --context "${SECONDARY}" -f -
   kubectl get secret consul-ca-cert --context "${PRIMARY}" -o yaml | kubectl apply --context "${SECONDARY}" -f -
   PartitionIp=$(kubectl get svc | grep -i "LoadBalancer" | awk \{'print $4'\})
