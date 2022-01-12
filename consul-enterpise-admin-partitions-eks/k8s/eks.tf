@@ -1,7 +1,7 @@
 variable "eks_cluster_name" {}
 variable "eks_primary_cluster" {}
-variable "eks_vpc_cidr_block_ufp" {}
 variable "eks_vpc_cidr_block_starfleet" {}
+variable "eks_vpc_cidr_block_terek_nor" {}
 variable "eks_vpc_cidr_block" {}
 
 module "iam" {
@@ -29,13 +29,11 @@ module "update_eks_cluster_sgs" {
   source = "./create-new-sg"
   vpc_id = module.networking.vpc_id
   existing_sg_id = aws_eks_cluster.primary.vpc_config.0.cluster_security_group_id
-  cidr_blocks = [var.eks_vpc_cidr_block_ufp.public, var.eks_vpc_cidr_block_ufp.private, var.eks_vpc_cidr_block_starfleet.private, var.eks_vpc_cidr_block_starfleet.public]
+  cidr_blocks = [var.eks_vpc_cidr_block_starfleet.public, var.eks_vpc_cidr_block_starfleet.private, var.eks_vpc_cidr_block_terek_nor.private, var.eks_vpc_cidr_block_terek_nor.public]
   depends_on = [aws_eks_cluster.primary]
 }
 
-data "aws_security_group" "eks_cluster" {
-  id = aws_eks_cluster.primary.vpc_config.0.cluster_security_group_id
-}
+
 
 resource "aws_eks_node_group" "public" {
   node_group_name_prefix = "wdpub"
@@ -72,6 +70,7 @@ resource "aws_eks_node_group" "private" {
   }
   tags = {
     "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
+    # TODO Change this once terraform infra is gone. Remove webdog.
     "Name" = "webdog-eks_cluster_node_public_instances"
   }
   labels = {
@@ -81,17 +80,5 @@ resource "aws_eks_node_group" "private" {
   disk_size = 100
 }
 
-output "vpc_id" {
-  value = module.networking.vpc_id
-}
-output "route_table_id" {
-  value = module.networking.route_table_id
-}
-output "main_route_table_id" {
-  value = module.networking.main_route_table_id
-}
-output "security_group_id" {
-  value = aws_eks_cluster.primary.vpc_config.0.cluster_security_group_id
-}
 
 
