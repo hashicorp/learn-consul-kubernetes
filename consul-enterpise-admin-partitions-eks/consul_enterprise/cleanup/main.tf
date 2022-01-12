@@ -15,18 +15,18 @@ resource "null_resource" "cleanup" {
     deploy_type          = local.deploy_type
   }
 
-  # Tear down Consul before tearing down infrastructure
-  provisioner "local-exec" {
-    when    = destroy
-    working_dir = path.module
-    environment = {
-      CONSUL_PRIMARY = self.triggers.eks_cluster_primary
-      CURRENT_KUBE_CONTEXT = self.triggers.eks_cluster_name
-      CONSUL_DEPLOY_TYPE = self.triggers.deploy_type
-    }
-
-    command = "bash delete_consul.sh"
-  }
+#  # Tear down Consul before tearing down infrastructure
+#  provisioner "local-exec" {
+#    when    = destroy
+#    working_dir = path.module
+#    environment = {
+#      CONSUL_PRIMARY = self.triggers.eks_cluster_primary
+#      CURRENT_KUBE_CONTEXT = self.triggers.eks_cluster_name
+#      CONSUL_DEPLOY_TYPE = self.triggers.deploy_type
+#    }
+#
+#    command = "bash delete_consul.sh"
+#  }
 
   # LoadBalancers and their pesky ENIs like to stick around for far too long. Clean these up before the rest of the infrastructure is torn down.
   provisioner "local-exec" {
