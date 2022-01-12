@@ -1,0 +1,53 @@
+global:
+  name: client
+  enabled: false
+  image: hashicorp/consul-enterprise:1.11.1-ent
+  enableConsulNamespaces: true
+  datacenter: galaxy
+  enterpriseLicense:
+    secretName: 'consul-ent-license'
+    secretKey: 'key'
+  adminPartitions:
+    enabled: true
+    name: "tereknor"
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      # Copy from server
+      secretName: server-partitions-acl-token
+      secretKey: token
+  gossipEncryption:
+    # copy from server
+    secretName: server-gossip-encryption-key
+    secretKey: key
+  tls:
+    verify: false
+    enabled: true
+    enableAutoEncrypt: true
+    caKey:
+      secretName: server-ca-key
+      secretKey: tls.key
+    caCert:
+      # copy from server
+      secretName: server-ca-cert
+      secretKey: tls.crt
+externalServers:
+  enabled: true
+  hosts:
+    - https://placeholder
+  #httpsPort: 443
+  useSystemRoots: false
+  k8sAuthMethodHost: https://placeholder # kubectl cluster-info
+client:
+  enabled: true
+  join:
+    - https://placeholder
+connectInject:
+  aclBindingRuleSelector: ""
+  enabled: true
+  transparentProxy:
+    defaultEnabled: false
+  consulNamespaces:
+    mirroringK8S: true
+controller:
+  enabled: true
