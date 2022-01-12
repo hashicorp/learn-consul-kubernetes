@@ -2,12 +2,12 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = "3.66.0"
     }
     #    TODO: Add this into for explicit required providers
     #    null = {
     #      source = "hashicorp/null"
-    #      version = "~> 3.1.0"
+    #      version = "~> 4.1.0"
     #    }
   }
 }
@@ -19,7 +19,7 @@ provider "aws" {
   default_tags {
     tags = var.default_tags
   }
-  version = "3.66.0"
+  #version = "3.66.0"
 }
 
 module "starfleet_k8s" {
@@ -70,19 +70,23 @@ module "post_route_starfleet_to_terek_nor" {
 }
 
 module "install_consul_enterprise" {
-  source               = "./consul_enterprise"
-  eks_cluster_name     = var.eks_cluster_name_1
-  eks_cluster_primary  = var.eks_cluster_name_1
-  deploy_type          = "server"
-  license_name = var.license_name
-  depends_on           = [module.starfleet_k8s]
+  source              = "./consul_enterprise"
+  eks_cluster_name    = var.eks_cluster_name_1
+  eks_cluster_primary = var.eks_cluster_name_1
+  deploy_type         = "server"
+  license_name        = var.license_name
+  cluster_subnet_id   = module.starfleet_k8s.public-subnet-id
+  vpc_id              = module.starfleet_k8s.vpc_id
+  depends_on          = [module.starfleet_k8s]
 
 }
 module "install_consul_enterprise_secondary" {
-  source               = "./consul_enterprise"
-  eks_cluster_name     = var.eks_cluster_name_2
-  eks_cluster_primary  = var.eks_cluster_name_1
-  deploy_type          = "client"
-  license_name = var.license_name
-  depends_on           = [module.terek_nor_k8s]
+  source              = "./consul_enterprise"
+  eks_cluster_name    = var.eks_cluster_name_2
+  eks_cluster_primary = var.eks_cluster_name_1
+  deploy_type         = "client"
+  license_name        = var.license_name
+  cluster_subnet_id   = module.terek_nor_k8s.public-subnet-id
+  vpc_id              = module.terek_nor_k8s.vpc_id
+  depends_on          = [module.terek_nor_k8s, module.install_consul_enterprise]
 }
