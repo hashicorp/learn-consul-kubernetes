@@ -8,11 +8,10 @@ output "vpc_id" {
   value = aws_vpc.admin_partition_vpc.id
 }
 output "route_table_id" {
-  # Output to associate the peering connection. Each VPC will peer via the private subnet of the VPC
   value = aws_route_table.private.id
 }
 output "main_route_table_id" {
-  value = aws_route_table.admin_partitions_rt.id
+  value = aws_route_table.main.id
 }
 
 output "public-subnet-id" {
