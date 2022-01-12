@@ -1,21 +1,65 @@
-variable "eks_cluster_name_1" {
-  type = string
+variable "eks_cluster_name_primary" {
+  description = "Name of the primary EKS Cluster that runs the Consul Enterprise server cluster"
+  type        = string
+  default     = "Server"
 }
-variable "eks_cluster_name_2" {
-  type = string
+variable "eks_cluster_name_secondary" {
+  type        = string
+  description = "Name of the secondary EKS Cluster that runs the Consul Enterprise client cluster"
+  default     = "Client"
 }
 variable "license_name" {
   type        = string
-  description = "The name of the Consul Enterprise license file"
+  description = "The name of the Consul Enterprise license file. This file is placed in the `./consul_enterprise/` directory"
   default     = "consul.hclic"
 }
 
+# Default tags to pass to AWS. You can set them here, or in a tfvars file.
 variable "default_tags" {
   type = map(string)
+}
+
+variable "eks_cluster_primary_ips_consul_server" {
+  #variable "eks_cluster_primary_ips_starfleet" {
+  description = "The CIDR groups for the Primary Cluster's IP addresses"
   default = {
-    Team       = "education"
-    deployedBy = "webdog"
-    TTL        = "unlimited"
+    vpc      = "10.100.0.0/16"
+    private  = "10.100.1.0/24"
+    public   = "10.100.2.0/24"
+    internet = "0.0.0.0/0"
   }
 }
 
+variable "eks_cluster_secondary_ips_consul_client" {
+  #variable "eks_cluster_secondary_ips_terek_nor" {
+  description = "The CIDR groups for the Secondary Cluster's IP addresses"
+  default = {
+    vpc      = "172.30.0.0/16"
+    private  = "172.30.1.0/24"
+    public   = "172.30.2.0/24"
+    internet = "0.0.0.0/0"
+  }
+}
+
+# The name of the Consul Enterprise installation types. If this comment is here
+# please don't change these values. The configs are currently reliant on these namse
+# which will be addressed at a later time.
+variable "deploy_type" {
+  default = {
+    server = "server"
+    client = "client"
+  }
+}
+
+variable "aws_region" {
+  default = "us-east-1"
+}
+
+variable "availability_zones" {
+  description = "The AZs in which the Clusters will deploy"
+  default = {
+    # us-east-1a
+    zone_one = "us-east-1a"
+    zone_two = "us-east-1f"
+  }
+}
