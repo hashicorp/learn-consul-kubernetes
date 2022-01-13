@@ -4,10 +4,6 @@ metadata:
   name: tereknor
 spec:
   services:
-#  - name: mesh-gateway
-#    namespace: default
-#    consumers:
-#    - partition: default
   - name: product-api
     namespace: default
     consumers:

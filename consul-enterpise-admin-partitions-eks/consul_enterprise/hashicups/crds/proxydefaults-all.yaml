@@ -5,4 +5,4 @@ metadata:
   name: global
 spec:
   meshGateway:
-    mode: none #local #none
+    mode: none

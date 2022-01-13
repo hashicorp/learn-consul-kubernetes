@@ -59,12 +59,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        #TODO: Make a note that the partition path to the service needs to be explicitly defined when
-        # they are in separate partitions
-        # step 1. Export Service before deployment
-        # step 2. ensure this value is set
-        # step 3. ...
-        # step 4. profit 
+        # This value is the name of the service, the name of the namespace, and the name of the partition in that order.
         consul.hashicorp.com/connect-service-upstreams: "postgres.default.default:5432"
     spec:
       serviceAccountName: products-api

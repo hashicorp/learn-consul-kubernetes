@@ -14,37 +14,28 @@ provider "aws" {
   }
 }
 
-# module "starfleet_k8s"
 module "primary_kubernetes" {
   source = "./k8s"
-  # starfleet
   eks_cluster_name   = var.eks_cluster_name_primary
   eks_vpc_cidr_block = var.eks_cluster_primary_ips_consul_server
-  #eks_vpc_cidr_block_starfleet = var.eks_cluster_primary_ips_starfleet - DELETE
   eks_vpc_cidr_block_primary = var.eks_cluster_primary_ips_consul_server
-  #eks_vpc_cidr_block_terek_nor = var.eks_cluster_secondary_ips_terek_nor - DELETE
   eks_vpc_cidr_block_secondary = var.eks_cluster_secondary_ips_consul_client
   eks_primary_cluster          = var.eks_cluster_name_primary
   availability_zones           = var.availability_zones
 
 }
 
-# module "terek_nor_k8s"
 module "secondary_kubernetes" {
   source = "./k8s"
-  # terek_nor
   eks_cluster_name   = var.eks_cluster_name_secondary
   eks_vpc_cidr_block = var.eks_cluster_secondary_ips_consul_client
-  #eks_vpc_cidr_block_starfleet = var.eks_cluster_primary_ips_starfleet - DELETE
   eks_vpc_cidr_block_primary = var.eks_cluster_primary_ips_consul_server
-  #eks_vpc_cidr_block_terek_nor = var.eks_cluster_secondary_ips_terek_nor - DELETE
   eks_vpc_cidr_block_secondary = var.eks_cluster_secondary_ips_consul_client
   eks_primary_cluster          = var.eks_cluster_name_secondary
   depends_on                   = [module.primary_kubernetes]
   availability_zones           = var.availability_zones
 }
 
-# module create_peering_terek_nor_to_starfleet
 module "create_peering_secondary_to_primary" {
   source           = "./peering"
   vpc_id_accepter  = module.primary_kubernetes.vpc_id
@@ -53,7 +44,6 @@ module "create_peering_secondary_to_primary" {
 
 # Sets up routing for VPC Peering. Runs after VPCs have been created.
 # Creates the route for the peering connection from secondary's perspective
-# module module "post_route_terek_nor_to_starfleet"
 module "post_vpc_creation_routing_rules_secondary_to_primary" {
   source                    = "./post_routing"
   vpc_peering_connection_id = module.create_peering_secondary_to_primary.vpc_peering_connection_id
@@ -66,7 +56,6 @@ module "post_vpc_creation_routing_rules_secondary_to_primary" {
 
 # Sets up routing for VPC Peering. Runs after VPCs have been created.
 # Creates the route for the peering connection from secondary's perspective
-#module "post_route_starfleet_to_terek_nor"
 module "post_vpc_creation_routing_rules_primary_to_secondary" {
   source                    = "./post_routing"
   vpc_peering_connection_id = module.create_peering_secondary_to_primary.vpc_peering_connection_id

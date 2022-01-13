@@ -55,7 +55,6 @@ for sg in "${KUBE_SGS[@]}"
     echo "Checking status of ENIs"
     for eni_id in ${enis_attached_to_sg[@]}
     do
-      # shellcheck disable=SC2207
       eni_status=($(aws ec2 describe-network-interfaces | "${JQ_ENI_STATUS[@]}" | tr -d "\""))
       for status in ${eni_status[@]}
       do

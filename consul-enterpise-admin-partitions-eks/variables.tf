@@ -20,7 +20,6 @@ variable "default_tags" {
 }
 
 variable "eks_cluster_primary_ips_consul_server" {
-  #variable "eks_cluster_primary_ips_starfleet" {
   description = "The CIDR groups for the Primary Cluster's IP addresses"
   default = {
     vpc      = "10.100.0.0/16"
@@ -31,7 +30,6 @@ variable "eks_cluster_primary_ips_consul_server" {
 }
 
 variable "eks_cluster_secondary_ips_consul_client" {
-  #variable "eks_cluster_secondary_ips_terek_nor" {
   description = "The CIDR groups for the Secondary Cluster's IP addresses"
   default = {
     vpc      = "172.30.0.0/16"
@@ -53,12 +51,12 @@ variable "deploy_type" {
 
 variable "aws_region" {
   default = "us-east-1"
+  type = string
 }
 
 variable "availability_zones" {
   description = "The AZs in which the Clusters will deploy"
   default = {
-    # us-east-1a
     zone_one = "us-east-1a"
     zone_two = "us-east-1f"
   }

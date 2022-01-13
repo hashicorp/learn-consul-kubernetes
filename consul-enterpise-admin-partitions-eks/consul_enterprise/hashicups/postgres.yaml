@@ -20,7 +20,6 @@ kind: ServiceDefaults
 metadata:
   name: postgres
 spec:
-  # Ref: https://github.com/hashicorp/nomad/issues/8647 - originally was set to tcp
   protocol: 'tcp'
 ---
 apiVersion: v1

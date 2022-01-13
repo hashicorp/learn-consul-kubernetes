@@ -9,8 +9,6 @@ module "networking" {
 }
 
 resource "aws_eks_cluster" "primary" {
-  # The EKS cluster name is defined in the root variables.tf
-  # This value is passed along to the networking module above.
   name     = var.eks_cluster_name
   role_arn = module.iam.eks_admin_partition_arn
   vpc_config {
@@ -65,7 +63,6 @@ resource "aws_eks_node_group" "private" {
   }
   tags = {
     "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
-    # TODO Change this once terraform infra is gone. Remove webdog.
     "Name" = "eks_node_group_private_instances"
   }
   labels = {

@@ -44,7 +44,6 @@ spec:
     namespace: default
 
 ---
-# This api is defined at https://github.com/hashicorp/consul-k8s/tree/main/control-plane/api/v1alpha1
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
@@ -58,7 +57,6 @@ spec:
       action: allow
       partition: tereknor
       namespace: default
-  # Where is this intention headed?
   destination:
     name: postgres
     namespace: default

@@ -10,14 +10,12 @@ resource "aws_vpc" "admin_partition_vpc" {
 resource "aws_subnet" "private" {
   cidr_block = var.eks_cidr_blocks.private
   vpc_id     = aws_vpc.admin_partition_vpc.id
-  #availability_zone = "us-east-1a"
   availability_zone = var.availability_zones.zone_one
   map_public_ip_on_launch = false
   tags = {
     "kubernetes.io/cluster/${var.lib_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb" = "1"
      Name = "${var.lib_cluster_name}_${var.availability_zones.zone_one}"
-    #Name = "${var.lib_cluster_name}_us_east_1a"
 
   }
 }
@@ -25,12 +23,10 @@ resource "aws_subnet" "public" {
   cidr_block = var.eks_cidr_blocks.public
   vpc_id     = aws_vpc.admin_partition_vpc.id
   availability_zone = var.availability_zones.zone_two
-  #availability_zone = "us-east-1f"
   map_public_ip_on_launch = true
   tags = {
     "kubernetes.io/role/elb" = "1"
     "kubernetes.io/cluster/${var.lib_cluster_name}" = "shared"
-    #Name = "${var.lib_cluster_name}_us_east_1f"
      Name = "${var.lib_cluster_name}_${var.availability_zones.zone_two}"
   }
 }
@@ -53,9 +49,7 @@ resource "aws_internet_gateway" "admin_partitions" {
   }
 }
 
-
 # The following two resources create the public subnet route table, and make this route table the main rt for the VPC
-# resource "aws_route_table "admin_partitions_rt"
 resource "aws_route_table" "main" {
   vpc_id = aws_vpc.admin_partition_vpc.id
   tags = {
@@ -91,13 +85,11 @@ resource "aws_route_table_association" "private_rt_association" {
   subnet_id = aws_subnet.private.id
 }
 # Associates the previously named "main" route table created as the main route table of the VPC
-# resource "aws_main_route_table_association" "admin_partitions"
 resource "aws_main_route_table_association" "convert_manually_created" {
   route_table_id = aws_route_table.main.id
   vpc_id         = aws_vpc.admin_partition_vpc.id
 }
 # This resource associate the subnet resources with the new main route table.
-# resourec "aws_route_table_association "admin_partitions_rt_assoc_1"
 resource "aws_route_table_association" "add_public_subnet_to_main_route_table" {
   route_table_id = aws_route_table.main.id
   subnet_id = aws_subnet.public.id

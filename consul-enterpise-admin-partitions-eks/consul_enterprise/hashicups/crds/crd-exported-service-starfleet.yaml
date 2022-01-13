@@ -4,10 +4,6 @@ metadata:
   name: default
 spec:
   services:
-#  - name: mesh-gateway
-#    namespace: default
-#    consumers:
-#    - partition: tereknor
   - name: postgres
     namespace: default
     consumers:

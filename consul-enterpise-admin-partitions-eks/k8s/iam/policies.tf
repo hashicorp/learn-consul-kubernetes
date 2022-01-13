@@ -9,7 +9,6 @@ resource "aws_iam_policy_attachment" "EKSWorkerNodePolicy" {
     aws_iam_role.eks_admin_partition.name
   ]
   policy_arn = var.eks_worker_node_policy_arn
-  #policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
 resource "aws_iam_policy_attachment" "EKSCNIPolicy" {
@@ -18,7 +17,6 @@ resource "aws_iam_policy_attachment" "EKSCNIPolicy" {
     aws_iam_role.eks_admin_partition.name
   ]
   policy_arn = var.eks_cni_policy_arn
-  #policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
 resource "aws_iam_policy_attachment" "EC2ContainerRegistryReadOnly" {
@@ -27,7 +25,6 @@ resource "aws_iam_policy_attachment" "EC2ContainerRegistryReadOnly" {
     aws_iam_role.eks_admin_partition.name
   ]
   policy_arn = var.ec2_container_registry_read_only_policy_arn
-  #policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_policy_attachment" "EKSClusterPolicy" {
@@ -36,5 +33,4 @@ resource "aws_iam_policy_attachment" "EKSClusterPolicy" {
     aws_iam_role.eks_admin_partition.name
   ]
   policy_arn = var.eks_cluster_policy_arn
-  #policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
