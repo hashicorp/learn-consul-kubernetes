@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 VPC_ID=${VPC_ID}
 ELASTIC_LOAD_BALANCERS=$(aws elb describe-load-balancers)
