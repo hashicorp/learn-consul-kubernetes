@@ -1,7 +1,7 @@
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm repo add hashicorp https://helm.releases.hashicorp.com
 
-helm repo update
+helm repo udpate
 
 
 kind delete cluster --name hashicups-jaeger
