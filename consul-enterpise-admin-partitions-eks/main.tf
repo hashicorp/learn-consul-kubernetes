@@ -15,10 +15,10 @@ provider "aws" {
 }
 
 module "primary_kubernetes" {
-  source = "./k8s"
-  eks_cluster_name   = var.eks_cluster_name_primary
-  eks_vpc_cidr_block = var.eks_cluster_primary_ips_consul_server
-  eks_vpc_cidr_block_primary = var.eks_cluster_primary_ips_consul_server
+  source                       = "./k8s"
+  eks_cluster_name             = var.eks_cluster_name_primary
+  eks_vpc_cidr_block           = var.eks_cluster_primary_ips_consul_server
+  eks_vpc_cidr_block_primary   = var.eks_cluster_primary_ips_consul_server
   eks_vpc_cidr_block_secondary = var.eks_cluster_secondary_ips_consul_client
   eks_primary_cluster          = var.eks_cluster_name_primary
   availability_zones           = var.availability_zones
@@ -26,10 +26,10 @@ module "primary_kubernetes" {
 }
 
 module "secondary_kubernetes" {
-  source = "./k8s"
-  eks_cluster_name   = var.eks_cluster_name_secondary
-  eks_vpc_cidr_block = var.eks_cluster_secondary_ips_consul_client
-  eks_vpc_cidr_block_primary = var.eks_cluster_primary_ips_consul_server
+  source                       = "./k8s"
+  eks_cluster_name             = var.eks_cluster_name_secondary
+  eks_vpc_cidr_block           = var.eks_cluster_secondary_ips_consul_client
+  eks_vpc_cidr_block_primary   = var.eks_cluster_primary_ips_consul_server
   eks_vpc_cidr_block_secondary = var.eks_cluster_secondary_ips_consul_client
   eks_primary_cluster          = var.eks_cluster_name_secondary
   depends_on                   = [module.primary_kubernetes]
