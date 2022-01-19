@@ -1,16 +1,16 @@
 variable "eks_cluster_name_primary" {
   description = "Name of the primary EKS Cluster that runs the Consul Enterprise server cluster"
   type        = string
-  default     = "Server"
+  default     = "primary"
 }
 variable "eks_cluster_name_secondary" {
   type        = string
   description = "Name of the secondary EKS Cluster that runs the Consul Enterprise client cluster"
-  default     = "Client"
+  default     = "secondary"
 }
 variable "license_name" {
   type        = string
-  description = "The name of the Consul Enterprise license file. This file is placed in the `./consul_enterprise/` directory"
+  description = "The name of the Consul Enterprise license file. Place this file in the `./consul_enterprise/` directory"
   default     = "consul.hclic"
 }
 
@@ -51,7 +51,7 @@ variable "deploy_type" {
 
 variable "aws_region" {
   default = "us-east-1"
-  type = string
+  type    = string
 }
 
 variable "availability_zones" {
