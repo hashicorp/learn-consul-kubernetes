@@ -76,7 +76,7 @@ spec:
   - matches:
     - path:
         type: PathPrefix
-        value: /hashicups
+        value: /
     backendRefs:
     - kind: Service
       name: frontend
