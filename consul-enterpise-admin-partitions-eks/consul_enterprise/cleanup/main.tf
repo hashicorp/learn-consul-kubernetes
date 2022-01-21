@@ -13,6 +13,7 @@ resource "null_resource" "cleanup" {
     eks_cluster_primary  = local.eks_cluster_primary
     eks_cluster_name     = local.eks_cluster_name
     deploy_type          = local.deploy_type
+    region               = var.region
   }
 
   # LoadBalancers and their pesky ENIs like to stick around for far too long. Clean these up before the rest of the infrastructure is torn down.
@@ -21,6 +22,7 @@ resource "null_resource" "cleanup" {
     working_dir = path.module
     environment = {
       VPC_ID = self.triggers.vpc_id
+      AWS_DEFAULT_REGION = self.triggers.region
     }
     command = "bash cleanup-load-balancers.sh"
 

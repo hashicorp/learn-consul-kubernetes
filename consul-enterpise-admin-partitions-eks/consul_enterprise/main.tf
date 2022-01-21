@@ -1,5 +1,5 @@
 locals {
-  license_content     = file("${path.root}/${path.module}/${var.license_name}")
+  license_content  = file("${path.root}/${path.module}/${var.license_name}")
 }
 
 # This module only runs when `terraform destroy` is invoked.
@@ -9,6 +9,7 @@ module "cleanup" {
   eks_cluster_primary = var.eks_cluster_primary
   deploy_type = var.deploy_type
   eks_cluster_name = var.eks_cluster_name
+  region  = var.region
 }
 
 resource "null_resource" "install_consul_enterprise" {

@@ -37,7 +37,7 @@ externalServers:
     - https://placeholder
   #httpsPort: 443
   useSystemRoots: false
-  k8sAuthMethodHost: https://placeholder # kubectl cluster-info
+  k8sAuthMethodHost: https://98086A2A0DED7B91588661DC329AAB55.gr7.us-east-1.eks.amazonaws.com # kubectl cluster-info
 client:
   enabled: true
   join:

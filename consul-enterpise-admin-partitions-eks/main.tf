@@ -75,6 +75,7 @@ module "install_consul_enterprise_server" {
   cluster_subnet_id   = module.primary_kubernetes.public-subnet-id
   vpc_id              = module.primary_kubernetes.vpc_id
   depends_on          = [module.primary_kubernetes]
+  region              = var.aws_region
 
 }
 module "install_consul_enterprise_client" {
@@ -85,5 +86,6 @@ module "install_consul_enterprise_client" {
   license_name        = var.license_name
   cluster_subnet_id   = module.secondary_kubernetes.public-subnet-id
   vpc_id              = module.secondary_kubernetes.vpc_id
+  region              = var.aws_region
   depends_on          = [module.secondary_kubernetes, module.install_consul_enterprise_server]
 }

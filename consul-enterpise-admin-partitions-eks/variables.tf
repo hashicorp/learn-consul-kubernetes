@@ -17,6 +17,9 @@ variable "license_name" {
 # Default tags to pass to AWS. You can set them here, or in a tfvars file.
 variable "default_tags" {
   type = map(string)
+  default = {
+    github = "hashicorp/learn-consul-kubernetes"
+  }
 }
 
 variable "eks_cluster_primary_ips_consul_server" {
