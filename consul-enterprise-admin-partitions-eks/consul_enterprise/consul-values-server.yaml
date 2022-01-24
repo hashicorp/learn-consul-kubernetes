@@ -22,8 +22,10 @@ global:
     enabled: true
     verify: false
     serverAdditionalDNSSANs:
-    - #"*.us-east-1.elb.amazonaws.com"
-    - #"*.gr7.us-east-1.eks.amazonaws.com"
+    # This tutorial is written to be deployed to us-east-1. These DNSSANs need to be added for Consul to communicate
+    # with the non-consul kubernetes resources on AWS.
+    - "*.us-east-1.elb.amazonaws.com"
+    - "*.gr7.us-east-1.eks.amazonaws.com"
 server:
   exposeGossipAndRpcPorts: true
   replicas: 1

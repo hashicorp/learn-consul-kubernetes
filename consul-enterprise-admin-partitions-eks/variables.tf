@@ -1,12 +1,12 @@
 variable "eks_cluster_name_primary" {
   description = "Name of the primary EKS Cluster that runs the Consul Enterprise server cluster"
   type        = string
-  default     = "primary"
+  default     = "primary-webdog"
 }
 variable "eks_cluster_name_secondary" {
   type        = string
   description = "Name of the secondary EKS Cluster that runs the Consul Enterprise client cluster"
-  default     = "secondary"
+  default     = "secondary-webdog"
 }
 variable "license_name" {
   type        = string
