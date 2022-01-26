@@ -3,8 +3,6 @@ kind: GatewayClassConfig
 metadata:
   name: test-gateway-class-config
 spec:
-  #serviceType: NodePort
-  #serviceType: ClusterIP
   useHostPorts: true
   logLevel: trace
   consul:
@@ -33,7 +31,6 @@ spec:
   gatewayClassName: test-gateway-class
   listeners:
   - protocol: HTTPS
-    #hostname: localhost
     port: 8443
     name: https
     allowedRoutes:
