@@ -4,17 +4,19 @@ global:
   image: "hashicorp/consul:1.11.2"
   tls:
     enabled: true
-    serverAdditionalDNSSANs:
-    - host.docker.internal
-    - localhost
-    - consul-server.default.svc.cluster.local
 server:
   replicas: 1
 ui:
   enabled: true
   service:
-    type: 'NodePort'
+    type: NodePort
 connectInject:
   enabled: true
 controller:
   enabled: true
+apiGateway:
+  enabled: true
+  image: "hashicorp/consul-api-gateway:0.1.0-beta"
+  managedGatewayClass:
+    serviceType: NodePort
+    useHostPorts: true
