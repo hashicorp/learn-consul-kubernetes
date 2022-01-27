@@ -10,7 +10,7 @@
 8. `kubectl apply -k "github.com/hashicorp/consul-api-gateway/config?ref=v0.1.0-beta"`
 9.  `kubectl apply -f api-gw/consul-api-gateway.yaml && kubectl wait --for=condition=ready gateway/test-gateway --timeout=90s && kubectl apply -f api-gw/routes.yaml` 
 10. `kubectl port-forward svc/consul-ui 6443:443`
-11. Visit the following in the browser
+11. Visit the following urls in the browser
     1.  [https://localhost:6443/ui/](https://localhost:6443/ui/)
     2.  [https://localhost:8443/hashicups](https://localhost:8443/hashicups)
     3.  [https://localhost:8443/echo](https://localhost:8443/echo)
