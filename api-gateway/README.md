@@ -7,7 +7,7 @@
 6. `helm repo update`
 7. `helm install -f consul/config.yaml consul hashicorp/consul --version "0.40.0"`
 8. `kubectl apply -filename two-services`
-9.  `kubectl apply -f api-gw/consul-api-gateway.yaml && kubectl wait --for=condition=ready gateway/test-gateway --timeout=90s && kubectl apply -f api-gw/routes.yaml` 
+9.  `kubectl apply -f api-gw/consul-api-gateway.yaml && kubectl wait --for=condition=ready gateway/example-gateway --timeout=90s && kubectl apply -f api-gw/routes.yaml` 
 10.  `kubectl port-forward svc/consul-ui 6443:443`
 11. Visit the following urls in the browser
     1.  [https://localhost:6443/ui/](https://localhost:6443/ui/)
