@@ -21,6 +21,12 @@ spec:
   selector:
     app: echo-1
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: echo-1
+automountServiceAccountToken: true
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,6 +45,7 @@ spec:
       annotations:
         'consul.hashicorp.com/connect-inject': 'true'
     spec:
+      serviceAccountName: echo-1
       containers:
       - image: gcr.io/kubernetes-e2e-test-images/echoserver:2.2
         name: echo-1
