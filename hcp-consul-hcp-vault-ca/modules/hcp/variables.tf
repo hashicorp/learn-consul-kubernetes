@@ -1,0 +1,9 @@
+variable "hvn_name" {}
+variable "aws_vpc_id" {}
+variable "aws_region" {}
+variable "aws_account_id" {}
+variable "hvn_peering_identifier" {}
+variable "aws_vpc_cidr_block" {}
+variable "hvn_link" {}
+variable "vpc_default_route_table_id" {}
+variable "hcp_hvn_cidr_block" {}
