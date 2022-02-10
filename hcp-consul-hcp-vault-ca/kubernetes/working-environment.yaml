@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tuotorial
+  labels:
+    app: tutorial
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tutorial
+  template:
+    metadata:
+      labels:
+        app: tutorial
+    spec:
+      containers:
+        - name: tutorial
+          # This is on a public package repo in my personal account for now. We can move this elsewhere later on
+          # Public packages/repos do not incur costs, so I'm not worried about it during development.
+          image: ghcr.io/webdog/hcp-consul-vault-tutorial:0.0.2
+          # What keeps the pod running indefinitely for the reader.
+          command: ["sleep"]
+          args: ["infinity"]
