@@ -48,7 +48,7 @@ variable "hcp_hvn_config" {
   description = "CIDR block for HCP"
   default = {
     allocation = "10.100.0.0/19"
-    name       = "hcp-consul-vault-tutorial"
+    name       = "hcpTutorial"
   }
 }
 
@@ -64,4 +64,16 @@ variable "hcp_region" {
 
 variable "cloud_provider" {
   default = "aws"
+}
+
+variable "hcp_consul_datacenter_name" {
+  description = "name of datacenter"
+  default = "dc1"
+  type = string
+}
+
+variable "hcp_vault_cluster_name" {
+  description = "name of vault cluster"
+  default = "vault-cluster"
+  type = string
 }
