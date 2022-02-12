@@ -7,3 +7,6 @@ variable "aws_vpc_cidr_block" {}
 variable "hvn_link" {}
 variable "vpc_default_route_table_id" {}
 variable "hcp_hvn_cidr_block" {}
+variable "aws_default_route_table_id" {}
+variable "private_route_table_ids" {}
+variable "public_route_table_ids" {}

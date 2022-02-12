@@ -30,6 +30,7 @@ module "hcp_networking_primitives" {
   cloud_provider         = var.cloud_provider
   hcp_region             = var.hcp_region
   hvn_name               = var.hcp_hvn_config.name
+  cidr_block             = var.hcp_hvn_config.allocation
 
 }
 
@@ -40,12 +41,15 @@ module "hcp_networking" {
   aws_region                 = var.region
   aws_account_id             = data.aws_caller_identity.current.id
   aws_vpc_id                 = module.aws_vpc.vpc_id
-  vpc_default_route_table_id = module.aws_vpc.default_route_table_id
+  aws_default_route_table_id = module.aws_vpc.vpc_main_route_table_id
   aws_vpc_cidr_block         = var.aws_cidr_block.allocation
   hvn_link                   = module.hcp_networking_primitives.hvn_link
   hvn_name                   = module.hcp_networking_primitives.hcp_vpn_id
   hvn_peering_identifier     = var.hcp_peering_identifier
   hcp_hvn_cidr_block         = var.hcp_hvn_config.allocation
+  public_route_table_ids = module.aws_vpc.public_route_table_ids
+  private_route_table_ids = module.aws_vpc.private_route_table_ids
+  vpc_default_route_table_id = module.aws_vpc.vpc_main_route_table_id
 }
 
 module "hcp_applications" {
