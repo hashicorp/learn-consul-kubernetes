@@ -12,3 +12,8 @@ variable "hcp_region" {
   type = string
   description = "Region for HCP"
 }
+
+variable "cidr_block" {
+  type = string
+  description = "CIDR block for HVN"
+}
