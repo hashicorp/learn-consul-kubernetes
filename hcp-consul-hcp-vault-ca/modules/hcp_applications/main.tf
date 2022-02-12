@@ -3,6 +3,7 @@ resource "hcp_consul_cluster" "server" {
   hvn_id     = var.hvn_id
   public_endpoint      = var.consul_public_endpoint
   tier = var.hcp_consul_tier
+  connect_enabled = true
 }
 
 resource "hcp_vault_cluster" "consul_backend" {
