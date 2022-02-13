@@ -20,17 +20,18 @@ module "aws_vpc" {
 # Sets up the Security Group for EKS
 module "aws" {
   # TODO Make this name more explicitly defined as to its purpose
-  source                     = "./modules/aws"
-  aws_vpc_id                 = module.aws_vpc.vpc_id
+  source     = "./modules/aws"
+  aws_vpc_id = module.aws_vpc.vpc_id
+  hvn_cidr = var.hcp_hvn_config.allocation
 }
 
 # Sets up an hvn inside hcp
 module "hcp_networking_primitives" {
-  source                 = "./modules/hcp_networking_primitives"
-  cloud_provider         = var.cloud_provider
-  hcp_region             = var.hcp_region
-  hvn_name               = var.hcp_hvn_config.name
-  cidr_block             = var.hcp_hvn_config.allocation
+  source         = "./modules/hcp_networking_primitives"
+  cloud_provider = var.cloud_provider
+  hcp_region     = var.hcp_region
+  hvn_name       = var.hcp_hvn_config.name
+  cidr_block     = var.hcp_hvn_config.allocation
 
 }
 
@@ -47,16 +48,16 @@ module "hcp_networking" {
   hvn_name                   = module.hcp_networking_primitives.hcp_vpn_id
   hvn_peering_identifier     = var.hcp_peering_identifier
   hcp_hvn_cidr_block         = var.hcp_hvn_config.allocation
-  public_route_table_ids = module.aws_vpc.public_route_table_ids
-  private_route_table_ids = module.aws_vpc.private_route_table_ids
+  public_route_table_ids     = module.aws_vpc.public_route_table_ids
+  private_route_table_ids    = module.aws_vpc.private_route_table_ids
   vpc_default_route_table_id = module.aws_vpc.vpc_main_route_table_id
 }
 
 module "hcp_applications" {
-  source = "./modules/hcp_applications"
-  hvn_id = module.hcp_networking_primitives.hcp_vpn_id
+  source                    = "./modules/hcp_applications"
+  hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
   consul_cluster_datacenter = var.hcp_consul_datacenter_name
-  vault_cluster_name = var.hcp_vault_cluster_name
+  vault_cluster_name        = var.hcp_vault_cluster_name
 }
 
 module "eks" {
@@ -79,8 +80,8 @@ module "eks" {
 
   vpc_id = module.aws_vpc.vpc_id
   subnet_ids = setunion(
-  module.aws_vpc.public_subnets,
-  module.aws_vpc.private_subnets
+    module.aws_vpc.public_subnets,
+    module.aws_vpc.private_subnets
   )
 
   # Node Groups
@@ -104,6 +105,9 @@ module "eks" {
   }
 }
 
-
-
-
+# This module only runs when `terraform destroy` is invoked.
+module "cleanup" {
+  source = "./modules/cleanup"
+  vpc_id = module.aws_vpc.vpc_id
+  region = var.region
+}
