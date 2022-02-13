@@ -68,12 +68,12 @@ variable "cloud_provider" {
 
 variable "hcp_consul_datacenter_name" {
   description = "name of datacenter"
-  default = "dc1"
-  type = string
+  default     = "dc1"
+  type        = string
 }
 
 variable "hcp_vault_cluster_name" {
   description = "name of vault cluster"
-  default = "vault-cluster"
-  type = string
+  default     = "vault-cluster"
+  type        = string
 }
