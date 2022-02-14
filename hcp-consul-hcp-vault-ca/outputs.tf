@@ -1,11 +1,3 @@
-output "ec2_hostname" {
-  value = module.ec2-instance.public_dns
-}
-
-output "ec2-ip" {
-  value = module.ec2-instance.public_ip
-}
-
 output "eks_cluster_host" {
   value = module.eks.cluster_endpoint
 }
