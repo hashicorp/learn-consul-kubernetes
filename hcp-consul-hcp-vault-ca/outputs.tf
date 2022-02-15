@@ -10,5 +10,14 @@ output "consul_cert_data" {
     root_secret_id = module.hcp_applications.consul_root_token_secret_id
     consul_config = module.hcp_applications.consul_config_file
     consul_cluster_host = module.hcp_applications.consul_cluster_host
+    consul_root_token = module.hcp_applications.consul_root_token
+  }
+}
+
+output "vault_data" {
+  sensitive = true
+  value = {
+    cluster_host = module.hcp_applications.vault_cluster_host
+    vault_token = module.hcp_applications.vault_admin_token
   }
 }
