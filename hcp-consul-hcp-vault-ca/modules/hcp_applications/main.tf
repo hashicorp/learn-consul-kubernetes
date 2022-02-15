@@ -15,8 +15,10 @@ resource "hcp_vault_cluster" "consul_backend" {
 
 resource "hcp_vault_cluster_admin_token" "user" {
   cluster_id = var.vault_cluster_name
+  depends_on = [hcp_vault_cluster.consul_backend]
 }
 
 resource "hcp_consul_cluster_root_token" "user" {
+  depends_on = [hcp_consul_cluster.server]
   cluster_id = var.consul_cluster_datacenter
 }
