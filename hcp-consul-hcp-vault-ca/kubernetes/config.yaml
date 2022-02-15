@@ -29,3 +29,30 @@ connectInject:
   enabled: true
 controller:
   enabled: true
+# This section is configured by the reader. Placeholder in file for now.
+#secretsBackend:
+#  vault:
+#    enabled: true
+#    # https://www.consul.io/docs/k8s/helm#v-global-secretsbackend-vault-consulserverrole
+#    consulServerRole: consul-server
+#    # https://www.consul.io/docs/k8s/helm#v-global-secretsbackend-vault-consulclientrole
+#    consulClientRole: consul-client
+#    consulCARole: consul-ca
+#    # https://www.consul.io/docs/k8s/helm#v-global-secretsbackend-vault-connectca
+#    connectCA:
+#      address: # The vault_private_endpoint_url
+#      rootPKIPath: #/path/to/file
+#      intermediatePKIPath: #/path/to/file
+#      additional_config: |
+#        {
+#        "connect": [{
+#          "ca_config": [{
+#            "leaf_cert_ttl": "72h",
+#            "intermediate_cert_ttl": "8760h",
+#            "rotation_period": "2160h"
+#          ]}
+#        ]}
+#        }
+#    ca:
+#      secretKey: tls.crt
+#      secretName: consul-ca-cert
