@@ -24,13 +24,21 @@ variable "default_tags" {
   }
 }
 
-# Set hcp_client_id and hcp_client_secret values as prompted on the CLI or placed in terraform.tfvars.
-# Do not set the values for these variables inside a source-control managed file.
+# Set hcp_client_id and hcp_client_secret values. Configured with TF_VAR environment variables.
 variable "hcp_client_id" {
   description = "The Client ID of the HCP Service Principal"
 }
 variable "hcp_client_secret" {
   description = "The Client Secret of the HCP Service Principal"
+}
+
+# AWS Credentials to deploy to AWS. Set with TF_VAR environment variables
+variable "aws_secret_id" {
+  description = "AWS Secret ID"
+  type = string
+}
+variable "aws_client_secret" {
+  description = "AWS Client Secret"
 }
 
 variable "aws_cidr_block" {

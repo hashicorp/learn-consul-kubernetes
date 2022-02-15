@@ -21,3 +21,14 @@ output "vault_data" {
     vault_token = module.hcp_applications.vault_admin_token
   }
 }
+
+output "eks_data" {
+  sensitive = true
+  value = {
+    eks_host = module.eks.cluster_endpoint
+    eks_cert = module.eks.cluster_certificate_authority_data
+    eks_arn  = module.eks.cluster_arn
+    eks_token = data.aws_eks_cluster_auth.token.token
+
+  }
+}

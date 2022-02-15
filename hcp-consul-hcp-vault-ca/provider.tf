@@ -20,7 +20,6 @@ provider "aws" {
 }
 
 provider "hcp" {
-  # Set these values in your local terraform.tfvars
   client_id     = var.hcp_client_id
   client_secret = var.hcp_client_secret
 }
