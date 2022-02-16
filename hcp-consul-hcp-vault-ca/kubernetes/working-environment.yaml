@@ -19,7 +19,7 @@ spec:
         - name: tutorial
           # This is on a public package repo in my personal account for now. We can move this elsewhere later on
           # Public packages/repos do not incur costs, so I'm not worried about it during development.
-          image: ghcr.io/webdog/hcp-consul-vault-tutorial:0.1.0
+          image: ghcr.io/webdog/hcp-consul-vault-tutorial:0.1.1
           # What keeps the pod running indefinitely for the reader.
           command: ["sleep"]
           args: ["infinity"]
