@@ -10,7 +10,7 @@ ENV CONSUL_K8S_VERSION=0.40.0
 
 
 RUN apk update && \
-    apk --no-cache add nano emacs openssl curl yq jq bash vault consul libcap && \
+    apk --no-cache add vim nano emacs openssl curl yq jq bash vault consul libcap && \
     setcap cap_ipc_lock= /usr/sbin/vault && rm -rf /var/cache/apk/*
 
 RUN curl -LO "https://dl.k8s.io/release/"${KUBECTL_VERSION}"/bin/linux/amd64/kubectl" && \
