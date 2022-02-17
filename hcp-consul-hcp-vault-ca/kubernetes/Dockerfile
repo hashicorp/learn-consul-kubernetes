@@ -5,11 +5,12 @@ LABEL author="christian.weber@hashicorp.com"
 ENV KUBECTL_VERSION=v1.22.4
 ENV HELM_VERSION=v3.7.1
 ENV GLIBC_VER=2.31-r0
-ENV CONSUL_VERSION=1.11.3-ent
+ENV CONSUL_VERSION=1.11.3+ent
+ENV CONSUL_K8S_VERSION=0.40.0
 
 
 RUN apk update && \
-    apk --no-cache add openssl curl yq jq bash vault consul libcap && \
+    apk --no-cache add nano emacs openssl curl yq jq bash vault consul libcap && \
     setcap cap_ipc_lock= /usr/sbin/vault && rm -rf /var/cache/apk/*
 
 RUN curl -LO "https://dl.k8s.io/release/"${KUBECTL_VERSION}"/bin/linux/amd64/kubectl" && \
@@ -17,7 +18,13 @@ RUN curl -LO "https://dl.k8s.io/release/"${KUBECTL_VERSION}"/bin/linux/amd64/kub
 
 RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
-    ./get_helm.sh --version ${HELM_VERSION}
+    ./get_helm.sh --version ${HELM_VERSION} && \
+    curl -LO https://releases.hashicorp.com/consul-k8s/"${CONSUL_K8S_VERSION}"/consul-k8s_"${CONSUL_K8S_VERSION}"_linux_amd64.zip && \
+    unzip consul-k8s_"${CONSUL_K8S_VERSION}"_linux_amd64.zip && \
+    install -o root -g root -m 0755 consul-k8s /usr/local/bin/consul-k8s && \
+    curl -LO https://releases.hashicorp.com/consul/"${CONSUL_VERSION}"/consul_"${CONSUL_VERSION}"_linux_amd64.zip && \
+    unzip consul_"${CONSUL_VERSION}"_linux_amd64.zip && \
+    install -o root -g root -m 0755 consul /usr/local/bin/consul
 
 # install glibc compatibility for alpine to install aws cli
 RUN apk --no-cache add \
