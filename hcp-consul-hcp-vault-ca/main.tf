@@ -105,6 +105,22 @@ module "eks" {
   }
 }
 
+module "kubernetes" {
+  source = "./modules/kubernetes"
+
+  consul_accessor_id = module.hcp_applications.consul_root_token_accessor_id
+  consul_ca          = module.hcp_applications.consul_ca_file
+  consul_config      = module.hcp_applications.consul_config_file
+  consul_http_addr   = module.hcp_applications.consul_cluster_host
+  consul_http_token  = module.hcp_applications.consul_root_token_secret_id
+  consul_k8s_api_aws = module.eks.cluster_endpoint
+  consul_secret_id   = module.hcp_applications.consul_root_token_secret_id
+  vault_addr         = module.hcp_applications.vault_cluster_host
+  vault_namespace    = "admin"
+  vault_token        = module.hcp_applications.vault_admin_token
+}
+
+
 # This module only runs when `terraform destroy` is invoked.
 module "cleanup" {
   source = "./modules/cleanup"

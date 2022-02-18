@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Versions of required tools for the working env
+#export KUBECTL_VERSION=v1.22.4
+#export HELM_VERSION=v3.7.1
+#export CONSUL_VERSION=1.11.3+ent
+#export CONSUL_K8S_VERSION=0.40.0
+
+yum update -y
+yum install -y nano emacs vim openssl curl yq jq vault tar unzip awscli
+
+curl -LO "https://dl.k8s.io/release/"${kubectl_version}"/bin/linux/amd64/kubectl" && \
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+    chmod 700 get_helm.sh && \
+    ./get_helm.sh --version ${helm_version}
+
+curl -LO https://releases.hashicorp.com/consul-k8s/"${consul_k8s_version}"/consul-k8s_${consul_k8s_version}_linux_amd64.zip && \
+    unzip consul-k8s_"${consul_k8s_version}"_linux_amd64.zip && \
+    install -o root -g root -m 0755 consul-k8s /usr/local/bin/consul-k8s
+
+curl -LO https://releases.hashicorp.com/consul/"${consul_version}"/consul_${consul_version}_linux_amd64.zip && \
+    unzip consul_${consul_version}_linux_amd64.zip && \
+    install -o root -g root -m 0755 consul /usr/local/bin/consul
+
+sleep infinity
+
+
