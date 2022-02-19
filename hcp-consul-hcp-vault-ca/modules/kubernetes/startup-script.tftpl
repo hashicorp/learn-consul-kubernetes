@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-# Versions of required tools for the working env
-#export KUBECTL_VERSION=v1.22.4
-#export HELM_VERSION=v3.7.1
-#export CONSUL_VERSION=1.11.3+ent
-#export CONSUL_K8S_VERSION=0.40.0
-
 yum update -y
-yum install -y nano emacs vim openssl curl yq jq vault tar unzip awscli
+yum install -y yum-utils && \
+yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+yum install -y nano emacs vim
+yum install -y openssl curl yq jq tar unzip
+yum install -y awscli vault && setcap cap_ipc_lock= /usr/bin/vault
 
 curl -LO "https://dl.k8s.io/release/"${kubectl_version}"/bin/linux/amd64/kubectl" && \
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -23,6 +21,8 @@ curl -LO https://releases.hashicorp.com/consul-k8s/"${consul_k8s_version}"/consu
 curl -LO https://releases.hashicorp.com/consul/"${consul_version}"/consul_${consul_version}_linux_amd64.zip && \
     unzip consul_${consul_version}_linux_amd64.zip && \
     install -o root -g root -m 0755 consul /usr/local/bin/consul
+
+
 
 sleep infinity
 
