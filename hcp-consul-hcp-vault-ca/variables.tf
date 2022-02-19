@@ -85,3 +85,10 @@ variable "hcp_vault_cluster_name" {
   default     = "vault-cluster"
   type        = string
 }
+
+variable "cluster_info" {
+  default = {
+    region = "us-east-1"
+    name = "tutorialCluster"
+  }
+}
