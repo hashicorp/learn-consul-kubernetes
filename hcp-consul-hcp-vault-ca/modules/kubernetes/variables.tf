@@ -71,3 +71,22 @@ variable "environment_variables_file" {
     startup_command = "/environment/envVars.sh"
   }
 }
+
+variable "cluster_info" {
+  default = {
+    name = "tutorialCluster"
+    region = "us-east-1"
+  }
+}
+
+variable "kubeconfig_cm" {
+  default = {
+    config_map_name = "kubeconfig"
+    config_map_filename = "config"
+    file_permissions = "0755"
+    mount_path = "/root/.kube"
+    volume_name = "kubeconfig"
+  }
+}
+
+variable "kubeconfig" {}
