@@ -68,6 +68,7 @@ module "eks" {
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
+
   cluster_addons = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
@@ -105,6 +106,14 @@ module "eks" {
   }
 }
 
+resource "null_resource" "update_kubeconfig" {
+    provisioner "local-exec" {
+      when = create
+      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${var.cluster_info.name}"
+    }
+  depends_on = [module.eks]
+  }
+
 module "kubernetes" {
   source = "./modules/kubernetes"
 
@@ -118,8 +127,10 @@ module "kubernetes" {
   vault_addr         = module.hcp_applications.vault_cluster_host
   vault_namespace    = "admin"
   vault_token        = module.hcp_applications.vault_admin_token
-}
 
+  depends_on = [null_resource.update_kubeconfig]
+  kubeconfig = data.local_file.kube_config.content
+}
 
 # This module only runs when `terraform destroy` is invoked.
 module "cleanup" {
@@ -127,3 +138,5 @@ module "cleanup" {
   vpc_id = module.aws_vpc.vpc_id
   region = var.region
 }
+
+#
