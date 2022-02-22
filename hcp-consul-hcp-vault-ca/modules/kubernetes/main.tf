@@ -1,4 +1,3 @@
-:w
 resource "kubernetes_deployment" "workingEnvironment" {
   metadata {
     name = var.tutorial_name
@@ -19,7 +18,12 @@ resource "kubernetes_deployment" "workingEnvironment" {
         labels = {
           app = var.tutorial_name
         }
+        annotations = {
+          "consul-connect-injector.default.svc.cluster.local" = "true"#
+          #"consul.hashicorp.com/connect-inject" = "true"
+        }
       }
+
       spec {
         volume {
           name = var.startup_script_options.volume_name

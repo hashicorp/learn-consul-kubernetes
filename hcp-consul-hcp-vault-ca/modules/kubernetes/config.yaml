@@ -1,34 +1,34 @@
-global:
-  name: consul
-  enabled: false
-  datacenter: dc1
-  acls:
-    manageSystemACLs: true
-    bootstrapToken:
-      secretName: consul-bootstrap-token
-      secretKey: token
-  gossipEncryption:
-    secretName: consul-gossip-key
-    secretKey: key
-  tls:
-    enabled: true
-    enableAutoEncrypt: true
-    caCert:
-      secretName: consul-ca-cert
-      secretKey: tls.crt
-externalServers:
-  enabled: true
-  hosts: #HCP Consul Private Hostname
-  httpsPort: 443
-  useSystemRoots: true
-  k8sAuthMethodHost: # k8s API server for client
-client:
-  enabled: true
-  join: #HCP Consul Private Hostname
-connectInject:
-  enabled: true
-controller:
-  enabled: true
+#global:
+#  name: consul
+#  enabled: false
+#  datacenter: dc1
+#  acls:
+#    manageSystemACLs: true
+#    bootstrapToken:
+#      secretName: consul-bootstrap-token
+#      secretKey: token
+#  gossipEncryption:
+#    secretName: consul-gossip-key
+#    secretKey: key
+#  tls:
+#    enabled: true
+#    enableAutoEncrypt: true
+#    caCert:
+#      secretName: consul-ca-cert
+#      secretKey: tls.crt
+#externalServers:
+#  enabled: true
+#  hosts: #HCP Consul Private Hostname
+#  httpsPort: 443
+#  useSystemRoots: true
+#  k8sAuthMethodHost: # k8s API server for client
+#client:
+#  enabled: true
+#  join: #HCP Consul Private Hostname
+#connectInject:
+#  enabled: true
+#controller:
+#  enabled: true
 # This section is configured by the reader. Placeholder in file for now.
 #secretsBackend:
 #  vault:

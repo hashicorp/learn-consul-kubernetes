@@ -1,0 +1,39 @@
+global:
+  name: consul
+  enabled: false
+  datacenter: dc1
+  enableConsulNamespaces: true
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-bootstrap-token
+      secretKey: token
+  gossipEncryption:
+    secretName: consul-gossip-key
+    secretKey: key
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+    caCert:
+      secretName: consul-ca-cert
+      secretKey: tls.crt
+externalServers:
+  enabled: true
+  hosts: ["dc1.private.consul.223350f5-f0b9-4d89-959d-aa8eab3184e5.aws.hashicorp.cloud"]
+  httpsPort: 443
+  useSystemRoots: true
+  k8sAuthMethodHost: "https://9E3CF43DA8615996FDEBA4E3D968D909.gr7.us-east-1.eks.amazonaws.com"
+client:
+  enabled: true
+  join: ["dc1.private.consul.223350f5-f0b9-4d89-959d-aa8eab3184e5.aws.hashicorp.cloud"]
+connectInject:
+  enabled: true
+  aclBindingRuleSelector: ''
+  transparentProxy:
+    defaultEnabled: false
+  consulNamespaces:
+    mirroringK8S: true
+controller:
+  enabled: true
+
+
