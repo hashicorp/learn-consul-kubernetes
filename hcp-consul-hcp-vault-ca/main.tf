@@ -3,13 +3,22 @@ module "aws_vpc" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source             = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version            = "3.11.5"
-  name               = "test"
+  name               = var.cluster_info.vpc_name
   cidr               = var.aws_cidr_block.allocation
   azs                = var.availability_zones
   private_subnets    = var.aws_cidr_block.subnets.private
   public_subnets     = var.aws_cidr_block.subnets.public
   enable_nat_gateway = true
   enable_vpn_gateway = false
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_info.name}" = "shared"
+    "kubernetes.io/role/internal-elb" = "1"
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_info.name}" = "shared"
+    "kubernetes.io/role/elb" = "1"
+  }
 
   tags = {
     Terraform   = "true"
@@ -22,7 +31,8 @@ module "aws" {
   # TODO Make this name more explicitly defined as to its purpose
   source     = "./modules/aws"
   aws_vpc_id = module.aws_vpc.vpc_id
-  hvn_cidr = var.hcp_hvn_config.allocation
+  hvn_cidr   = var.hcp_hvn_config.allocation
+  aws_cidr   = var.aws_cidr_block.allocation
 }
 
 # Sets up an hvn inside hcp
@@ -64,7 +74,7 @@ module "eks" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source                          = "registry.terraform.io/terraform-aws-modules/eks/aws"
   version                         = "18.3.0"
-  cluster_name                    = "tutorialCluster"
+  cluster_name                    = var.cluster_info.name
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
@@ -90,7 +100,7 @@ module "eks" {
     ami_type               = var.node_group_configuration.ami_type
     disk_size              = var.node_group_configuration.disk_size_gigs
     instance_types         = var.node_group_configuration.instance_types
-    vpc_security_group_ids = [module.aws.aws_security_group_id]
+    vpc_security_group_ids = [module.aws.aws_security_group_id, module.aws.aws_hashicups_sg]
   }
 
   eks_managed_node_groups = {
@@ -108,7 +118,6 @@ module "eks" {
 
 resource "null_resource" "update_kubeconfig" {
     provisioner "local-exec" {
-      when = create
       command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${var.cluster_info.name}"
     }
   depends_on = [module.eks]
@@ -125,11 +134,10 @@ module "kubernetes" {
   consul_k8s_api_aws = module.eks.cluster_endpoint
   consul_secret_id   = module.hcp_applications.consul_root_token_secret_id
   vault_addr         = module.hcp_applications.vault_cluster_host
-  vault_namespace    = "admin"
+  vault_namespace    = var.hcp_vault_default_namespace
   vault_token        = module.hcp_applications.vault_admin_token
-
-  depends_on = [null_resource.update_kubeconfig]
-  kubeconfig = data.local_file.kube_config.content
+  kubeconfig         = data.local_file.kube_config.content
+  depends_on         = [module.eks, null_resource.update_kubeconfig]
 }
 
 # This module only runs when `terraform destroy` is invoked.
@@ -138,5 +146,3 @@ module "cleanup" {
   vpc_id = module.aws_vpc.vpc_id
   region = var.region
 }
-
-#

@@ -55,14 +55,14 @@ variable "aws_cidr_block" {
 variable "hcp_hvn_config" {
   description = "CIDR block for HCP"
   default = {
-    #allocation = "10.100.0.0/19"
-    #name       = "hcpTutorial"
+    allocation = "10.100.0.0/19"
+    name       = "hcpTutorial"
   }
 }
 
 variable "hcp_peering_identifier" {
-  #type    = string
-  #default = "hcp-consul-vault-tutorial"
+  type    = string
+  default = "hcp-consul-vault-tutorial"
 }
 
 variable "hcp_region" {
@@ -76,19 +76,25 @@ variable "cloud_provider" {
 
 variable "hcp_consul_datacenter_name" {
   description = "name of datacenter"
-  #default     = "dc1"
-  #type        = string
+  default     = "dc1"
+  type        = string
 }
 
 variable "hcp_vault_cluster_name" {
   description = "name of vault cluster"
-  #default     = "vault-cluster"
-  #type        = string
+  default     = "vault-cluster"
+  type        = string
 }
 
 variable "cluster_info" {
   default = {
     region = "us-east-1"
-    #name = "tutorialCluster"
+    name = "tutorialCluster"
+    vpc_name = "hcpTutorialAwsVpc"
   }
+}
+
+variable "hcp_vault_default_namespace" {
+  default = "admin"
+  type = string
 }
