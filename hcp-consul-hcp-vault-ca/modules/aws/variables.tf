@@ -7,3 +7,7 @@ variable "hvn_cidr" {
   type = string
   description = "CIDR for HCP"
 }
+
+variable "aws_cidr" {
+  type = string
+}
