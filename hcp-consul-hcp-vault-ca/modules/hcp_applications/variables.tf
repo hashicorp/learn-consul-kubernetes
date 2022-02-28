@@ -27,12 +27,12 @@ variable "vault_public_endpoint" {
 
 variable "hcp_consul_tier" {
   description = "Tier of HCP Consul"
-  default = "development"
+  default = "standard"
   type = string
 }
 
 variable "hcp_vault_tier" {
   description = "Tier for HCP Vault"
-  default = "dev"
+  default = "starter_small"
   type = string
 }
