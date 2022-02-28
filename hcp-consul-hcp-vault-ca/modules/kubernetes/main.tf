@@ -1,3 +1,28 @@
+
+resource "kubernetes_config_map" "startup_script" {
+  metadata {
+    name = var.startup_script_options.config_map_name
+  }
+  data = {
+    (var.startup_script_options.config_map_file_name) = templatefile("${path.module}/${var.startup_script_options.template_file_name}", {
+
+      kubectl_version = var.versions.kubectl_version
+      helm_version = var.versions.helm_version
+      consul_version = var.versions.consul_version
+      consul_k8s_version = var.versions.consul_k8s_version
+    })
+  }
+}
+
+resource "kubernetes_config_map" "kubeconfig" {
+  metadata {
+    name = var.kubeconfig_cm.config_map_name
+  }
+  data = {
+    (var.kubeconfig_cm.config_map_filename) = var.kubeconfig
+    }
+}
+
 resource "kubernetes_deployment" "workingEnvironment" {
   metadata {
     name = var.tutorial_name
@@ -19,12 +44,13 @@ resource "kubernetes_deployment" "workingEnvironment" {
           app = var.tutorial_name
         }
         annotations = {
-          "consul-connect-injector.default.svc.cluster.local" = "true"#
-          #"consul.hashicorp.com/connect-inject" = "true"
+          "consul.hashicorp.com/connect-inject" = true
+          "consul.hashicorp.com/connect-service" = "tutorial"
         }
       }
 
       spec {
+        #service_account_name = "tutorial"
         volume {
           name = var.startup_script_options.volume_name
           config_map {
@@ -40,6 +66,9 @@ resource "kubernetes_deployment" "workingEnvironment" {
           }
         }
         container {
+          port {
+            container_port = 8080
+          }
           env {
             name = "CONSUL_CA"
             value = var.consul_ca
@@ -98,27 +127,3 @@ resource "kubernetes_deployment" "workingEnvironment" {
   depends_on = [kubernetes_config_map.startup_script, kubernetes_config_map.kubeconfig]
 }
 
-
-resource "kubernetes_config_map" "startup_script" {
-  metadata {
-    name = var.startup_script_options.config_map_name
-  }
-  data = {
-    (var.startup_script_options.config_map_file_name) = templatefile("${path.module}/${var.startup_script_options.template_file_name}", {
-
-      kubectl_version = var.versions.kubectl_version
-      helm_version = var.versions.helm_version
-      consul_version = var.versions.consul_version
-      consul_k8s_version = var.versions.consul_k8s_version
-    })
-  }
-}
-
-resource "kubernetes_config_map" "kubeconfig" {
-  metadata {
-    name = var.kubeconfig_cm.config_map_name
-  }
-  data = {
-    (var.kubeconfig_cm.config_map_filename) = var.kubeconfig
-    }
-}

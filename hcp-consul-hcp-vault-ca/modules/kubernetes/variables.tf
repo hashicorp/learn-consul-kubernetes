@@ -83,7 +83,7 @@ variable "kubeconfig_cm" {
   default = {
     config_map_name = "kubeconfig"
     config_map_filename = "config"
-    file_permissions = "0755"
+    file_permissions = "0700"
     mount_path = "/root/.kube"
     volume_name = "kubeconfig"
   }

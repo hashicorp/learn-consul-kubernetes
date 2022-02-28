@@ -4,8 +4,9 @@ yum update -y
 yum install -y yum-utils && \
 yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 yum install -y nano emacs vim
-yum install -y openssl curl yq jq tar unzip
+yum install -y openssl curl yq jq tar unzip wget
 yum install -y awscli vault && setcap cap_ipc_lock= /usr/bin/vault
+wget https://github.com/mikefarah/yq/releases/download/v4.20.2/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
 curl -LO "https://dl.k8s.io/release/"${kubectl_version}"/bin/linux/amd64/kubectl" && \
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
