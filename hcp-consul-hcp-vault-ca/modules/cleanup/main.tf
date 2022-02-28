@@ -23,3 +23,5 @@ resource "null_resource" "cleanup" {
 
   }
 }
+
+resource "null_resource" "clean_kubeconfig" {}
