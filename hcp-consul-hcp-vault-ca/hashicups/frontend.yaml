@@ -5,10 +5,10 @@ metadata:
   labels:
     app: frontend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-    - port: 80
-      targetPort: 80
+    - port: 3000
+      targetPort: 3000
   selector:
     app: frontend
 ---
@@ -23,8 +23,7 @@ kind: ServiceDefaults
 metadata:
   name: frontend
 spec:
-  protocol: http
-
+  protocol: "http"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,19 +41,17 @@ spec:
         service: frontend
         app: frontend
       annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '9102'
-        consul.hashicorp.com/connect-inject: 'true'
-        consul.hashicorp.com/connect-service-upstreams: 'public-api:8080'
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "true"
     spec:
       serviceAccountName: frontend
       containers:
         - name: frontend
-          image: hashicorpdemoapp/frontend:v1.0.0
+          image: hashicorpdemoapp/frontend:v1.0.1
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 3000
           env:
             - name: NEXT_PUBLIC_PUBLIC_API_URL
               value: "http://localhost:8080"
-
