@@ -4,12 +4,13 @@ module "aws_vpc" {
   source             = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version            = "3.11.5"
   name               = var.cluster_info.vpc_name
-  cidr               = var.aws_cidr_block.allocation
   azs                = var.availability_zones
-  private_subnets    = var.aws_cidr_block.subnets.private
-  public_subnets     = var.aws_cidr_block.subnets.public
-  enable_nat_gateway = true
-  enable_vpn_gateway = false
+  cidr                 = "10.0.0.0/16"
+  private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_info.name}" = "shared"
     "kubernetes.io/role/internal-elb" = "1"
@@ -32,7 +33,7 @@ module "aws" {
   source     = "./modules/aws"
   aws_vpc_id = module.aws_vpc.vpc_id
   hvn_cidr   = var.hcp_hvn_config.allocation
-  aws_cidr   = var.aws_cidr_block.allocation
+  aws_cidr   = "10.0.0.0/16"
 }
 
 # Sets up an hvn inside hcp
@@ -53,7 +54,7 @@ module "hcp_networking" {
   aws_account_id             = data.aws_caller_identity.current.id
   aws_vpc_id                 = module.aws_vpc.vpc_id
   aws_default_route_table_id = module.aws_vpc.vpc_main_route_table_id
-  aws_vpc_cidr_block         = var.aws_cidr_block.allocation
+  aws_vpc_cidr_block         = "10.0.0.0/16"
   hvn_link                   = module.hcp_networking_primitives.hvn_link
   hvn_name                   = module.hcp_networking_primitives.hcp_vpn_id
   hvn_peering_identifier     = var.hcp_peering_identifier
@@ -68,6 +69,14 @@ module "hcp_applications" {
   hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
   consul_cluster_datacenter = var.hcp_consul_datacenter_name
   vault_cluster_name        = var.hcp_vault_cluster_name
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
 }
 
 module "eks" {

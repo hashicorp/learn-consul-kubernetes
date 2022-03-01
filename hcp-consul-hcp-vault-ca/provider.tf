@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.1.5"
+  required_version = ">= 1.0.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -20,12 +20,11 @@ provider "aws" {
 }
 
 provider "hcp" {
-  client_id     = var.hcp_client_id
-  client_secret = var.hcp_client_secret
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = "tutorialCluster"
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 

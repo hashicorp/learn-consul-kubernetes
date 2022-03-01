@@ -2,8 +2,8 @@ variable "region" {
   default     = "us-east-1"
   description = "Region in which to run this terraform code for the AWS Provider"
 }
-variable "node_group_configuration" {
 
+variable "node_group_configuration" {
   default = {
     ami_type       = "AL2_x86_64"
     instance_types = ["m5.large"]
@@ -25,38 +25,38 @@ variable "default_tags" {
 }
 
 # Set hcp_client_id and hcp_client_secret values. Configured with TF_VAR environment variables.
-variable "hcp_client_id" {
-  description = "The Client ID of the HCP Service Principal"
-}
-variable "hcp_client_secret" {
-  description = "The Client Secret of the HCP Service Principal"
-}
+#variable "hcp_client_id" {
+#  description = "The Client ID of the HCP Service Principal"
+#}
+#variable "hcp_client_secret" {
+#  description = "The Client Secret of the HCP Service Principal"
+#}
 
 # AWS Credentials to deploy to AWS. Set with TF_VAR environment variables
-variable "aws_secret_id" {
-  description = "AWS Secret ID"
-  type = string
-}
-variable "aws_client_secret" {
-  description = "AWS Client Secret"
-}
+#variable "aws_secret_id" {
+#  description = "AWS Secret ID"
+#  type = string
+#}
+#variable "aws_client_secret" {
+#  description = "AWS Client Secret"
+#}
 
-variable "aws_cidr_block" {
-  description = "CIDR block for AWS"
-  default = {
-    allocation = "172.16.0.0/19"
-    subnets = {
-      private = ["172.16.2.0/24", "172.16.3.0/24"]
-      public  = ["172.16.4.0/24", "172.16.5.0/24"]
-    }
-  }
-}
+#variable "aws_cidr_block" {
+#  description = "CIDR block for AWS"
+#  default = {
+#    allocation = "172.16.0.0/19"
+#    subnets = {
+#      private = ["172.16.2.0/24", "172.16.3.0/24"]
+#      public  = ["172.16.4.0/24", "172.16.5.0/24"]
+#    }
+#  }
+#}
 
 variable "hcp_hvn_config" {
   description = "CIDR block for HCP"
   default = {
-    allocation = "10.100.0.0/19"
-    name       = "hcpTutorial"
+    allocation = "172.25.32.0/20"
+    name       = "hcpTutorial2"
   }
 }
 
@@ -89,8 +89,8 @@ variable "hcp_vault_cluster_name" {
 variable "cluster_info" {
   default = {
     region = "us-east-1"
-    name = "tutorialCluster"
-    vpc_name = "hcpTutorialAwsVpc"
+    name = "tutorialCluster2"
+    vpc_name = "hcpTutorialAwsVpc2"
   }
 }
 
