@@ -33,11 +33,11 @@ variable "hcp_client_secret" {
 }
 
 # AWS Credentials to deploy to AWS. Set with TF_VAR environment variables
-variable "aws_secret_id" {
+variable "aws_access_key_id" {
   description = "AWS Secret ID"
   type = string
 }
-variable "aws_client_secret" {
+variable "aws_secret_access_key" {
   description = "AWS Client Secret"
 }
 
