@@ -32,15 +32,6 @@ variable "hcp_client_secret" {
   description = "The Client Secret of the HCP Service Principal"
 }
 
-# AWS Credentials to deploy to AWS. Set with TF_VAR environment variables
-variable "aws_access_key_id" {
-  description = "AWS Secret ID"
-  type = string
-}
-variable "aws_secret_access_key" {
-  description = "AWS Client Secret"
-}
-
 variable "aws_cidr_block" {
   description = "CIDR block for AWS"
   default = {

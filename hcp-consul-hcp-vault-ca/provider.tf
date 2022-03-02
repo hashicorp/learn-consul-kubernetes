@@ -14,8 +14,6 @@ terraform {
 
 provider "aws" {
   region = var.region
-  secret_key = var.aws_secret_access_key
-  access_key = var.aws_access_key_id
   default_tags {
     tags = var.default_tags
   }
@@ -28,6 +26,6 @@ provider "hcp" {
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
-  config_context = "tutorialCluster"
+  config_context = module.eks.cluster_id
 }
 

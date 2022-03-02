@@ -116,12 +116,13 @@ module "eks" {
   }
 }
 
+# Comment on why we are updating the kubeconfig file here.
 resource "null_resource" "update_kubeconfig" {
     provisioner "local-exec" {
-      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${var.cluster_info.name}"
+      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_info.name} --filename $HOME/,kube/config"
     }
   depends_on = [module.eks]
-  }
+}
 
 module "kubernetes" {
   source = "./modules/kubernetes"
@@ -137,7 +138,7 @@ module "kubernetes" {
   vault_namespace    = var.hcp_vault_default_namespace
   vault_token        = module.hcp_applications.vault_admin_token
   kubeconfig         = data.local_file.kube_config.content
-  depends_on         = [module.eks, null_resource.update_kubeconfig]
+  depends_on         = [null_resource.update_kubeconfig]
 }
 
 # This module only runs when `terraform destroy` is invoked.
