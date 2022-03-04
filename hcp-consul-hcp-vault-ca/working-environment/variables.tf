@@ -89,4 +89,4 @@ variable "kubeconfig_cm" {
   }
 }
 
-variable "kubeconfig" {}
+variable "kube_context" {}

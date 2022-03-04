@@ -1,5 +1,6 @@
 locals {
   vpc_id              = var.vpc_id
+  cluster_name        = var.cluster_name
 }
 
 
@@ -24,4 +25,25 @@ resource "null_resource" "cleanup" {
   }
 }
 
-resource "null_resource" "clean_kubeconfig" {}
+resource "null_resource" "clean_kubeconfig" {
+  triggers = {
+    invokes_me_everytime  = uuid()
+    cluster_name          = local.cluster_name
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+    working_dir = path.module
+    command = "kubectl config delete context ${self.triggers.cluster_name}"
+  }
+}
+
+
+resource "null_resource" "remove_working_env_tfvars_file" {
+
+  provisioner "local-exec" {
+    when = destroy
+    working_dir = path.module
+    command = "cd ../../working-environment; rm terraform.tfvars"
+  }
+}

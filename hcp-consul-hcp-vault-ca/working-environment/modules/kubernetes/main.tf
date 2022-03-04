@@ -10,6 +10,7 @@ resource "kubernetes_config_map" "startup_script" {
       helm_version = var.versions.helm_version
       consul_version = var.versions.consul_version
       consul_k8s_version = var.versions.consul_k8s_version
+      yq_version =        var.versions.yq_version
     })
   }
 }
@@ -19,7 +20,7 @@ resource "kubernetes_config_map" "kubeconfig" {
     name = var.kubeconfig_cm.config_map_name
   }
   data = {
-    (var.kubeconfig_cm.config_map_filename) = var.kubeconfig
+    (var.kubeconfig_cm.config_map_filename) = data.local_file.kube_config.content
     }
 }
 
@@ -126,4 +127,3 @@ resource "kubernetes_deployment" "workingEnvironment" {
   }
   depends_on = [kubernetes_config_map.startup_script, kubernetes_config_map.kubeconfig]
 }
-

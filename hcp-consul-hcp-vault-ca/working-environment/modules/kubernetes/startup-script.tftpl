@@ -4,15 +4,14 @@ yum update -y
 yum install -y yum-utils && \
 yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 yum install -y nano emacs vim
-yum install -y openssl curl yq jq tar unzip wget
-yum install -y awscli vault && setcap cap_ipc_lock= /usr/bin/vault
-wget https://github.com/mikefarah/yq/releases/download/v4.20.2/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+yum install -y openssl curl jq tar unzip wget awscli vault && setcap cap_ipc_lock= /usr/bin/vault
+wget https://github.com/mikefarah/yq/releases/download/"${yq_version}"/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
 curl -LO "https://dl.k8s.io/release/"${kubectl_version}"/bin/linux/amd64/kubectl" && \
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
-    chmod 700 get_helm.sh && \
+    chmod 0700 get_helm.sh && \
     ./get_helm.sh --version ${helm_version}
 
 curl -LO https://releases.hashicorp.com/consul-k8s/"${consul_k8s_version}"/consul-k8s_${consul_k8s_version}_linux_amd64.zip && \
@@ -23,8 +22,4 @@ curl -LO https://releases.hashicorp.com/consul/"${consul_version}"/consul_${cons
     unzip consul_${consul_version}_linux_amd64.zip && \
     install -o root -g root -m 0755 consul /usr/local/bin/consul
 
-
-
 sleep infinity
-
-

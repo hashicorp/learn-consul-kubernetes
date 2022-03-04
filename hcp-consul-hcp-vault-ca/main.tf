@@ -26,7 +26,7 @@ module "aws_vpc" {
   }
 }
 
-# Sets up the Security Group for EKS
+# Sets up AWS resources, right now the security groups for EKS.
 module "aws" {
   # TODO Make this name more explicitly defined as to its purpose
   source     = "./modules/aws"
@@ -63,6 +63,7 @@ module "hcp_networking" {
   vpc_default_route_table_id = module.aws_vpc.vpc_main_route_table_id
 }
 
+# Creates HCP Vault and HCP Consul
 module "hcp_applications" {
   source                    = "./modules/hcp_applications"
   hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
@@ -70,6 +71,7 @@ module "hcp_applications" {
   vault_cluster_name        = var.hcp_vault_cluster_name
 }
 
+# Deploys Amazon EKS
 module "eks" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source                          = "registry.terraform.io/terraform-aws-modules/eks/aws"
@@ -116,34 +118,43 @@ module "eks" {
   }
 }
 
-# Comment on why we are updating the kubeconfig file here.
+# Update local environment's kubceconfig file.
 resource "null_resource" "update_kubeconfig" {
     provisioner "local-exec" {
-      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_info.name} --filename $HOME/,kube/config"
+      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_info.name}"
     }
   depends_on = [module.eks]
 }
 
-module "kubernetes" {
-  source = "./modules/kubernetes"
-
-  consul_accessor_id = module.hcp_applications.consul_root_token_accessor_id
-  consul_ca          = module.hcp_applications.consul_ca_file
-  consul_config      = module.hcp_applications.consul_config_file
-  consul_http_addr   = module.hcp_applications.consul_cluster_host
-  consul_http_token  = module.hcp_applications.consul_root_token_secret_id
-  consul_k8s_api_aws = module.eks.cluster_endpoint
-  consul_secret_id   = module.hcp_applications.consul_root_token_secret_id
-  vault_addr         = module.hcp_applications.vault_cluster_host
-  vault_namespace    = var.hcp_vault_default_namespace
-  vault_token        = module.hcp_applications.vault_admin_token
-  kubeconfig         = data.local_file.kube_config.content
-  depends_on         = [null_resource.update_kubeconfig]
-}
-
-# This module only runs when `terraform destroy` is invoked.
+# This module's resources only run when `terraform destroy` is invoked by the user.
 module "cleanup" {
   source = "./modules/cleanup"
   vpc_id = module.aws_vpc.vpc_id
   region = var.region
+  cluster_name = var.cluster_info.name
 }
+
+# The reader's working environment is its own terraform project, in the ./working-environment folder. To build
+# the working environment for the reader, the working environment is treated as an independent terraform state, or
+# terraform project. But it is dependent on a kubeconfig file being updated after Amazon EKS is deployed by this project.
+# Because a provider takes precedence over resources, this kubeconfig can't be retrieved by the kubernetes provider, as
+# the EKS cluster is known after apply, whereas the provider loads the kubeconfig at runtime. The working-environment
+# then loads the updated kubeconfig during its run time, and uses this generated tfvars file to bootstrap the required
+# values for the reader's environment: a Kubernetes Pod inside the Amazon EKS cluster.
+resource "local_file" "kubernetes_tfvars" {
+  filename = "./working-environment/terraform.tfvars"
+  content =<<CONFIGURATION
+consul_accessor_id="${module.hcp_applications.consul_root_token_accessor_id}"
+consul_ca="${module.hcp_applications.consul_ca_file}"
+consul_config="${module.hcp_applications.consul_config_file}"
+consul_http_addr="${module.hcp_applications.consul_cluster_host}"
+consul_http_token="${module.hcp_applications.consul_root_token_secret_id}"
+consul_k8s_api_aws="${module.eks.cluster_endpoint}"
+consul_secret_id ="${module.hcp_applications.consul_root_token_secret_id}"
+vault_addr="${module.hcp_applications.vault_cluster_host}"
+vault_namespace="${var.hcp_vault_default_namespace}"
+vault_token="${module.hcp_applications.vault_admin_token}"
+kube_context="${var.cluster_info.name}"
+CONFIGURATION
+}
+

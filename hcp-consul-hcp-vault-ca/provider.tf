@@ -24,8 +24,3 @@ provider "hcp" {
   client_secret = var.hcp_client_secret
 }
 
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = module.eks.cluster_id
-}
-
