@@ -121,16 +121,17 @@ module "eks" {
 # Update local environment's kubceconfig file.
 resource "null_resource" "update_kubeconfig" {
     provisioner "local-exec" {
-      command = "aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_info.name}"
+      # Create empty kubeconfig if it doesn't exist. If it does exist, touch does nothing, but back up the config in either case and use a kubeconfig that is unique for this tutorial. Is deleted during terraform destroy
+      command = "touch ~/.kube/config && mv ~/.kube/config ~/.kube/config.bkp && aws eks --region ${var.cluster_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_info.name}"
     }
   depends_on = [module.eks]
 }
 
 # This module's resources only run when `terraform destroy` is invoked by the user.
 module "cleanup" {
-  source = "./modules/cleanup"
-  vpc_id = module.aws_vpc.vpc_id
-  region = var.region
+  source       = "./modules/cleanup"
+  vpc_id       = module.aws_vpc.vpc_id
+  region       = var.region
   cluster_name = var.cluster_info.name
 }
 
