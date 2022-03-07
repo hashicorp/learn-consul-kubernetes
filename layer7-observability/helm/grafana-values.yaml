@@ -25,7 +25,7 @@ datasources:
       - name: Prometheus
         type: prometheus
         orgId: 1
-        url: prometheus-server.default.svc.cluster.local
+        url: http://prometheus-server.default.svc.cluster.local
         access: proxy
         isDefault: true
         jsonData:
