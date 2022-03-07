@@ -127,12 +127,16 @@ resource "null_resource" "update_kubeconfig" {
   depends_on = [module.eks]
 }
 
-# This module's resources only run when `terraform destroy` is invoked by the user.
+# This module's resources only run when `terraform destroy` is invoked by the user. A "start_cleanup" variable
+# is used to make sure cleanup scripts are not run during a follow up terraform apply, and only during terraform destroy.
+# This is passed as TF_VAR_start_cleanup=true to the main project by the reader at the end of the tutorial:
+# export TF_VAR_run_cleanup=true; terraform destroy -auto-approve
 module "cleanup" {
-  source       = "./modules/cleanup"
-  vpc_id       = module.aws_vpc.vpc_id
-  region       = var.region
-  cluster_name = var.cluster_info.name
+  source        = "./modules/cleanup"
+  vpc_id        = module.aws_vpc.vpc_id
+  region        = var.region
+  cluster_name  = var.cluster_info.name
+  start_cleanup = var.run_cleanup
 }
 
 # The reader's working environment is its own terraform project, in the ./working-environment folder. To build

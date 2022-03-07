@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
+# If cleanup not set; don't run. Catches a circumstance where this cleanup script might run during a follow up terraform apply, which causes destruction of this script's
+# terraform resource and re-runs the script.
+if [[ $CLEANUP == "false" ]]
+then
+  exit 0;
+fi
+
 VPC_ID=${VPC_ID}
 ELASTIC_LOAD_BALANCERS=$(aws elb describe-load-balancers)
 CLUSTER_NAME=${CLUSTER_NAME}

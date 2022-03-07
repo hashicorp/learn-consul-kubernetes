@@ -89,3 +89,8 @@ variable "hcp_vault_default_namespace" {
   default = "admin"
   type = string
 }
+
+variable "run_cleanup" {
+  type = bool
+  default = false
+}
