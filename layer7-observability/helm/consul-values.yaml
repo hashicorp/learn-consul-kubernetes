@@ -8,6 +8,12 @@ global:
     agentMetricsRetentionTime: "1m"
 server:
   replicas: 1
+ui:
+  enabled: true
+  metrics:
+    enabled: true
+    provider: "prometheus"
+    baseURL: http://prometheus-server.default.svc.cluster.local
 connectInject:
   enabled: true
   default: true
