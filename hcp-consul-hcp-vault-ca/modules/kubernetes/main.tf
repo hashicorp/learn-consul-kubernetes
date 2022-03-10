@@ -227,8 +227,15 @@ resource "null_resource" "add_iam_role" {
 
 # Upload the hashicups planfiles to a configmap, so the reader doesn't have to do this step.
 resource "null_resource" "hashicups_to_cm" {
-
   provisioner "local-exec" {
     command = "kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
+  }
+}
+
+# The pod is immediately available, but not all tools are initialized. This gives the terraform project some time
+# to let the pod startup finish.
+resource "null_resource" "wait_for_pod" {
+  provisioner "local-exec" {
+    command = "bash ${path.module}/template_scripts/wait.sh"
   }
 }
