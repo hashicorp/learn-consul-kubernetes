@@ -209,7 +209,7 @@ resource "kubernetes_deployment" "workingEnvironment" {
 # Render the IAM role file partial to add to the aws-auth configmap
 resource "local_file" "add_iam_role" {
   content = templatefile("${path.module}/template_scripts/aws-auth.yaml.tftpl", {
-    role_arn = var.role_arn
+    role_arn                = var.role_arn
     cluster_service_account = var.cluster_service_account_name
   })
   filename = "./aws_auth.yaml"
@@ -229,7 +229,6 @@ resource "null_resource" "add_iam_role" {
 resource "null_resource" "hashicups_to_cm" {
 
   provisioner "local-exec" {
-    #command = "kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
-    command = "echo 'yolo'"
+    command = "kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
   }
 }

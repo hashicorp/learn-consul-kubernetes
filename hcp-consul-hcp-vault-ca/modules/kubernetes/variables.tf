@@ -1,5 +1,5 @@
 variable "versions" {
-  type = any
+  type        = any
   description = "Versions of software used in the startup script"
   default = {
     kubectl_version    = "v1.22.4"
@@ -12,58 +12,58 @@ variable "versions" {
 }
 
 variable "consul_ca" {
-  type = string
+  type        = string
   description = "Consul CA File"
 }
 
 variable "consul_http_token" {
   description = "Consul HTTP Token for CLI/API access"
-  type = string
+  type        = string
 }
 
 variable "consul_config" {
-  type = string
+  type        = string
   description = "Consul Config file, base64 encoded"
 }
 
 variable "consul_http_addr" {
   description = "HCP Consul Cluster endpoint"
-  type = string
+  type        = string
 }
 
 variable "consul_k8s_api_aws" {
   description = "Kubernetes cluster endpoint URL"
-  type = string
+  type        = string
 }
 
 variable "consul_accessor_id" {
   description = "Accessor ID for token"
-  type = string
+  type        = string
 }
 
 variable "consul_secret_id" {
   description = "Secret ID for token"
-  type = string
+  type        = string
 }
 
 variable "vault_token" {
   description = "Vault token"
-  type = string
+  type        = string
 }
 
 variable "vault_addr" {
   description = "Vault endpoint"
-  type = string
+  type        = string
 }
 
 variable "vault_namespace" {
-  type = string
+  type        = string
   description = "Default Namespace in HCP Vault"
 }
 
 variable "pod_replicas" {
   description = "Number of pod replicas for the working environment"
-  default = "1"
+  default     = "1"
 }
 
 variable "tutorial_name" {
@@ -72,7 +72,7 @@ variable "tutorial_name" {
 }
 
 variable "startup_script_options" {
-  type = any
+  type        = any
   description = "Configuration settings for the kube configmap for the startup script"
   default = {
     file_permissions     = "0744"
@@ -86,7 +86,7 @@ variable "startup_script_options" {
 }
 
 variable "aws_creds_options" {
-  type = any
+  type        = any
   description = "Creates the AWS credentials file which is directed towards the IAM Role associated with the Pod. Does not use password or token based authentication"
   default = {
     config_map_name     = "aws-credentials"
@@ -99,7 +99,7 @@ variable "aws_creds_options" {
 }
 
 variable "aws_profile_config_options" {
-  type = any
+  type        = any
   description = "Creates the configmap settings for the config that includes a profile for the aws credentials file"
   default = {
     config_map_name     = "aws-profile"
@@ -112,32 +112,32 @@ variable "aws_profile_config_options" {
 }
 
 variable "profile_name" {
-  type = string
+  type        = string
   description = "Name of the AWS Profile"
 }
 
 variable "role_arn" {
-  type = string
+  type        = string
   description = "ARN of the IAM Role that is mapped to a Kubernetes service account"
 }
 
 variable "cluster_service_account_name" {
-  type = string
+  type        = string
   description = "Name of the Kubernetes service account mapped to the IAM Role."
 }
 
 variable "cluster_region" {
-  type = string
+  type        = string
   description = "Region for the EKS cluster"
 }
 
 variable "cluster_name" {
-  type = string
+  type        = string
   description = "Name for the EKS Cluster."
 }
 
 variable "kube_context" {
-  type = string
+  type        = string
   description = "The name of the kube context to set in the config file for kubectl"
 }
 
