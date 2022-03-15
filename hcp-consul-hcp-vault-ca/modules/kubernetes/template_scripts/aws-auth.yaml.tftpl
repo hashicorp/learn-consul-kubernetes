@@ -1,0 +1,7 @@
+    - groups:
+        - system:bootstrappers
+        - system:nodes
+        - system:masters
+        - system:authenticated
+        rolearn: ${role_arn}
+        username: ${cluster_service_account}
