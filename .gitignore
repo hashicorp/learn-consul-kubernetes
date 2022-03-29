@@ -21,6 +21,8 @@ terraform.tfstate.backup
 .terraform/
 *.tfvars
 
+.terraform.lock.hcl
+
 # certificate artifacts
 *.csr
 *.key
