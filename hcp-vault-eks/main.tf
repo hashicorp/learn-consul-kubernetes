@@ -15,6 +15,7 @@ module "aws_vpc" {
     "kubernetes.io/cluster/${var.cluster_and_vpc_info.name}" = "shared"
     "kubernetes.io/role/internal-elb"                        = "1"
   }
+
   #elb: Permits Elastic Load Balancer creation when a LoadBalancer type is passed.
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_and_vpc_info.name}" = "shared"
@@ -66,9 +67,7 @@ module "hcp_networking" {
 module "hcp_applications" {
   source                    = "./modules/hcp_applications"
   hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
-  // consul_cluster_datacenter = var.hcp_consul_datacenter_name
   vault_cluster_name        = var.hcp_vault_cluster_name
-  // hcp_consul_tier           = var.hcp_hvn_config.consul_tier
   hcp_vault_tier            = var.hcp_hvn_config.vault_tier
 }
 

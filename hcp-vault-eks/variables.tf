@@ -47,7 +47,6 @@ variable "hcp_hvn_config" {
     allocation  = "10.100.0.0/19"
     name        = "hcpTutorial"
     vault_tier  = "starter_small"
-    // consul_tier = "standard"
   }
 }
 
@@ -69,12 +68,6 @@ variable "cloud_provider" {
   description = "HCP Default Cloud Provider"
 }
 
-variable "hcp_consul_datacenter_name" {
-  description = "Name of Consul datacenter"
-  default     = "dc1"
-  type        = string
-}
-
 variable "hcp_vault_cluster_name" {
   description = "name of HCP Vault cluster"
   default     = "vault-cluster"
@@ -84,9 +77,9 @@ variable "hcp_vault_cluster_name" {
 variable "cluster_and_vpc_info" {
   default = {
     region             = "us-east-1"
-    name               = "tutorialCluster"
-    vpc_name           = "hcpTutorialAwsVpc"
-    policy_name        = "workingenvironmentpolicy"
+    name               = "tutorialCluster-test"
+    vpc_name           = "hcpTutorialAwsVpc-test"
+    policy_name        = "workingenvironmentpolicy-test"
     policy_description = "Grant the cluster access to describe itself and assume an IAM Role."
     stage              = "dev"
   }

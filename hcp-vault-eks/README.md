@@ -45,7 +45,6 @@
 | <a name="input_cloud_provider"></a> [cloud\_provider](#input\_cloud\_provider) | HCP Default Cloud Provider | `string` | `"aws"` | no |
 | <a name="input_cluster_and_vpc_info"></a> [cluster\_and\_vpc\_info](#input\_cluster\_and\_vpc\_info) | EKS Cluster Configuration Details | `any` | <pre>{<br>  "name": "tutorialCluster",<br>  "policy_description": "Grant the cluster access to describe itself and assume an IAM Role.",<br>  "policy_name": "workingenvironmentpolicy",<br>  "region": "us-east-1",<br>  "stage": "dev",<br>  "vpc_name": "hcpTutorialAwsVpc"<br>}</pre> | no |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Default tags to pass to AWS resources | `map(string)` | <pre>{<br>  "github": "hashicorp/learn-consul-kubernetes"<br>}</pre> | no |
-| <a name="input_hcp_consul_datacenter_name"></a> [hcp\_consul\_datacenter\_name](#input\_hcp\_consul\_datacenter\_name) | Name of Consul datacenter | `string` | `"dc1"` | no |
 | <a name="input_hcp_hvn_config"></a> [hcp\_hvn\_config](#input\_hcp\_hvn\_config) | CIDR block for HCP HVN | `map` | <pre>{<br>  "allocation": "10.100.0.0/19",<br>  "consul_tier": "standard",<br>  "name": "hcpTutorial",<br>  "vault_tier": "starter_small"<br>}</pre> | no |
 | <a name="input_hcp_peering_identifier"></a> [hcp\_peering\_identifier](#input\_hcp\_peering\_identifier) | Name of the peering connection as displayed in the AWS API and Management Console | `string` | `"hcp-consul-vault-tutorial"` | no |
 | <a name="input_hcp_region"></a> [hcp\_region](#input\_hcp\_region) | HCP region for HCP-created resources | `string` | `"us-east-1"` | no |
@@ -62,7 +61,6 @@
 
 | Name | Description |
 |------|-------------|
-| <a name="output_consul_auth_data"></a> [consul\_auth\_data](#output\_consul\_auth\_data) | Authentication data for Consul that is passed to the working environment |
 | <a name="output_eks_data"></a> [eks\_data](#output\_eks\_data) | Data for the EKS Cluster that is sent to the working environment |
 | <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | The OIDC Provider ARN. Used to connect AWS IAM Roles to Service Accounts whose identities are managed by the Kubernetes cluster. Used to allow the reader to access the AWS CLI in the Pod without copying credentials over. |
 | <a name="output_service_account_role_arn"></a> [service\_account\_role\_arn](#output\_service\_account\_role\_arn) | The Service Account Role ARN created for the EKS Cluster. This is passed to the working environment as a Service Annotation in the deployment's podspec. |
