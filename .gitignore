@@ -26,6 +26,7 @@ terraform.tfstate.backup
 # certificate artifacts
 *.csr
 *.key
+*.crt
 
 # Licenses
 *.hclic
