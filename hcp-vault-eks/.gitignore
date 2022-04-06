@@ -1,0 +1,4 @@
+# Local gitignore
+
+# Helm Values
+*values.yaml

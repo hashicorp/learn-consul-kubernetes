@@ -1,0 +1,58 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: public-api
+  namespace: default
+spec:
+  sources:
+    - name: frontend
+      action: allow
+      namespace: default
+  destination:
+    name: public-api
+    namespace: default
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: products-api
+  namespace: default
+spec:
+  sources:
+    - name: public-api
+      action: allow
+      namespace: default
+  destination:
+    name: products-api
+    namespace: default
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: payments
+  namespace: default
+spec:
+  sources:
+    - name: public-api
+      action: allow
+      namespace: default
+  destination:
+    name: payments
+    namespace: default
+
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  # The metadata name is the destination service name and
+  # matches the spec.destination.name value.
+  name: postgres
+  namespace: default
+spec:
+  sources:
+    - name: products-api
+      action: allow
+      namespace: default
+  destination:
+    name: postgres
+    namespace: default
