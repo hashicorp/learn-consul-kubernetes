@@ -1,8 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: ReferencePolicy
 metadata:
-  name: default-namespace-reference-policy
-  namespace: default
+  name: example-reference-policy
 spec:
   from:
     - group: gateway.networking.k8s.io
