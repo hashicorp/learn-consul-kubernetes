@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: public-api
+  namespace: default
   labels:
     app: public-api
 spec:
@@ -17,12 +18,14 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: public-api
+  namespace: default
 automountServiceAccountToken: true
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: public-api
+  namespace: default
 spec:
   protocol: "http"
 ---
@@ -30,6 +33,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: public-api
+  namespace: default
 spec:
   replicas: 1
   selector:

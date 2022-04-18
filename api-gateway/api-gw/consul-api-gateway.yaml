@@ -3,6 +3,7 @@ apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: Gateway
 metadata:
   name: example-gateway
+  namespace: consul
 spec:
   gatewayClassName: consul-api-gateway
   listeners:

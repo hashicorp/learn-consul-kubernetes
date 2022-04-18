@@ -3,6 +3,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: echo-2
+  namespace: default
 spec:
   protocol: http
 ---
@@ -12,6 +13,7 @@ metadata:
   labels:
     app: echo-2
   name: echo-2
+  namespace: default
 spec:
   ports:
   - port: 8090
@@ -25,6 +27,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: echo-2
+  namespace: default
 automountServiceAccountToken: true
 ---
 apiVersion: apps/v1
@@ -33,6 +36,7 @@ metadata:
   labels:
     app: echo-2
   name: echo-2
+  namespace: default
 spec:
   replicas: 1
   selector:

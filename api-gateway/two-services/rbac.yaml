@@ -15,8 +15,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  namespace: default
   name: consul-api-gateway-auth
+  namespace: default
 rules:
 - apiGroups:
   - ""

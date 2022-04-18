@@ -2,6 +2,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
   name: public-api
+  namespace: default
 spec:
   # Name of the destination service affected by this ServiceIntentions entry
   destination:
@@ -40,6 +41,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
   name: postgres
+  namespace: default
 spec:
   destination:
     name: postgres
@@ -51,6 +53,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
   name: payments
+  namespace: default
 spec:
   destination:
     name: payments
@@ -64,6 +67,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
   name: product-api
+  namespace: default
 spec:
   destination:
     name: product-api

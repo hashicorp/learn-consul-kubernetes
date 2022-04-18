@@ -22,6 +22,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: product-api
+  namespace: default
 spec:
   protocol: "http"
 ---
@@ -42,6 +43,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-api
+  namespace: default
   labels:
     app: product-api
 spec:
