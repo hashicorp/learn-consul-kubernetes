@@ -3,6 +3,7 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: frontend
+  namespace: default
 spec:
   protocol: "http"
 ---
@@ -10,6 +11,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+  namespace: default
   labels:
     app: frontend
 spec:
@@ -26,12 +28,14 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: frontend
+  namespace: default
 automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-configmap
+  namespace: default
 data:
   config: |
     # /etc/nginx/conf.d/default.conf
@@ -69,6 +73,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  namespace: default
   labels:
     app: frontend
 spec:
