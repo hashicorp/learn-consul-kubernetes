@@ -67,7 +67,7 @@ spec:
             path: conf.json
       containers:
         - name: product-api
-          image: hashicorpdemoapp/product-api:v0.0.16
+          image: hashicorpdemoapp/product-api:v0.0.22
           ports:
             - containerPort: 9090
             - containerPort: 9103
@@ -76,7 +76,12 @@ spec:
               value: "/config/conf.json"
           livenessProbe:
             httpGet:
-              path: /health
+              path: /health/livez
+              port: 9090
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health/readyz
               port: 9090
             initialDelaySeconds: 15
             timeoutSeconds: 1
