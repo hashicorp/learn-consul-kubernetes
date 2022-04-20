@@ -21,10 +21,15 @@ resource "null_resource" "install_consul_enterprise" {
   provisioner "local-exec" {
     command = "kubectl apply -f eks-admin-service-account.yaml"
   }
+  # Create a Consul namespace
+  provisioner "local-exec" {
+    working_dir = path.module
+    command     = "kubectl config use-context ${var.eks_cluster_name} && kubectl create namespace consul"
+  }
   # Store consul enterprise license in Kubernetes, any cluster as part of this terraform code will need to upload the license.
   provisioner "local-exec" {
     working_dir = path.module
-    command     = "kubectl config use-context ${var.eks_cluster_name} && kubectl create secret generic consul-ent-license --from-literal=\"key=${local.license_content}\""
+    command     = "kubectl config use-context ${var.eks_cluster_name} && kubectl create --namespace=consul secret generic consul-ent-license --from-literal=\"key=${local.license_content}\""
   }
 }
 
