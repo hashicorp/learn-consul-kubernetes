@@ -1,0 +1,15 @@
+# TODO: Figure out how to configure this for EKS (see the api-gateway/logs.log file for exact error)
+# Ask Nate how to resolve this for this particular case
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: ReferencePolicy
+metadata:
+  name: example-reference-policy
+  namespace: default
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: default  # Must match the namespace that api-gw/routes.yaml is deployed into
+  to:
+    - group: ""
+      kind: Service
