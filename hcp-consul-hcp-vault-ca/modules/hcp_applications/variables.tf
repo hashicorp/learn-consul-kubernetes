@@ -3,6 +3,12 @@ variable "consul_cluster_datacenter" {
   type        = string
 }
 
+variable "consul_version" {
+  description = "Minimum version number of Consul"
+  type = string
+  default = "1.11.2-ent"
+}
+
 variable "vault_cluster_name" {
   description = "Vault cluster name"
   type        = string

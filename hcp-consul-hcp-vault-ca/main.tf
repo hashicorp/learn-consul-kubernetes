@@ -1,9 +1,23 @@
+# Create unique resources
+
+locals {
+  unique_id = random_id.unique_identifier.b64_url
+  vpc_name = "${var.cluster_and_vpc_info.vpc_name}-${local.unique_id}"
+  hvn_name = "${var.hcp_hvn_config.name}-${local.unique_id}"
+  hcp_peering_id = "${var.hcp_peering_identifier}-${local.unique_id}"
+  consul_datacenter_name = "${var.hcp_consul_datacenter_name}-${local.unique_id}"
+  vault_cluster_name = "${var.hcp_vault_cluster_name}-${local.unique_id}"
+  eks_cluster_name = "${var.cluster_and_vpc_info.name}-${local.unique_id}"
+  policy_name = "${var.cluster_and_vpc_info.policy_name}-${local.unique_id}"
+
+}
+
 # Builds the base VPC for the AWS EKS Cluster
 module "aws_vpc" {
-  # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
+  # Keep full URL for tf registry modules for cross-IDE compatibility.
   source             = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version            = "3.11.5"
-  name               = var.cluster_and_vpc_info.vpc_name
+  name               = local.vpc_name#var.cluster_and_vpc_info.vpc_name
   cidr               = var.aws_cidr_block.allocation
   azs                = var.availability_zones
   private_subnets    = var.aws_cidr_block.subnets.private
@@ -41,7 +55,7 @@ module "hcp_networking_primitives" {
   source         = "./modules/hcp_networking_primitives"
   cloud_provider = var.cloud_provider
   hcp_region     = var.hcp_region
-  hvn_name       = var.hcp_hvn_config.name
+  hvn_name       = local.hvn_name #var.hcp_hvn_config.name
   cidr_block     = var.hcp_hvn_config.allocation
 }
 
@@ -56,7 +70,7 @@ module "hcp_networking" {
   aws_vpc_cidr_block         = var.aws_cidr_block.allocation
   hvn_link                   = module.hcp_networking_primitives.hvn_link
   hvn_name                   = module.hcp_networking_primitives.hcp_vpn_id
-  hvn_peering_identifier     = var.hcp_peering_identifier
+  hvn_peering_identifier     = local.hcp_peering_id#var.hcp_peering_identifier
   hcp_hvn_cidr_block         = var.hcp_hvn_config.allocation
   public_route_table_ids     = module.aws_vpc.public_route_table_ids
   private_route_table_ids    = module.aws_vpc.private_route_table_ids
@@ -66,18 +80,17 @@ module "hcp_networking" {
 module "hcp_applications" {
   source                    = "./modules/hcp_applications"
   hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
-  consul_cluster_datacenter = var.hcp_consul_datacenter_name
-  vault_cluster_name        = var.hcp_vault_cluster_name
+  consul_cluster_datacenter = local.consul_datacenter_name#var.hcp_consul_datacenter_name
+  vault_cluster_name        = local.vault_cluster_name#var.hcp_vault_cluster_name
   hcp_consul_tier           = var.hcp_hvn_config.consul_tier
   hcp_vault_tier            = var.hcp_hvn_config.vault_tier
 }
 
 # Deploys Amazon EKS
 module "eks" {
-  # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source                          = "registry.terraform.io/terraform-aws-modules/eks/aws"
   version                         = "18.9.0"
-  cluster_name                    = var.cluster_and_vpc_info.name
+  cluster_name                    = local.eks_cluster_name #var.cluster_and_vpc_info.name
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
@@ -98,7 +111,6 @@ module "eks" {
     module.aws_vpc.private_subnets
   )
 
-  # Node Groups
   eks_managed_node_group_defaults = {
     ami_type               = var.node_group_configuration.ami_type
     disk_size              = var.node_group_configuration.disk_size_gigs
@@ -138,14 +150,14 @@ module "cleanup" {
   source        = "./modules/cleanup"
   vpc_id        = module.aws_vpc.vpc_id
   region        = var.region
-  cluster_name  = var.cluster_and_vpc_info.name
+  cluster_name  = local.eks_cluster_name #var.cluster_and_vpc_info.name
   start_cleanup = var.run_cleanup
 }
 
-# This module does all the OIDC magic for ServiceAccount -> IAM Role mapping
+# This module maps Kubernetes ServiceAccount -> IAM Role
 module "iam_role_for_service_accounts" {
   source    = "registry.terraform.io/terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  role_name = lower(var.cluster_and_vpc_info.name)
+  role_name = lower(local.eks_cluster_name)#lower(var.cluster_and_vpc_info.name)
   version   = "4.14.0"
 
   oidc_providers = {
@@ -162,8 +174,12 @@ module "eks_iam" {
   source      = "./modules/iam"
   cluster_arn = module.eks.cluster_arn
   description = var.cluster_and_vpc_info.policy_description
-  policy_name = var.cluster_and_vpc_info.policy_name
+  policy_name = local.policy_name#var.cluster_and_vpc_info.policy_name
   role_name   = module.iam_role_for_service_accounts.iam_role_name
+}
+
+resource "random_id" "unique_identifier" {
+  byte_length = 2
 }
 
 # The reader's working environment is its own terraform project, in the ./working-environment folder. To build

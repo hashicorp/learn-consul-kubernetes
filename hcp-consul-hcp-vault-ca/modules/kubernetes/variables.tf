@@ -1,3 +1,4 @@
+# Values with default options set from L1:L59
 variable "versions" {
   type        = any
   description = "Versions of software used in the startup script"
@@ -9,66 +10,6 @@ variable "versions" {
     amazonlinux        = "amazonlinux:2"
     yq_version         = "v4.20.2"
   }
-}
-
-variable "consul_ca" {
-  type        = string
-  description = "Consul CA File"
-}
-
-variable "consul_http_token" {
-  description = "Consul HTTP Token for CLI/API access"
-  type        = string
-}
-
-variable "consul_config" {
-  type        = string
-  description = "Consul Config file, base64 encoded"
-}
-
-variable "consul_http_addr" {
-  description = "HCP Consul Cluster endpoint"
-  type        = string
-}
-
-variable "consul_k8s_api_aws" {
-  description = "Kubernetes cluster endpoint URL"
-  type        = string
-}
-
-variable "consul_accessor_id" {
-  description = "Accessor ID for token"
-  type        = string
-}
-
-variable "consul_secret_id" {
-  description = "Secret ID for token"
-  type        = string
-}
-
-variable "vault_token" {
-  description = "Vault token"
-  type        = string
-}
-
-variable "vault_addr" {
-  description = "Vault endpoint"
-  type        = string
-}
-
-variable "vault_namespace" {
-  type        = string
-  description = "Default Namespace in HCP Vault"
-}
-
-variable "pod_replicas" {
-  description = "Number of pod replicas for the working environment"
-  default     = "1"
-}
-
-variable "tutorial_name" {
-  description = "Name of tutorial working environment"
-  default     = "tutorial"
 }
 
 variable "startup_script_options" {
@@ -111,6 +52,138 @@ variable "aws_profile_config_options" {
   }
 }
 
+variable "pod_replicas" {
+  type = string
+  description = "Number of pod replicas for the working environment"
+  default     = "1"
+}
+
+variable "tutorial_name" {
+  type = string
+  description = "Name of tutorial working environment"
+  default     = "tutorial"
+}
+
+variable "enable_connect_inject" {
+  type = bool
+  description = "Whether or not Connect Inject is enabled for the **client** pod annotation"
+  default = true
+}
+
+variable "automount_service_account_token" {
+  type = bool
+  description = "Whether or not the Kube Service account token is mounted into the pod"
+  default = true
+}
+
+variable "workbench_container_port" {
+  type = number
+  description = "The port number for the workbench container"
+  default = 8080
+}
+
+variable "volume_read_only" {
+  type = bool
+  description = "Whether or not the Kubernetes volume mount is read only"
+  default = true
+}
+
+variable "environment_variable_names" {
+  type = map(string)
+  description = "The names of the environment variables to set in the workbench"
+  default = {
+    consul_ca = "CONSUL_CA"
+    consul_http_token = "CONSUL_HTTP_TOKEN"
+    consul_config = "CONSUL_CONFIG"
+    consul_http_addr = "CONSUL_HTTP_ADDR"
+    consul_k8s_api = "CONSUL_K8S_API_AWS"
+    consul_accessor_id = "CONSUL_ACCESSOR_ID"
+    consul_secret_id = "CONSUL_SECRET_ID"
+    vault_token = "VAULT_TOKEN"
+    vault_addr = "VAULT_ADDR"
+    vault_namespace = "VAULT_NAMESPACE"
+    aws_profile = "AWS_PROFILE"
+  }
+}
+
+variable "kubernetes_cluster_role_binding" {
+  type = any
+  default = {
+    api_group = "rbac.authorization.k8s.io"
+    kind = "ClusterRole"
+    name = "cluster-admin"
+    subjects = {
+      service_account = {
+        name = "ServiceAccount"
+        namespace = "kube-system"
+      }
+      groups = {
+        masters = {
+          kind = "Group"
+          name = "system:masters"
+        }
+        authenticated = {
+          kind = "Group"
+          name = "system:authenticated"
+        }
+      }
+    }
+  }
+  description = "Options for setting the Kubernetes Cluster Role Binding for the workbench deployment"
+}
+
+# Variables from here to end of the doc do not set default values.
+
+variable "consul_ca" {
+  type        = string
+  description = "Consul CA File"
+}
+
+variable "consul_http_token" {
+  type        = string
+  description = "Consul HTTP Token for CLI/API access"
+}
+
+variable "consul_config" {
+  type        = string
+  description = "Consul Config file, base64 encoded"
+}
+
+variable "consul_http_addr" {
+  type        = string
+  description = "HCP Consul Cluster endpoint"
+}
+
+variable "consul_k8s_api_aws" {
+  type        = string
+  description = "Kubernetes cluster endpoint URL"
+}
+
+variable "consul_accessor_id" {
+  type        = string
+  description = "Accessor ID for token"
+}
+
+variable "consul_secret_id" {
+  type        = string
+  description = "Secret ID for token"
+}
+
+variable "vault_token" {
+  type        = string
+  description = "Vault token"
+}
+
+variable "vault_addr" {
+  type        = string
+  description = "Vault endpoint"
+}
+
+variable "vault_namespace" {
+  type        = string
+  description = "Default Namespace in HCP Vault"
+}
+
 variable "profile_name" {
   type        = string
   description = "Name of the AWS Profile"
@@ -118,26 +191,26 @@ variable "profile_name" {
 
 variable "role_arn" {
   type        = string
-  description = "ARN of the IAM Role that is mapped to a Kubernetes service account"
+  description = "ARN of the IAM Role mapping to a Kubernetes service account"
 }
 
 variable "cluster_service_account_name" {
   type        = string
-  description = "Name of the Kubernetes service account mapped to the IAM Role."
+  description = "Name of the Kubernetes service account mapping to an IAM Role."
 }
 
 variable "cluster_region" {
   type        = string
-  description = "Region for the EKS cluster"
+  description = "AWS Region where the EKS cluster is located."
 }
 
 variable "cluster_name" {
   type        = string
-  description = "Name for the EKS Cluster."
+  description = "Name of the EKS Cluster."
 }
 
 variable "kube_context" {
   type        = string
-  description = "The name of the kube context to set in the config file for kubectl"
+  description = "Name of the context to set in kubeconfig file for kubectl"
 }
 

@@ -1,3 +1,16 @@
+locals {
+  #template_path            = "${path.module}/template_scripts"
+#  iam_role_template_path   = "${path.module}/tem/aws-auth.yaml.tftpl"
+#  pod_wait_str             = "bash ${local.template_path}/wait.sh"
+#  add_iam_role_command_str = "bash ${local.template_path}/add_iam_role.sh"
+  #iam_role_output_filename =  "./aws-auth.yaml"
+  hashicups_config_map_str = "kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
+  add_iam_role_command_str = "bash ${path.module}/template_scripts/add_iam_role.sh"
+  pod_wait_str = "bash ${path.module}/template_scripts/wait.sh"
+  iam_role_template_path = "${path.module}/template_scripts/aws-auth.yaml.tftpl"
+}
+
+
 # ConfigMap for the Pod's startup script
 resource "kubernetes_config_map" "startup_script" {
   metadata {
@@ -59,24 +72,24 @@ resource "kubernetes_cluster_role_binding" "tutorial" {
     name = var.cluster_service_account_name
   }
   role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
+    api_group = var.kubernetes_cluster_role_binding.api_group#"rbac.authorization.k8s.io"
+    kind      = var.kubernetes_cluster_role_binding.kind #"ClusterRole"
+    name      = var.kubernetes_cluster_role_binding.name#"cluster-admin"
 
   }
   subject {
-    kind      = "ServiceAccount"
+    kind      = var.kubernetes_cluster_role_binding.subjects.service_account.name#"ServiceAccount"
     name      = var.cluster_service_account_name
-    namespace = "kube-system"
+    namespace = var.kubernetes_cluster_role_binding.subjects.service_account.namespace#"kube-system"
   }
   subject {
-    kind      = "Group"
-    name      = "system:masters"
-    api_group = "rbac.authorization.k8s.io"
+    kind      = var.kubernetes_cluster_role_binding.subjects.groups.masters.kind#"Group"
+    name      = var.kubernetes_cluster_role_binding.subjects.groups.masters.name#"system:masters"
+    api_group = var.kubernetes_cluster_role_binding.api_group#"rbac.authorization.k8s.io"
   }
   subject {
-    kind = "Group"
-    name = "system:authenticated"
+    kind = var.kubernetes_cluster_role_binding.subjects.groups.authenticated.kind#"Group"
+    name = var.kubernetes_cluster_role_binding.subjects.groups.authenticated.name#"system:authenticated"
   }
 }
 
@@ -102,15 +115,15 @@ resource "kubernetes_deployment" "workingEnvironment" {
           app = var.tutorial_name
         }
         annotations = {
-          "consul.hashicorp.com/connect-inject"  = true
-          "consul.hashicorp.com/connect-service" = "tutorial"
+          "consul.hashicorp.com/connect-inject"  = var.enable_connect_inject #true
+          "consul.hashicorp.com/connect-service" = var.tutorial_name #"tutorial"
           "eks.amazonaws.com/role-arn"           = var.role_arn
         }
       }
 
       spec {
         service_account_name            = var.cluster_service_account_name
-        automount_service_account_token = true
+        automount_service_account_token = var.automount_service_account_token #true
         volume {
           name = var.startup_script_options.volume_name
           config_map {
@@ -134,50 +147,50 @@ resource "kubernetes_deployment" "workingEnvironment" {
         }
         container {
           port {
-            container_port = 8080
+            container_port = var.workbench_container_port #8080
           }
           env {
-            name  = "CONSUL_CA"
+            name  = var.environment_variable_names.consul_ca #"CONSUL_CA"
             value = var.consul_ca
           }
           env {
-            name  = "CONSUL_HTTP_TOKEN"
+            name  = var.environment_variable_names.consul_http_token #CONSUL_HTTP_TOKEN"
             value = var.consul_http_token
           }
           env {
-            name  = "CONSUL_CONFIG"
+            name  = var.environment_variable_names.consul_config #"CONSUL_CONFIG"
             value = var.consul_config
           }
           env {
-            name  = "CONSUL_HTTP_ADDR"
+            name  = var.environment_variable_names.consul_http_addr#"CONSUL_HTTP_ADDR"
             value = var.consul_http_addr
           }
           env {
-            name  = "CONSUL_K8S_API_AWS"
+            name  = var.environment_variable_names.consul_k8s_api#"CONSUL_K8S_API_AWS"
             value = var.consul_k8s_api_aws
           }
           env {
-            name  = "CONSUL_ACCESSOR_ID"
+            name  = var.environment_variable_names.consul_accessor_id #"CONSUL_ACCESSOR_ID"
             value = var.consul_accessor_id
           }
           env {
-            name  = "CONSUL_SECRET_ID"
+            name  = var.environment_variable_names.consul_secret_id #"CONSUL_SECRET_ID"
             value = var.consul_secret_id
           }
           env {
-            name  = "VAULT_TOKEN"
+            name  = var.environment_variable_names.vault_token #"VAULT_TOKEN"
             value = var.vault_token
           }
           env {
-            name  = "VAULT_ADDR"
+            name  = var.environment_variable_names.vault_addr #"VAULT_ADDR"
             value = var.vault_addr
           }
           env {
-            name  = "VAULT_NAMESPACE"
+            name  = var.environment_variable_names.vault_namespace#"VAULT_NAMESPACE"
             value = var.vault_namespace
           }
           env {
-            name  = "AWS_PROFILE"
+            name  = var.environment_variable_names.aws_profile #"AWS_PROFILE"
             value = var.profile_name
           }
           name  = var.tutorial_name
@@ -190,13 +203,13 @@ resource "kubernetes_deployment" "workingEnvironment" {
             mount_path = var.aws_creds_options.mount_path
             name       = var.aws_creds_options.volume_name
             sub_path   = var.aws_creds_options.config_map_filename
-            read_only  = true
+            read_only  = var.volume_read_only
           }
           volume_mount {
             mount_path = var.aws_profile_config_options.mount_path
             name       = var.aws_profile_config_options.volume_name
             sub_path   = var.aws_profile_config_options.config_map_filename
-            read_only  = true
+            read_only  = var.volume_read_only
           }
           command = [var.startup_script_options.startup_command]
         }
@@ -206,20 +219,24 @@ resource "kubernetes_deployment" "workingEnvironment" {
   depends_on = [kubernetes_config_map.startup_script, kubernetes_config_map.aws_cred_profile, kubernetes_config_map.aws_profile_config]
 }
 
-# Render the IAM role file partial to add to the aws-auth configmap
+# Render the IAM role-file partial to add to the aws-auth configmap
 resource "local_file" "add_iam_role" {
-  content = templatefile("${path.module}/template_scripts/aws-auth.yaml.tftpl", {
+    content = templatefile(local.iam_role_template_path, {
+    #content = templatefile("${path.module}/template_scripts/aws-auth.yaml.tftpl", {
     role_arn                = var.role_arn
     cluster_service_account = var.cluster_service_account_name
   })
+  # Keep the string value of filename here. If set to variable, terraform seems to lose track of where the module is
+  # invoked, causing downstream resources to not find this file.
   filename = "./aws_auth.yaml"
 }
+
 
 # Add the IAM role to the aws-auth configmap
 resource "null_resource" "add_iam_role" {
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/template_scripts/add_iam_role.sh"
+    command = local.add_iam_role_command_str #"bash ${path.module}/template_scripts/add_iam_role.sh"
   }
   depends_on = [local_file.add_iam_role]
 
@@ -228,7 +245,7 @@ resource "null_resource" "add_iam_role" {
 # Upload the hashicups planfiles to a configmap, so the reader doesn't have to do this step.
 resource "null_resource" "hashicups_to_cm" {
   provisioner "local-exec" {
-    command = "kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
+    command = local.hashicups_config_map_str #"kubectl create configmap hashicups --from-file=${path.module}/../../hashicups -o yaml"
   }
 }
 
@@ -236,6 +253,6 @@ resource "null_resource" "hashicups_to_cm" {
 # to let the pod startup finish.
 resource "null_resource" "wait_for_pod" {
   provisioner "local-exec" {
-    command = "bash ${path.module}/template_scripts/wait.sh"
+    command = local.pod_wait_str #"bash ${path.module}/template_scripts/wait.sh"
   }
 }

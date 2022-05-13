@@ -1,10 +1,12 @@
 # Creates the HCP Consul Server instance
 resource "hcp_consul_cluster" "server" {
+  # When datacenter is present, the consul dc name is set by cluster_id
   cluster_id      = var.consul_cluster_datacenter
   hvn_id          = var.hvn_id
   public_endpoint = var.consul_public_endpoint
   tier            = var.hcp_consul_tier
   connect_enabled = true
+
 }
 
 # Creates the HCP Vault Cluster instance
