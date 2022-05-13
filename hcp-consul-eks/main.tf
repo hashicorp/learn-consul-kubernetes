@@ -163,35 +163,3 @@ resource "null_resource" "update_kubeconfig" {
   }
   depends_on = [module.eks]
 }
-
-
-
-# The reader's working environment is its own terraform project, in the ./working-environment folder. To build
-# the working environment for the reader, the working environment is treated as an independent terraform state, or
-# terraform project. But it is dependent on a kubeconfig file being updated after Amazon EKS is deployed by this project.
-# Because a provider takes precedence over resources, this kubeconfig can't be retrieved by the kubernetes provider, as
-# the EKS cluster is known after apply, whereas the provider loads the kubeconfig at runtime. The working-environment
-# then loads the updated kubeconfig during its run time, and uses this generated tfvars file to bootstrap the required
-# values for the reader's environment: a Kubernetes Pod inside the Amazon EKS cluster.
-#resource "local_file" "kubernetes_tfvars" {
-#  filename = "./working-environment/terraform.tfvars"
-#  content  = <<CONFIGURATION
-#consul_accessor_id="${module.hcp_applications.consul_root_token_accessor_id}"
-#consul_ca="${module.hcp_applications.consul_ca_file}"
-#consul_config="${module.hcp_applications.consul_config_file}"
-#consul_http_addr="${module.hcp_applications.consul_cluster_host}"
-#consul_http_token="${module.hcp_applications.consul_root_token_secret_id}"
-#consul_k8s_api_aws="${module.eks.cluster_endpoint}"
-#consul_secret_id ="${module.hcp_applications.consul_root_token_secret_id}"
-#vault_addr="${module.hcp_applications.vault_cluster_host}"
-#vault_namespace="${var.hcp_vault_default_namespace}"
-#vault_token="${module.hcp_applications.vault_admin_token}"
-#kube_context="${var.cluster_and_vpc_info.name}"
-#role_arn="${module.iam_role_for_service_accounts.iam_role_arn}"
-#profile_name="${var.profile_name}"
-#cluster_service_account_name="${var.kube_service_account_name}"
-#cluster_name="${var.cluster_and_vpc_info.name}"
-#cluster_region="${var.cluster_and_vpc_info.region}"
-#CONFIGURATION
-#}
-
