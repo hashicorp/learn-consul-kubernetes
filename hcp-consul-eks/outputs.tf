@@ -11,15 +11,6 @@ output "consul_auth_data" {
   }
 }
 
-## Authentication data for Vault that is passed to the working environment
-#output "vault_auth_data" {
-#  sensitive = true
-#  value = {
-#    cluster_host = module.hcp.vault_cluster_host
-#    vault_token  = module.hcp.vault_admin_token
-#  }
-#}
-
 # Data for the EKS Cluster that is sent to the working environment
 output "eks_data" {
   sensitive = true
@@ -40,10 +31,4 @@ output "oidc_provider_arn" {
 # Annotation in the deployment's podspec.
 output "service_account_role_arn" {
   value = module.iam_role_for_service_accounts.iam_role_arn
-}
-
-output "workbench_settings" {
-  value = {
-
-  }
 }
