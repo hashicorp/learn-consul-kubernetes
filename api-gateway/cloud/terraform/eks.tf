@@ -26,7 +26,7 @@ module "eks" {
 
   node_groups = {
     nodes = {
-      name_prefix      = "hcp-demo"
+      name_prefix      = "hcp-learn"
       instance_types   = ["t3a.medium"]
       desired_capacity = 3
       max_capacity     = 3

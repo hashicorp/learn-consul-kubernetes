@@ -14,6 +14,7 @@ resource "hcp_consul_cluster" "main" {
   hvn_id          = hcp_hvn.main.hvn_id
   public_endpoint = true
   tier            = var.consul_tier
+  min_consul_version = var.hcp_consul_version
 }
 
 resource "hcp_consul_cluster_root_token" "token" {

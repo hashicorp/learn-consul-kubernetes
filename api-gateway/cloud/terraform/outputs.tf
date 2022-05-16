@@ -30,7 +30,3 @@ output "vpc" {
     hvn_cidr_block = var.hvn_cidr_block
   }
 }
-
-output "database_subnet_group_name" {
-  value = module.vpc.database_subnet_group_name
-}

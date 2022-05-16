@@ -1,25 +1,25 @@
 variable "cluster_id" {
   type        = string
   description = "The name of your HCP Consul cluster"
-  default     = "hcp-demo"
+  default     = "hcp-learn"
 }
 
 variable "vpc_region" {
   type        = string
   description = "The AWS region to create resources in"
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "hvn_region" {
   type        = string
   description = "The HCP region to create resources in"
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "hvn_id" {
   type        = string
   description = "The name of your HCP HVN"
-  default     = "hcp-demo"
+  default     = "hcp-learn"
 }
 
 variable "hvn_cidr_block" {
@@ -34,8 +34,8 @@ variable "consul_tier" {
   default     = "development"
 }
 
-variable "vault_tier" {
+variable "hcp_consul_version" {
   type        = string
-  description = "The HCP Vault tier to use when creating a Vault cluster"
-  default     = "dev"
+  description = "The HCP Consul version"
+  default     = "v1.12.0"
 }

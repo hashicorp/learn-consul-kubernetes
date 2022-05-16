@@ -33,11 +33,6 @@ terraform {
 
 provider "aws" {
   region     = var.vpc_region
-  default_tags {
-    tags = {
-      Repository = "tf-cloud-repo"
-    }
-  }
 }
 
 provider "hcp" {
