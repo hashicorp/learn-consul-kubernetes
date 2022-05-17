@@ -6,7 +6,7 @@ metadata:
   namespace: consul
 spec:
   parentRefs:
-  - name: example-gateway
+  - name: api-gateway
   rules:
   - matches:
     - path:
@@ -31,7 +31,7 @@ metadata:
   namespace: consul
 spec:
   parentRefs:
-  - name: example-gateway
+  - name: api-gateway
   rules:
   - matches:
     - path:
@@ -39,6 +39,6 @@ spec:
         value: /
     backendRefs:
     - kind: Service
-      name: frontend
+      name: nginx
       namespace: default
       port: 80

@@ -21,7 +21,7 @@ You will perform these steps:
 ## Steps
 
 1. Clone repo
-2. `cd api-gateway/`
+2. `cd api-gateway/cloud/`
 3. Set credential environment variables for AWS and HCP
  1. `export AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY"`
     `export AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_KEY"`
