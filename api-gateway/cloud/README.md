@@ -23,10 +23,13 @@ You will perform these steps:
 1. Clone repo
 2. `cd api-gateway/cloud/`
 3. Set credential environment variables for AWS and HCP
- 1. `export AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY"`
-    `export AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_KEY"`
-    `export HCP_CLIENT_ID="YOUR_HCP_CLIENT_ID"`
-    `export HCP_CLIENT_SECRET="YOUR_HCP_SECRET"`
+    1. 
+    ```shell
+    export AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY"
+    export AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_KEY"
+    export HCP_CLIENT_ID="YOUR_HCP_CLIENT_ID"
+    export HCP_CLIENT_SECRET="YOUR_HCP_SECRET"
+    ```
 4. Run Terraform (resource creation will take 10-15 minutes to complete)
     1. `terraform -chdir=terraform/ init`
     2. `terraform -chdir=terraform/ apply`
@@ -35,15 +38,8 @@ You will perform these steps:
 7. Locate the external IP for your API Gateway
    1. `kubectl get services`
 8.  Visit the following urls in the browser
-    1.  [http://[your-aws-load-balancer-dns-name]/hashicups](http://[your-aws-load-balancer-dns-name]/hashicups)
-    2.  [http://[your-aws-load-balancer-dns-name]/echo](http://[your-aws-load-balancer-dns-name]/echo)
+   1.  [http://[your-aws-load-balancer-dns-name]/hashicups](http://[your-aws-load-balancer-dns-name]/hashicups)
+   2.  [http://[your-aws-load-balancer-dns-name]/echo](http://[your-aws-load-balancer-dns-name]/echo)
 9.  Clean up
-    1. Remove patch finalizers on the API gateway
-       1. ```shell
-          kubectl patch gatewayclasses.gateway.networking.k8s.io consul-api-gateway --type merge --patch '{"metadata":{"finalizers":[]}}'
-          ```
-       2. ```shell
-          kubectl patch gatewayclassconfigs.api-gateway.consul.hashicorp.com consul-api-gateway --type merge --patch '{"metadata":{"finalizers":[]}}'
-          ```
-    2. Destroy Terraform resources
-      `terraform -chdir=terraform/ destroy`
+   1. Destroy Terraform resources
+    `terraform -chdir=terraform/ destroy`
