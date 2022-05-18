@@ -34,8 +34,14 @@ variable "consul_tier" {
   default     = "development"
 }
 
-variable "hcp_consul_version" {
+variable "consul_version" {
   type        = string
   description = "The HCP Consul version"
   default     = "v1.12.0"
+}
+
+variable "api_gateway_version" {
+  type        = string
+  description = "The Consul API gateway CRD version to use"
+  default     = "0.2.1"
 }

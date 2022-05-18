@@ -26,6 +26,7 @@ resource "helm_release" "consul" {
       cluster_id       = var.cluster_id
       k8s_api_endpoint = var.k8s_api_endpoint
       consul_version   = substr(var.consul_version, 1, -1)
+      api_gateway_version = var.api_gateway_version
     })
   ]
 

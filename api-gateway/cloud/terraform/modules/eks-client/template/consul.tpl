@@ -42,7 +42,6 @@ controller:
 
 apiGateway:
   enabled: true
-  image: "hashicorp/consul-api-gateway:0.2.1"
+  image: "hashicorp/consul-api-gateway:${api_gateway_version}"
   managedGatewayClass:
     serviceType: LoadBalancer
-    useHostPorts: true

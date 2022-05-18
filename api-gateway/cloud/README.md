@@ -33,13 +33,17 @@ You will perform these steps:
 4. Run Terraform (resource creation will take 10-15 minutes to complete)
     1. `terraform -chdir=terraform/ init`
     2. `terraform -chdir=terraform/ apply`
-5. `kubectl apply --filename two-services/`
-6. `kubectl apply --filename api-gw/consul-api-gateway.yaml && kubectl wait --for=condition=ready gateway/api-gateway --timeout=90s && kubectl apply --filename api-gw/routes.yaml` 
-7. Locate the external IP for your API Gateway
-   1. `kubectl get services`
-8.  Visit the following urls in the browser
-   1.  [http://[your-aws-load-balancer-dns-name]/hashicups](http://[your-aws-load-balancer-dns-name]/hashicups)
-   2.  [http://[your-aws-load-balancer-dns-name]/echo](http://[your-aws-load-balancer-dns-name]/echo)
-9.  Clean up
-   1. Destroy Terraform resources
-    `terraform -chdir=terraform/ destroy`
+5. Configure terminal to communicate with your EKS cluster
+    1. `aws eks --region [your-region] update-kubeconfig --name [your-cluster-name]` 
+6. Create example service resources
+    1. `kubectl apply --filename two-services/`
+7. Create API Gateway and respective route resources
+    1. `kubectl apply --filename api-gw/consul-api-gateway.yaml && kubectl wait --for=condition=ready gateway/api-gateway --timeout=90s && kubectl apply --filename api-gw/routes.yaml` 
+8. Locate the external IP for your API Gateway
+    1. `kubectl get services`
+9.  Visit the following urls in the browser
+    1. [http://your-aws-load-balancer-dns-name/hashicups](http://your-aws-load-balancer-dns-name/hashicups)
+    2. [http://your-aws-load-balancer-dns-name/echo](http://your-aws-load-balancer-dns-name/echo)
+10. Clean up
+    1. Destroy Terraform resources
+      `terraform -chdir=terraform/ destroy`
