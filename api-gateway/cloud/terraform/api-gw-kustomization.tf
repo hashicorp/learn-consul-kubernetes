@@ -1,6 +1,6 @@
 locals {
   # non-default context name to protect from using wrong kubeconfig
-  kubeconfig_context = "_terraform-kustomization-${var.cluster_id}_"
+  kubeconfig_context = "_terraform-kustomization-${local.cluster_id}_"
 
   kubeconfig = {
     apiVersion = "v1"

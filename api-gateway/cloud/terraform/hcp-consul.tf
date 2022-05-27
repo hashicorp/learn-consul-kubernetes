@@ -9,8 +9,13 @@ module "aws_hcp_consul" {
   security_group_ids = [module.eks.cluster_primary_security_group_id]
 }
 
+resource "random_string" "cluster_id" {
+  length  = 6
+  special = false
+}
+
 resource "hcp_consul_cluster" "main" {
-  cluster_id      = var.cluster_id
+  cluster_id      = "${var.cluster_id}-${random_string.cluster_id.id}"
   hvn_id          = hcp_hvn.main.hvn_id
   public_endpoint = true
   tier            = var.consul_tier

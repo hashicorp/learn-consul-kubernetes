@@ -19,14 +19,14 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "17.22.0"
 
-  cluster_name    = "${var.cluster_id}-eks"
+  cluster_name    = "${local.cluster_id}-eks"
   cluster_version = "1.21"
   subnets         = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
 
   node_groups = {
     nodes = {
-      name_prefix      = "hcp-learn"
+      name_prefix      = "${local.cluster_id}-node"
       instance_types   = ["t3a.medium"]
       desired_capacity = 3
       max_capacity     = 3

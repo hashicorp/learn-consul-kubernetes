@@ -1,7 +1,7 @@
 
 resource "kubernetes_secret" "consul_secrets" {
   metadata {
-    name = "${var.cluster_id}-hcp"
+    name = "${local.cluster_id}-hcp"
   }
 
   data = {
@@ -23,7 +23,7 @@ resource "helm_release" "consul" {
     templatefile("${path.module}/template/consul.tpl", {
       datacenter       = var.datacenter
       consul_hosts     = jsonencode(var.consul_hosts)
-      cluster_id       = var.cluster_id
+      cluster_id       = local.cluster_id
       k8s_api_endpoint = var.k8s_api_endpoint
       consul_version   = substr(var.consul_version, 1, -1)
       api_gateway_version = var.api_gateway_version

@@ -31,7 +31,6 @@ variable "k8s_api_endpoint" {
 variable "cluster_id" {
   type        = string
   description = "The ID of the Consul cluster that is managing the clients"
-  default = "hcp-learn"
 }
 
 variable "consul_version" {
