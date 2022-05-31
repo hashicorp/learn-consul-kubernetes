@@ -1,7 +1,7 @@
 
 resource "kubernetes_secret" "consul_secrets" {
   metadata {
-    name = "${local.cluster_id}-hcp"
+    name = "${var.cluster_id}-hcp"
   }
 
   data = {
@@ -23,14 +23,14 @@ resource "helm_release" "consul" {
     templatefile("${path.module}/template/consul.tpl", {
       datacenter       = var.datacenter
       consul_hosts     = jsonencode(var.consul_hosts)
-      cluster_id       = local.cluster_id
+      cluster_id       = var.cluster_id
       k8s_api_endpoint = var.k8s_api_endpoint
       consul_version   = substr(var.consul_version, 1, -1)
       api_gateway_version = var.api_gateway_version
     })
   ]
 
-  # Helm installation relies on the Kuberenetes secret being
+  # Helm installation relies on the Kubernetes secret being
   # available.
   depends_on = [kubernetes_secret.consul_secrets]
 }
