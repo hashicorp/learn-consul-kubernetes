@@ -15,7 +15,7 @@ resource "random_string" "cluster_id" {
 }
 
 resource "hcp_consul_cluster" "main" {
-  cluster_id      = "${var.cluster_id}-${random_string.cluster_id.id}"
+  cluster_id      = local.cluster_id
   hvn_id          = hcp_hvn.main.hvn_id
   public_endpoint = true
   tier            = var.consul_tier
