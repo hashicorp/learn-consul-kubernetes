@@ -1,0 +1,3 @@
+cert_config.json
+kubeconfig*
+vault_token.json

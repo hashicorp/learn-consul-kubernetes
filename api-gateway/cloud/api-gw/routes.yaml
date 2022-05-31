@@ -3,10 +3,9 @@ apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: HTTPRoute
 metadata:
   name: example-route-1
-  namespace: consul
 spec:
   parentRefs:
-  - name: example-gateway
+  - name: api-gateway
   rules:
   - matches:
     - path:
@@ -15,12 +14,10 @@ spec:
     backendRefs:
     - kind: Service
       name: echo-1
-      namespace: default
       port: 8080
       weight: 50
     - kind: Service
       name: echo-2
-      namespace: default
       port: 8090
       weight: 50
 ---
@@ -28,10 +25,9 @@ apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: HTTPRoute
 metadata:
   name: example-route-2
-  namespace: consul
 spec:
   parentRefs:
-  - name: example-gateway
+  - name: api-gateway
   rules:
   - matches:
     - path:
@@ -39,6 +35,5 @@ spec:
         value: /
     backendRefs:
     - kind: Service
-      name: frontend
-      namespace: default
+      name: nginx
       port: 80
