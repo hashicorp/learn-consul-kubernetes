@@ -50,7 +50,7 @@ spec:
       serviceAccountName: postgres
       containers:
         - name: postgres
-          image: hashicorpdemoapp/product-api-db:v0.0.16
+          image: hashicorpdemoapp/product-api-db:v0.0.22
           ports:
             - containerPort: 5432
           env:
