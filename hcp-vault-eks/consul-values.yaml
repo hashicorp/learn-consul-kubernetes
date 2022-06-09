@@ -2,7 +2,6 @@ global:
   datacenter: "dc1"
   name: consul
   domain: consul
-  # image: hashicorp/consul-enterprise:1.12-ent
   secretsBackend:
     vault:
       enabled: true
@@ -10,15 +9,12 @@ global:
       consulClientRole: consul-client
       consulCARole: consul-ca
       connectCA:
-        address: https://vault-cluster-private-vault-c1e41072.199cdcb8.z1.hashicorp.cloud:8200
+        address: $VAULT_PRIVATE_ADDR
         rootPKIPath: connect-root/
         intermediatePKIPath: connect-intermediate-dc1/
         additionalConfig: "{\"connect\": [{ \"ca_config\": [{ \"namespace\": \"admin\"}]}]}"
       agentAnnotations: |
         "vault.hashicorp.com/namespace": "admin"
-  # enterpriseLicense:
-  #   secretName: 'consul/data/secret/enterpriselicense'
-  #   secretKey: 'key'
 
   tls:
     enabled: true
@@ -33,7 +29,6 @@ global:
   gossipEncryption:
     secretName: consul/data/secret/gossip
     secretKey: gossip
-  # enableConsulNamespaces: true
 
 server:
   replicas: 1
@@ -46,9 +41,6 @@ connectInject:
   enabled: true
   transparentProxy:
     defaultEnabled: true
-  # consulNamespaces:
-  #   consulDestinationNamespace: "ns1"
-  #   mirroringK8S: true
 
 prometheus:
   enabled: true

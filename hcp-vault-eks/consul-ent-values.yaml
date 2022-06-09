@@ -10,7 +10,7 @@ global:
       consulClientRole: consul-client
       consulCARole: consul-ca
       connectCA:
-        address: https://vault-cluster-private-vault-c1e41072.199cdcb8.z1.hashicorp.cloud:8200
+        address: $VAULT_PRIVATE_ADDR
         rootPKIPath: connect-root/
         intermediatePKIPath: connect-intermediate-dc1/
         additionalConfig: "{\"connect\": [{ \"ca_config\": [{ \"namespace\": \"admin\"}]}]}"
