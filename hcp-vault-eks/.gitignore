@@ -1,4 +1,8 @@
 # Local gitignore
 
 # Helm Values
-*values.yaml
+*values-*.yaml
+vault-values.yaml
+
+# Scripts in the main folder ignored
+*.sh

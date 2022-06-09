@@ -1,0 +1,90 @@
+global:
+  datacenter: "dc1"
+  name: consul
+  domain: consul
+  # image: hashicorp/consul-enterprise:1.12-ent
+  secretsBackend:
+    vault:
+      enabled: true
+      consulServerRole: consul-server
+      consulClientRole: consul-client
+      consulCARole: consul-ca
+      connectCA:
+        address: https://vault-cluster-private-vault-c1e41072.199cdcb8.z1.hashicorp.cloud:8200
+        rootPKIPath: connect-root/
+        intermediatePKIPath: connect-intermediate-dc1/
+        additionalConfig: "{\"connect\": [{ \"ca_config\": [{ \"namespace\": \"admin\"}]}]}"
+      agentAnnotations: |
+        "vault.hashicorp.com/namespace": "admin"
+  # enterpriseLicense:
+  #   secretName: 'consul/data/secret/enterpriselicense'
+  #   secretKey: 'key'
+
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+    caCert:
+      secretName: "pki/cert/ca"
+  federation:
+    enabled: false
+    createFederationSecret: false
+  acls:
+    manageSystemACLs: false
+  gossipEncryption:
+    secretName: consul/data/secret/gossip
+    secretKey: gossip
+  # enableConsulNamespaces: true
+
+server:
+  replicas: 1
+  exposeGossipAndRPCPorts: true
+  serverCert:
+    secretName: "pki/issue/consul-server"
+
+connectInject:
+  replicas: 1
+  enabled: true
+  transparentProxy:
+    defaultEnabled: true
+  # consulNamespaces:
+  #   consulDestinationNamespace: "ns1"
+  #   mirroringK8S: true
+
+prometheus:
+  enabled: true
+
+controller:
+  enabled: true
+
+meshGateway:
+  enabled: false
+  replicas: 1
+
+ingressGateways:
+  replicas: 1
+  enabled: true
+  gateways:
+    - name: ingress-gateway
+      service:
+        type: LoadBalancer
+terminatingGateways:
+  replicas: 1
+  enabled: true
+  gateways:
+    - name: terminating-gateway
+      service:
+        type: LoadBalancer
+ui:
+  enabled: true
+  service:
+    type: LoadBalancer
+  metrics:
+    provider: prometheus
+    baseURL: http://prometheus-server
+
+syncCatalog:
+  enabled: true
+  consulNamespaces:
+    mirroringK8S: true
+  k8sDenyNamespaces: ["kube-system", "kube-public", "consul"]
+
