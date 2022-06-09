@@ -1,0 +1,82 @@
+global:
+  datacenter: "dc1"
+  name: consul
+  domain: consul
+  secretsBackend:
+    vault:
+      enabled: true
+      consulServerRole: consul-server
+      consulClientRole: consul-client
+      consulCARole: consul-ca
+      connectCA:
+        address: $VAULT_PRIVATE_ADDR
+        rootPKIPath: connect-root/
+        intermediatePKIPath: connect-intermediate-dc1/
+        additionalConfig: "{\"connect\": [{ \"ca_config\": [{ \"namespace\": \"admin\"}]}]}"
+      agentAnnotations: |
+        "vault.hashicorp.com/namespace": "admin"
+
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+    caCert:
+      secretName: "pki/cert/ca"
+  federation:
+    enabled: false
+    createFederationSecret: false
+  acls:
+    manageSystemACLs: false
+  gossipEncryption:
+    secretName: consul/data/secret/gossip
+    secretKey: gossip
+
+server:
+  replicas: 1
+  exposeGossipAndRPCPorts: true
+  serverCert:
+    secretName: "pki/issue/consul-server"
+
+connectInject:
+  replicas: 1
+  enabled: true
+  transparentProxy:
+    defaultEnabled: true
+
+prometheus:
+  enabled: true
+
+controller:
+  enabled: true
+
+meshGateway:
+  enabled: false
+  replicas: 1
+
+ingressGateways:
+  replicas: 1
+  enabled: true
+  gateways:
+    - name: ingress-gateway
+      service:
+        type: LoadBalancer
+terminatingGateways:
+  replicas: 1
+  enabled: true
+  gateways:
+    - name: terminating-gateway
+      service:
+        type: LoadBalancer
+ui:
+  enabled: true
+  service:
+    type: LoadBalancer
+  metrics:
+    provider: prometheus
+    baseURL: http://prometheus-server
+
+syncCatalog:
+  enabled: true
+  consulNamespaces:
+    mirroringK8S: true
+  k8sDenyNamespaces: ["kube-system", "kube-public", "consul"]
+
