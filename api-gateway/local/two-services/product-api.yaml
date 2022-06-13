@@ -32,6 +32,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: db-configmap
+  namespace: default
 data:
   config: |
     {
