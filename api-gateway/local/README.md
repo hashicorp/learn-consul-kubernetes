@@ -3,14 +3,14 @@
 1. Clone repo
 2. `cd api-gateway/local/`
 3. `kind create cluster --config=kind/cluster.yaml`
-4. `kubectl apply -k "github.com/hashicorp/consul-api-gateway/config/crd?ref=v0.2.1"`
+4. `kubectl apply -k "github.com/hashicorp/consul-api-gateway/config/crd?ref=v0.3.0"`
 5. `helm repo add hashicorp https://helm.releases.hashicorp.com`
 6. `helm repo update`
 7. Install Consul
     1. Helm: 
-    `helm install --values consul/config.yaml consul hashicorp/consul --create-namespace --namespace consul --version "0.43.0"`
+    `helm install --values consul/config.yaml consul hashicorp/consul --create-namespace --namespace consul --version "0.45.0"`
     2. Consul K8S:
-    `consul-k8s install -config-file=consul/config.yaml -set global.image=hashicorp/consul:1.12.0`
+    `consul-k8s install -config-file=consul/config.yaml -set global.image=hashicorp/consul:1.12.2`
 8. `kubectl apply --filename two-services`
 9.  `kubectl apply --filename api-gw/consul-api-gateway.yaml --namespace consul && kubectl wait --for=condition=ready gateway/api-gateway --namespace consul --timeout=90s && kubectl apply --filename api-gw/routes.yaml --namespace consul` 
 10.  `kubectl port-forward svc/consul-ui --namespace consul 6443:443`
