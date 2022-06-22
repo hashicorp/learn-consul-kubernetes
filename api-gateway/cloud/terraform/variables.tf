@@ -43,5 +43,5 @@ variable "consul_version" {
 variable "api_gateway_version" {
   type        = string
   description = "The Consul API gateway CRD version to use"
-  default     = "0.2.1"
+  default     = "0.3.0"
 }
