@@ -59,6 +59,3 @@ spec:
           # securityContext:
           #   allowPrivilegeEscalation: false
           #   runAsUser: 0
-      ports:
-        - port: 80
-        targetPort: 80
