@@ -7,14 +7,30 @@ global:
   metrics:
     enabled: true
     enableAgentMetrics: true
+    agentMetricsRetentionTime: "1m"
+
 server:
   replicas: 1
+
 ui:
   enabled: true
+  metrics:
+    enabled: true # by default, this inherits from the value global.metrics.enabled
+    provider: "prometheus"
+    baseURL: http://prometheus-server
+
 connectInject:
   enabled: true
   default: true
+  metrics:
+    defaultEnabled: true
+    defaultEnableMerging: true
+    defaultPrometheusScrapePort: 20200
+    defaultPrometheusScrapePath: "/metrics"
+    defaultMergedMetricsPort: 20100
+
 controller:
   enabled: true
+
 prometheus:
   enabled: true

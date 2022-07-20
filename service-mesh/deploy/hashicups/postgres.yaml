@@ -6,10 +6,10 @@ metadata:
   labels:
     app: postgres
 spec:
-  type: ClusterIP
   ports:
     - port: 5432
       targetPort: 5432
+      protocol: TCP
   selector:
     app: postgres
 ---
@@ -24,7 +24,7 @@ kind: ServiceDefaults
 metadata:
   name: postgres
 spec:
-  protocol: tcp
+  protocol: "tcp"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,12 +45,12 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/enable-metrics-merging: "false"
     spec:
       serviceAccountName: postgres
       containers:
         - name: postgres
-          image: hashicorpdemoapp/product-api-db:v0.0.22
+          image: hashicorpdemoapp/product-api-db:v0.0.21
+          imagePullPolicy: Always
           ports:
             - containerPort: 5432
           env:
@@ -60,8 +60,6 @@ spec:
               value: postgres
             - name: POSTGRES_PASSWORD
               value: password
-          # only listen on loopback so only access is via connect proxy
-          args: ["-c", "listen_addresses=127.0.0.1"]
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
               name: "pgdata"
