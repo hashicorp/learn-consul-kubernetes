@@ -1,0 +1,17 @@
+[Unit]
+Description="consul"
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Environment="PORT=80"
+Type=simple
+ExecStart=/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
