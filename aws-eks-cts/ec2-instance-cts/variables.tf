@@ -39,3 +39,9 @@ variable "consul_version" {
   description = "Consul version to install"
   default     = "v1.12.0"
 }
+
+variable "consul_root_token" {
+  type = string
+  description = "Consul client agent token"
+  default = ""
+}

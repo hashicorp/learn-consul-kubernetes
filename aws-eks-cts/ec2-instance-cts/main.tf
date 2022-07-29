@@ -83,6 +83,7 @@ resource "aws_instance" "consul_client" {
     setup = base64gzip(templatefile("${path.module}/scripts/setup.sh", {
       consul_config    = "",
       consul_version   = var.consul_version,
+      consul_token = var.consul_root_token,
       cts_version = var.cts_version,
       vpc_cidr = var.vpc_cidr_block,
     })),
