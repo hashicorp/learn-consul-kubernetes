@@ -3,16 +3,13 @@
 ## Overview
 
 Terraform will perform the following actions:
-- Create VPC and HVN networks
-- Peer VPC and HVN networks
-- Create HCP Consul cluster
-- Create EKS cluster
-- Deploy Consul to EKS
+- Create EKS cluster in a VPC
+- Create EC2 instance in a VPC
 
-You will perform these steps:
-- Deploy Hashicups & Echo services to EKS
-- Taint and redeploy HashiCups & Echo services to EKS
-- Clean up environment
+You will perform the following actions:
+- Deploy Consul to the EKS cluster
+- Configure EKS to forward requests to Consul for `.consul` TLD
+- Join the Consul client agent on the EC2 instance to the Consul cluster in EKS
 
 ## Steps
 
@@ -41,7 +38,7 @@ You will perform these steps:
     2. `ssh ubuntu@$(terraform -chdir=ec2-instance-cts output -raw ec2_client) -i ./ec2-instance-cts/consul-client.pem "consul join $(kubectl -n consul get pods -l component=server,app=consul -ojson | jq -r '.items[0].status.hostIP')"`
     3. `ssh ubuntu@$(terraform -chdir=ec2-instance-cts output -raw ec2_client) -i ./ec2-instance-cts/consul-client.pem "consul members"`
 8. Clean up
-    1. `terraform -chdir=ec2-instance-cts destroy`
+    1. `terraform -chdir=ec2-instance-cts/ destroy`
     2. `terraform -chdir=infrastructure/ destroy`
 
 ## Thank you
