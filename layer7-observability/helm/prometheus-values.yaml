@@ -1,6 +1,6 @@
 ---
 global:
-  scrape_interval:  5s
+  scrape_interval: 5s
   scrape_timeout: 3s
 server:
   podAnnotations:
@@ -40,5 +40,3 @@ serviceAccounts:
     create: true
     name:
     annotations: {}
-
-

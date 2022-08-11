@@ -19,13 +19,6 @@ metadata:
   name: frontend
 automountServiceAccountToken: true
 ---
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: frontend
-spec:
-  protocol: "http"
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -77,6 +70,9 @@ spec:
       labels:
         service: frontend
         app: frontend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9102"
     spec:
       serviceAccountName: frontend
       volumes:
@@ -95,14 +91,3 @@ spec:
             - name: config
               mountPath: /etc/nginx/conf.d
               readOnly: true
----
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceIntentions
-metadata:
-  name: frontend-to-public-api
-spec:
-  destination:
-    name: public-api
-  sources:
-    - name: frontend
-      action: allow
