@@ -1,0 +1,49 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ProxyDefaults
+metadata:
+  name: global
+spec:
+  config:
+    envoy_prometheus_bind_addr: '0.0.0.0:20200'
+    protocol: grpc
+    envoy_tracing_json: |
+      {
+        "http":{
+          "name":"envoy.tracers.zipkin",
+          "typedConfig":{
+            "@type":"type.googleapis.com/envoy.config.trace.v3.ZipkinConfig",
+            "collector_cluster":"zipkin",
+            "collector_endpoint_version":"HTTP_JSON",
+            "collector_endpoint":"/api/v2/spans",
+            "shared_span_context":false
+          }
+        }
+      }
+    envoy_extra_static_clusters_json: |
+      {
+        "connect_timeout":"3.000s",
+        "dns_lookup_family":"V4_ONLY",
+        "lb_policy":"ROUND_ROBIN",
+        "load_assignment":{
+          "cluster_name":"zipkin",
+          "endpoints":[
+            {
+              "lb_endpoints":[
+                {
+                  "endpoint":{
+                    "address":{
+                      "socket_address":{
+                        "address":"simplest-collector.default.svc.cluster.local",
+                        "port_value":9411,
+                        "protocol":"TCP"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "name":"zipkin",
+        "type":"STRICT_DNS"
+      }

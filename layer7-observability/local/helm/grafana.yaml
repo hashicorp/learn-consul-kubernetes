@@ -1,0 +1,41 @@
+adminPassword: password
+
+rbac:
+  create: false
+  pspEnabled: false
+
+# Disable test pods
+testFramework:
+  enabled: false
+
+podLabels:
+  app: grafana
+
+podAnnotations:
+  "consul.hashicorp.com/connect-inject": "false"
+  "sidecar.opentelemetry.io/inject": "true"
+
+service:
+  port: 3000
+
+# Configure the prometheus data source. We expect prometheus:9090 in the same namespace.
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        orgId: 1
+        url: http://prometheus-server.default.svc.cluster.local
+        access: proxy
+        isDefault: true
+        jsonData:
+          timeInterval: 5s
+        editable: true
+      - name: Jaeger
+        type: jaeger
+        uid: jaeger-spectra
+        access: proxy
+        url: http://simplest-query.default.svc.cluster.local:16686/
+        editable: true
+        isDefault: false
