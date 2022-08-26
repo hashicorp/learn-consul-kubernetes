@@ -1,0 +1,64 @@
+global:
+  name: consul
+  enabled: false
+  datacenter: dc1
+  image: hashicorp/consul-enterprise:1.11.4-ent
+  enableConsulNamespaces: true
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-bootstrap-token
+      secretKey: token
+  gossipEncryption:
+    secretName: consul-gossip-key
+    secretKey: key
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+    caCert:
+      secretName: consul-ca-cert
+      secretKey: tls.crt
+externalServers:
+  enabled: true
+  hosts:
+  - ${hcp_consul_addr}
+  httpsPort: 443
+  useSystemRoots: true
+  k8sAuthMethodHost: ${kube_control_plane}
+client:
+  enabled: true
+  grpc: true
+  join:
+  - ${hcp_consul_addr}
+connectInject:
+  enabled: true
+  envoyExtraArgs: "--component-log-level upstream:debug,http:debug,router:debug,config:debug"
+  aclBindingRuleSelector: ''
+  consulNamespaces:
+    mirroringK8S: true
+  transparentProxy:
+    defaultEnabled: false
+controller:
+  enabled: true
+secretsBackend:
+  vault:
+    enabled: true
+    # https://www.consul.io/docs/k8s/helm#v-global-secretsbackend-vault-consulclientrole
+    consulClientRole: consul-consul-client
+    consulCARole: consul-consul-client
+    # https://www.consul.io/docs/k8s/helm#v-global-secretsbackend-vault-connectca
+    connectCA:
+      address: ${vault_addr}
+      rootPKIPath: /connect_root
+      intermediatePKIPath: /connect_inter
+      additionalConfig: |
+        {
+          "connect": [{
+            "ca_config": [{
+              "leaf_cert_ttl": "72h",
+              "intermediate_cert_ttl": "8760h",
+              "rotation_period": "2160h",
+              "namespace": "admin"
+            }]
+          }]
+        }

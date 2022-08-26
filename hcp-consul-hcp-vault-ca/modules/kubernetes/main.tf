@@ -43,6 +43,19 @@ resource "kubernetes_config_map" "aws_profile_config" {
   }
 }
 
+resource "kubernetes_config_map" "consul_values" {
+  metadata {
+    name = "consul-values.yaml"
+  }
+  data = {
+    "consul-values.yaml" = templatefile("${path.module}/template_scripts/consul-values.tftpl", {
+      vault_addr = var.vault_addr
+      hcp_consul_addr = var.consul_http_addr
+      kube_control_plane = var.consul_k8s_api_aws
+    })
+  }
+}
+
 # Create a service account for this pod
 resource "kubernetes_service_account" "tutorial" {
   metadata {
@@ -126,6 +139,13 @@ resource "kubernetes_deployment" "workingEnvironment" {
           }
         }
         volume {
+          name = "consul-values.yaml"
+          config_map {
+            name         = "consul-values.yaml"
+            default_mode = "0755"
+          }
+        }
+        volume {
           name = var.aws_profile_config_options.volume_name
           config_map {
             name         = var.aws_profile_config_options.config_map_name
@@ -193,6 +213,12 @@ resource "kubernetes_deployment" "workingEnvironment" {
             read_only  = true
           }
           volume_mount {
+            mount_path = "/root/consul-values.yaml"
+            name       = "consul-values.yaml"
+            sub_path   = "consul-values.yaml"
+            read_only  = false
+          }
+          volume_mount {
             mount_path = var.aws_profile_config_options.mount_path
             name       = var.aws_profile_config_options.volume_name
             sub_path   = var.aws_profile_config_options.config_map_filename
@@ -213,6 +239,16 @@ resource "local_file" "add_iam_role" {
     cluster_service_account = var.cluster_service_account_name
   })
   filename = "./aws_auth.yaml"
+}
+
+# Render the IAM role file partial to add to the aws-auth configmap
+resource "local_file" "consul_values" {
+  content = templatefile("${path.module}/template_scripts/consul-values.tftpl", {
+    hcp_consul_addr = var.consul_http_addr
+    vault_addr = var.vault_addr
+    kube_control_plabe = var.consul_k8s_api_aws
+  })
+  filename = "./consul-values.yaml"
 }
 
 # Add the IAM role to the aws-auth configmap
