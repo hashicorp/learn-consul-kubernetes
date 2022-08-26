@@ -1,9 +1,26 @@
+resource "random_string" "identifier" {
+  length  = 6
+  upper   = false
+  special = false
+  numeric = true
+}
+
+locals {
+  identifier        = random_string.identifier.id
+  hvn_name          = "${var.hcp_hvn_config.name}-${local.identifier}"
+  peer_id           = "${var.hcp_peering_identifier}-${local.identifier}"
+  vault_cluster     = "${var.hcp_vault_cluster_name}-${local.identifier}"
+  consul_datacenter = "${var.hcp_consul_datacenter_name}-${local.identifier}"
+  eks_name          = "${var.cluster_and_vpc_info.name}-${local.identifier}"
+  policy_name       = "${var.cluster_and_vpc_info.policy_name}-${local.identifier}"
+}
+
 # Builds the base VPC for the AWS EKS Cluster
 module "aws_vpc" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source             = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version            = "3.11.5"
-  name               = var.cluster_and_vpc_info.vpc_name
+  name               = local.identifier
   cidr               = var.aws_cidr_block.allocation
   azs                = var.availability_zones
   private_subnets    = var.aws_cidr_block.subnets.private
@@ -12,19 +29,15 @@ module "aws_vpc" {
   enable_vpn_gateway = false
   # internal-lb: Permits internal Load Balancer creation when a LoadBalancer type is passed.
   private_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_and_vpc_info.name}" = "shared"
-    "kubernetes.io/role/internal-elb"                        = "1"
+    "kubernetes.io/cluster/${local.eks_name}" = "shared"
+    "kubernetes.io/role/internal-elb"         = "1"
   }
   #elb: Permits Elastic Load Balancer creation when a LoadBalancer type is passed.
   public_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_and_vpc_info.name}" = "shared"
-    "kubernetes.io/role/elb"                                 = "1"
+    "kubernetes.io/cluster/${local.eks_name}" = "shared"
+    "kubernetes.io/role/elb"                  = "1"
   }
 
-  tags = {
-    Terraform   = "true"
-    Environment = var.cluster_and_vpc_info.stage
-  }
 }
 
 # Creates required AWS Services to complete the peering relationship. If needed later
@@ -41,7 +54,7 @@ module "hcp_networking_primitives" {
   source         = "./modules/hcp_networking_primitives"
   cloud_provider = var.cloud_provider
   hcp_region     = var.hcp_region
-  hvn_name       = var.hcp_hvn_config.name
+  hvn_name       = local.hvn_name
   cidr_block     = var.hcp_hvn_config.allocation
 }
 
@@ -56,7 +69,7 @@ module "hcp_networking" {
   aws_vpc_cidr_block         = var.aws_cidr_block.allocation
   hvn_link                   = module.hcp_networking_primitives.hvn_link
   hvn_name                   = module.hcp_networking_primitives.hcp_vpn_id
-  hvn_peering_identifier     = var.hcp_peering_identifier
+  hvn_peering_identifier     = local.peer_id
   hcp_hvn_cidr_block         = var.hcp_hvn_config.allocation
   public_route_table_ids     = module.aws_vpc.public_route_table_ids
   private_route_table_ids    = module.aws_vpc.private_route_table_ids
@@ -66,8 +79,8 @@ module "hcp_networking" {
 module "hcp_applications" {
   source                    = "./modules/hcp_applications"
   hvn_id                    = module.hcp_networking_primitives.hcp_vpn_id
-  consul_cluster_datacenter = var.hcp_consul_datacenter_name
-  vault_cluster_name        = var.hcp_vault_cluster_name
+  consul_cluster_datacenter = local.consul_datacenter
+  vault_cluster_name        = local.vault_cluster
   hcp_consul_tier           = var.hcp_hvn_config.consul_tier
   hcp_vault_tier            = var.hcp_hvn_config.vault_tier
 }
@@ -77,11 +90,9 @@ module "eks" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365
   source                          = "registry.terraform.io/terraform-aws-modules/eks/aws"
   version                         = "18.9.0"
-  cluster_name                    = var.cluster_and_vpc_info.name
+  cluster_name                    = local.eks_name
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
-
-
   cluster_addons = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
@@ -117,35 +128,29 @@ module "eks" {
   tags = {
     Environment = var.cluster_and_vpc_info.stage
   }
-
 }
 
 # Update local environment's kubeconfig file.
 resource "null_resource" "update_kubeconfig" {
 
   provisioner "local-exec" {
-    # Create empty kubeconfig if it doesn't exist. If it does exist, touch does nothing, but back up the config in either case and use a kubeconfig that is unique for this tutorial. Is deleted during terraform destroy
-    command = "mv ~/.kube/config ~/.kube/config.bkp && aws eks --region ${var.cluster_and_vpc_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${var.cluster_and_vpc_info.name}"
+    command = "aws eks --region ${var.cluster_and_vpc_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${module.eks.cluster_id}"
   }
   depends_on = [module.eks]
 }
 
-# This module's resources only run when `terraform destroy` is invoked by the user. A "start_cleanup" variable
-# is used to make sure cleanup scripts are not run during a follow up terraform apply, and only during terraform destroy.
-# This is passed as TF_VAR_start_cleanup=true to the main project by the reader at the end of the tutorial:
-# export TF_VAR_run_cleanup=true; terraform destroy -auto-approve
 module "cleanup" {
   source        = "./modules/cleanup"
   vpc_id        = module.aws_vpc.vpc_id
   region        = var.region
-  cluster_name  = var.cluster_and_vpc_info.name
+  cluster_name  = local.eks_name
   start_cleanup = var.run_cleanup
 }
 
 # This module does all the OIDC magic for ServiceAccount -> IAM Role mapping
 module "iam_role_for_service_accounts" {
   source    = "registry.terraform.io/terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  role_name = lower(var.cluster_and_vpc_info.name)
+  role_name = local.eks_name
   version   = "4.14.0"
 
   oidc_providers = {
@@ -162,7 +167,7 @@ module "eks_iam" {
   source      = "./modules/iam"
   cluster_arn = module.eks.cluster_arn
   description = var.cluster_and_vpc_info.policy_description
-  policy_name = var.cluster_and_vpc_info.policy_name
+  policy_name = local.policy_name
   role_name   = module.iam_role_for_service_accounts.iam_role_name
 }
 
@@ -186,12 +191,11 @@ consul_secret_id ="${module.hcp_applications.consul_root_token_secret_id}"
 vault_addr="${module.hcp_applications.vault_cluster_host}"
 vault_namespace="${var.hcp_vault_default_namespace}"
 vault_token="${module.hcp_applications.vault_admin_token}"
-kube_context="${var.cluster_and_vpc_info.name}"
+kube_context="${local.eks_name}"
 role_arn="${module.iam_role_for_service_accounts.iam_role_arn}"
 profile_name="${var.profile_name}"
 cluster_service_account_name="${var.kube_service_account_name}"
-cluster_name="${var.cluster_and_vpc_info.name}"
+cluster_name="${local.eks_name}"
 cluster_region="${var.cluster_and_vpc_info.region}"
 CONFIGURATION
 }
-
