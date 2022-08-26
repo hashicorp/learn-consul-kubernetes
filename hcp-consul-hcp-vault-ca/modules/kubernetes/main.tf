@@ -241,16 +241,6 @@ resource "local_file" "add_iam_role" {
   filename = "./aws_auth.yaml"
 }
 
-# Render the IAM role file partial to add to the aws-auth configmap
-resource "local_file" "consul_values" {
-  content = templatefile("${path.module}/template_scripts/consul-values.tftpl", {
-    hcp_consul_addr = var.consul_http_addr
-    vault_addr = var.vault_addr
-    kube_control_plabe = var.consul_k8s_api_aws
-  })
-  filename = "./consul-values.yaml"
-}
-
 # Add the IAM role to the aws-auth configmap
 resource "null_resource" "add_iam_role" {
 
