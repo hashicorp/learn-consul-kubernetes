@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+export WORKBENCH=$(kubectl get pods -l app=tutorial  -o json | jq -r ".items[0].metadata.name")
+rc =$(echo $?)
+
+if [ $rc -ne 0 ]
+then
+  echo "Workbench Pod not found. Use kubectl manually, or try again in a moment"
+  exit 1
+fi
 
 echo	"Confirming access to Kubernetes resources"
 kubectl exec -it "${WORKBENCH}" -- kubectl get pods --all-namespaces >/dev/null
