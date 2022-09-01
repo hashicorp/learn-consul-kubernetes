@@ -1,7 +1,7 @@
 global:
   name: consul
   enabled: false
-  datacenter: dc1
+  datacenter: ${datacenter}
   image: hashicorp/consul-enterprise:1.11.4-ent
   enableConsulNamespaces: true
   acls:

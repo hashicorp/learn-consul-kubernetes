@@ -134,7 +134,7 @@ module "eks" {
 resource "null_resource" "update_kubeconfig" {
 
   provisioner "local-exec" {
-    command = "aws eks --region ${var.cluster_and_vpc_info.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${module.eks.cluster_id}"
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${module.eks.cluster_id} --alias ${module.eks.cluster_id}"
   }
   depends_on = [module.eks]
 }
@@ -197,5 +197,6 @@ profile_name="${var.profile_name}"
 cluster_service_account_name="${var.kube_service_account_name}"
 cluster_name="${local.eks_name}"
 cluster_region="${var.region}"
+datacenter="${module.hcp_applications.consul_datacenter}"
 CONFIGURATION
 }

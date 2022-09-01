@@ -141,3 +141,8 @@ variable "kube_context" {
   description = "The name of the kube context to set in the config file for kubectl"
 }
 
+variable "consul_datacenter" {
+  type = string
+  description = "The name of the Consul datacenter"
+}
+

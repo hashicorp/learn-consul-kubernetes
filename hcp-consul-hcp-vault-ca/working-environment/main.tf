@@ -18,4 +18,5 @@ module "kubernetes" {
   cluster_service_account_name = var.cluster_service_account_name
   cluster_name = var.cluster_name
   cluster_region = var.cluster_region
+  consul_datacenter = var.consul_datacenter
 }

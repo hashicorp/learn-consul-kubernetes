@@ -3,6 +3,11 @@ output "consul_cluster_host" {
   value = hcp_consul_cluster.server.consul_private_endpoint_url
 }
 
+# Consul datacenter name
+output "consul_datacenter" {
+  value = hcp_consul_cluster.server.datacenter
+}
+
 # The Consul config file to setup the working environment
 output "consul_config_file" {
   value = hcp_consul_cluster.server.consul_config_file

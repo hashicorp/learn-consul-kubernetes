@@ -88,3 +88,8 @@ variable "cluster_service_account_name" {
   type = string
   description = "Service account name for the Pod"
 }
+
+variable "consul_datacenter" {
+  type = string
+  description = "Name of the HCP Consul datacenter"
+}

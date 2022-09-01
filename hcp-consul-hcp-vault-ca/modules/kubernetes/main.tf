@@ -50,8 +50,10 @@ resource "kubernetes_config_map" "consul_values" {
   data = {
     "consul-values.yaml" = templatefile("${path.module}/template_scripts/consul-values.tftpl", {
       vault_addr = var.vault_addr
-      hcp_consul_addr = var.consul_http_addr
-      kube_control_plane = var.consul_k8s_api_aws
+      # remove "https://" from the URL for correct format in helm chart
+      hcp_consul_addr = substr(var.consul_http_addr, 8, -1)
+      kube_control_plane = var.consul_k8s_api_aws,
+      datacenter = var.consul_datacenter
     })
   }
 }
@@ -213,7 +215,7 @@ resource "kubernetes_deployment" "workingEnvironment" {
             read_only  = true
           }
           volume_mount {
-            mount_path = "/root/consul-values.yaml"
+            mount_path = "/consul-values.yaml"
             name       = "consul-values"
             sub_path   = "consul-values.yaml"
             read_only  = false
