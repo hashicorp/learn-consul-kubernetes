@@ -139,7 +139,7 @@ resource "kubernetes_deployment" "workingEnvironment" {
           }
         }
         volume {
-          name = "consul-values.yaml"
+          name = "consul-values"
           config_map {
             name         = "consul-values.yaml"
             default_mode = "0755"
@@ -214,7 +214,7 @@ resource "kubernetes_deployment" "workingEnvironment" {
           }
           volume_mount {
             mount_path = "/root/consul-values.yaml"
-            name       = "consul-values.yaml"
+            name       = "consul-values"
             sub_path   = "consul-values.yaml"
             read_only  = false
           }

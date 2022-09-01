@@ -1,6 +1,6 @@
 .PHONY: init
 init:
-	terraform init && terraform -chdir=./working-environment init
+	bash set_region_for_makefile.sh && terraform init && terraform -chdir=./working-environment init
 
 .PHONY: apply
 apply:
@@ -9,4 +9,3 @@ apply:
 .PHONY: destroy
 destroy:
 	terraform -chdir=./working-environment destroy && terraform destroy
-

@@ -37,12 +37,6 @@ variable "node_group_configuration" {
   }
 }
 
-variable "availability_zones" {
-  description = "Availability Zones for the EKS Cluster deployed in main.tf"
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  type        = list(string)
-}
-
 variable "default_tags" {
   type        = map(string)
   description = "Default tags to pass to AWS resources"
@@ -81,7 +75,6 @@ variable "hcp_peering_identifier" {
 variable "hcp_region" {
   description = "HCP region for HCP-created resources"
   type        = string
-  default     = "us-east-1"
 }
 
 variable "cloud_provider" {
@@ -104,7 +97,6 @@ variable "hcp_vault_cluster_name" {
 
 variable "cluster_and_vpc_info" {
   default = {
-    region             = "us-east-1"
     name               = "tutorialCluster"
     vpc_name           = "hcpTutorialAwsVpc"
     policy_name        = "workingenvironmentpolicy"

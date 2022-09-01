@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export WORKBENCH=$(kubectl get pods -l app=tutorial  -o json | jq -r ".items[0].metadata.name")
-rc =$(echo $?)
+rc=$(echo $?)
 
 if [ $rc -ne 0 ]
 then

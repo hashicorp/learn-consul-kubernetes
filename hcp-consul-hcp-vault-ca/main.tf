@@ -22,7 +22,7 @@ module "aws_vpc" {
   version            = "3.11.5"
   name               = local.identifier
   cidr               = var.aws_cidr_block.allocation
-  azs                = var.availability_zones
+  azs                = data.aws_availability_zones.current.names
   private_subnets    = var.aws_cidr_block.subnets.private
   public_subnets     = var.aws_cidr_block.subnets.public
   enable_nat_gateway = true
@@ -196,6 +196,6 @@ role_arn="${module.iam_role_for_service_accounts.iam_role_arn}"
 profile_name="${var.profile_name}"
 cluster_service_account_name="${var.kube_service_account_name}"
 cluster_name="${local.eks_name}"
-cluster_region="${var.cluster_and_vpc_info.region}"
+cluster_region="${var.region}"
 CONFIGURATION
 }
