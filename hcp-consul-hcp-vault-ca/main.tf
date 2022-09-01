@@ -197,6 +197,6 @@ profile_name="${var.profile_name}"
 cluster_service_account_name="${var.kube_service_account_name}"
 cluster_name="${local.eks_name}"
 cluster_region="${var.region}"
-datacenter="${module.hcp_applications.consul_datacenter}"
+consul_datacenter="${module.hcp_applications.consul_datacenter}"
 CONFIGURATION
 }
