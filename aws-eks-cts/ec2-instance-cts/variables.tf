@@ -44,4 +44,5 @@ variable "consul_root_token" {
   type = string
   description = "Consul client agent token"
   default = ""
+  sensitive = true
 }
