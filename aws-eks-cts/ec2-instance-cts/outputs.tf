@@ -6,4 +6,5 @@ output "ec2_client" {
 output "consul_root_token"{
   value = var.consul_root_token
   description = "Consul root token"
+  sensitive = true
 }
