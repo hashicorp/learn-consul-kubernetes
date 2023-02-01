@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Creates the HCP Consul Server instance
 resource "hcp_consul_cluster" "server" {
   cluster_id      = var.consul_cluster_datacenter

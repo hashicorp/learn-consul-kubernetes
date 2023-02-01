@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # The HVN created in HCP
 resource "hcp_hvn" "main" {
   hvn_id         = local.hvn_id

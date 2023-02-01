@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # ID of the HCP VPN
 output "hcp_vpn_id" {
   value = hcp_hvn.server.hvn_id

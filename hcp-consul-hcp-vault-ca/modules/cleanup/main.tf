@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # See note in the triggers map in the null_resource block
 locals {
   vpc_id       = var.vpc_id

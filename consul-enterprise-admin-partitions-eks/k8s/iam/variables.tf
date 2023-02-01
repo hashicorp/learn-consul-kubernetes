@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "eks_cluster_policy_arn" {
   default = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   description = "Managed Policy for Amazon EKS"

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "boostrap_acl_token" {
   type        = string
   description = "The ACL bootstrap token used to create necessary ACL tokens for the Helm chart"

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "consul_addr" {
   value = hcp_consul_cluster.main.consul_public_endpoint_url
 }

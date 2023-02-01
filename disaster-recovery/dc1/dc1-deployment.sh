@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 kubectl apply -f ./dc1/postgres.yaml
 
 kubectl apply -f ./dc1/product-api.yaml

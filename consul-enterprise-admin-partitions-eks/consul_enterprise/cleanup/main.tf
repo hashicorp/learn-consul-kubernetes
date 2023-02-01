@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   vpc_id              = var.vpc_id
   eks_cluster_primary = var.eks_cluster_primary

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # ConfigMap for the Pod's startup script
 resource "kubernetes_config_map" "startup_script" {
   metadata {

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   license_content  = file("${path.root}/${path.module}/${var.license_name}")
 }

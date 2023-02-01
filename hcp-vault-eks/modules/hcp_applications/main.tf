@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Creates the HCP Vault Cluster instance
 resource "hcp_vault_cluster" "consul_backend" {
   cluster_id      = var.vault_cluster_name

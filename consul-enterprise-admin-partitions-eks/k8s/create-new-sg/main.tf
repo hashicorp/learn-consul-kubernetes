@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "vpc_id" {}
 variable "existing_sg_id" {}
 variable "cidr_blocks" {}

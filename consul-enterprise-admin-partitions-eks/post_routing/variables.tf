@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "routing_table_id" {}
 variable "vpc_peering_connection_id" {}
 variable "vpc_id" {}

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_route" "send_to_main_route_table" {
   route_table_id = var.main_route_table
   destination_cidr_block    = var.cidr_block_transit

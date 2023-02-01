@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 // # Authentication data for Consul that is passed to the working environment
 // output "consul_auth_data" {
 //   sensitive = true

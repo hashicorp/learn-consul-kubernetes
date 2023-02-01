@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "cluster_arn" {
   description = "arn to use for a given iam user, role, group or policy"
   type        = string

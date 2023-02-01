@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Creates the IAM Policy for the EKS Cluster to describe itself and assume IAM Roles
 resource "aws_iam_policy" "eks_cluster_describe_and_assume" {
   name = var.policy_name

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm repo add hashicorp https://helm.releases.hashicorp.com
 

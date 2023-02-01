@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # From HCP, creating a peering relationship that generates the pcx-id in AWS.
 resource "hcp_aws_network_peering" "default" {
   hvn_id          = var.hvn_name

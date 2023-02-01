@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Creates the resources in Kubernetes for the reader to use their working environment
 module "kubernetes" {
   source = "../modules/kubernetes"

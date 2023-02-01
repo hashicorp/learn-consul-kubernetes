@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Endpoint to access HCP Consul
 output "consul_cluster_host" {
   value = hcp_consul_cluster.server.consul_private_endpoint_url
