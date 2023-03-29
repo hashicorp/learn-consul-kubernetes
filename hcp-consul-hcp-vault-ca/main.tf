@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Builds the base VPC for the AWS EKS Cluster
 module "aws_vpc" {
   # Full URL due to this issue: https://github.com/VladRassokhin/intellij-hcl/issues/365

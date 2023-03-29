@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # The overall policy that the following resources are being attached to.
 resource "aws_iam_policy" "eks_admin_partition" {
   policy = local.open_policy

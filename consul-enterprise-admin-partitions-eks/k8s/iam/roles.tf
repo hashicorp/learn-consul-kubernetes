@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_iam_role" "eks_admin_partition" {
   assume_role_policy = local.assume_policy
   managed_policy_arns = [

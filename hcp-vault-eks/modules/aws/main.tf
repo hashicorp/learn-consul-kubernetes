@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # The Security Group created for the AWS VPC. It allows peering between the AWS VPC and HCP HVN.
 resource "aws_security_group" "open" {
   vpc_id = var.aws_vpc_id

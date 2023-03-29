@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "consul_cluster_datacenter" {
   description = "Name of the Consul datacenter"
   type        = string

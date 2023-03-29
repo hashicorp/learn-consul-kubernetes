@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # The id of the AWS VPC Security group for HCP HVN Peering
 output "aws_security_group_id" {
   value = aws_security_group.open.id

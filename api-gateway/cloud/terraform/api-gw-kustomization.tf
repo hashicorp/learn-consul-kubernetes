@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   # non-default context name to protect from using wrong kubeconfig
   kubeconfig_context = "_terraform-kustomization-${local.cluster_id}_"

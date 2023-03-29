@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_vpc" "admin_partition_vpc" {
   cidr_block = var.eks_cidr_blocks.vpc
   tags = {

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 set -e
 
 # If cleanup not set; don't run. Catches a circumstance where this cleanup script might run during a follow up terraform apply, which causes destruction of this script's

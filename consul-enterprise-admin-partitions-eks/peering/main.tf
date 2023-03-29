@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_vpc_peering_connection" "peering" {
   vpc_id      = var.vpc_id_accepter
   peer_vpc_id = var.vpc_id_requester

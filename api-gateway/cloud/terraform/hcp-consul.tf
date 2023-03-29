@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 module "aws_hcp_consul" {
   source  = "hashicorp/hcp-consul/aws"
   version = "~> 0.6.1"

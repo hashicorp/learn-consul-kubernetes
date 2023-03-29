@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "number_of_nodes" {
   description = "Number of EKS EC2 nodes to launch within a node group"
   type = map(map(number))

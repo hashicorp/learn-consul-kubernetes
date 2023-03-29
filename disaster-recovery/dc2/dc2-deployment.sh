@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 CONSUL_TOKEN=$1
 
 kubectl config use-context dc2

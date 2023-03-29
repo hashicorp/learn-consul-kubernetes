@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # The Private Endpoint for HCP Vault
 output "vault_cluster_host" {
   value = hcp_vault_cluster.consul_backend.vault_private_endpoint_url
